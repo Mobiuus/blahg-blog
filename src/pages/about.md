@@ -1,7 +1,7 @@
 <p class="my-text">
     👋 I’m Valentin, a M2 student in finance at Skema BS.
     Currently in exchange in Brasil.
-    Democratizing sustainable finance with [re.boot](https://www.reboot-asso.com/).
+    Democratizing sustainable finance with [reboot](https://www.reboot-asso.com/).
     Interested in healthcare, finance and climate related topics.
 </p>
 
