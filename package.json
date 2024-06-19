@@ -17,8 +17,13 @@
 		"prettier-plugin-astro": "^0.12.2"
 	},
 	"dependencies": {
+		"@chakra-ui/react": "^2.8.2",
+		"@emotion/react": "^11.11.4",
+		"@emotion/styled": "^11.11.5",
 		"@tinacms/cli": "^1.5.43",
 		"dotenv": "^16.4.5",
+		"framer-motion": "^11.2.11",
+		"react-icons": "^5.2.1",
 		"tinacms": "^1.6.1"
 	}
 }
