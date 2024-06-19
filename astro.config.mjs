@@ -3,7 +3,7 @@ import sitemap from "@astrojs/sitemap";
 
 // https://astro.build/config
 export default defineConfig({
-	site: "https://blahg.netlify.app/",
+	site: "https://valentin.vc",
 	base: "/",
 	integrations: [sitemap()],
 	markdown: {
