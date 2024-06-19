@@ -3,8 +3,7 @@ layout: ../layouts/BlogPost.astro
 title: "\U0001F30D Amérique du Sud "
 slug: Voyage
 description: Lieu cool
-tags:
-  - technical
+tags: []
 added: 2024-06-19T12:54:11.661Z
 ---
 
