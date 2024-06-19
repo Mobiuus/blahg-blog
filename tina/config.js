@@ -73,36 +73,29 @@ export default defineConfig({
 						list: true,
 						options: [
 							{
-								value: "technical",
-								label: "Technical",
+								value: "voyage",
+								label: "Voyage",
 							},
 							{
-								value: "advice",
-								label: "Advice",
+								value: "finance",
+								label: "Finance",
 							},
 							{
-								value: "events",
-								label: "Events",
+								value: "climate",
+								label: "Climat",
 							},
 							{
-								value: "learning",
-								label: "Learning",
+								value: "economics",
+								label: "Economics",
 							},
 							{
-								value: "meta",
-								label: "Meta",
+								value: "art",
+								label: "Art",
+
 							},
 							{
-								value: "work",
-								label: "Work",
-							},
-							{
-								value: "personal",
-								label: "Personal",
-							},
-							{
-								value: "musings",
-								label: "Musings",
+								value: "perso",
+								label: "Perso",
 							},
 						],
 					},
@@ -110,14 +103,14 @@ export default defineConfig({
 						label: "Added",
 						name: "added",
 						type: "datetime",
-						dateFormat: "MMM DD YYYY",
+						dateFormat: "DD MM YYYY",
 						required: true,
 					},
 					{
 						label: "Updated",
 						name: "updated",
 						type: "datetime",
-						dateFormat: "MMM DD YYYY",
+						dateFormat: "DD MM YYYY",
 					},
 					{
 						type: "rich-text",
