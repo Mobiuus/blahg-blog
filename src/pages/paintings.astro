@@ -7,6 +7,8 @@ import paintings from '../../public/paintings.json';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Imaginary Museum</title>
     <link rel="stylesheet" href="/styles/paintings.css">
+    <!-- Importing the same font and styles from the main website -->
+    <link rel="stylesheet" href="https://valentin.vc/styles/main.css">
 </head>
 <body>
     <header>
@@ -18,10 +20,10 @@ import paintings from '../../public/paintings.json';
             <div id="painting-info">
                 <h2 id="painting-title">{paintings[0].title}</h2>
                 <p id="painting-details">
-                    <strong>Painter:</strong> {paintings[0].painter}<br>
-                    <strong>Date:</strong> {paintings[0].date}<br>
-                    <strong>Place:</strong> {paintings[0].place}<br>
-                    <strong>Owned by:</strong> {paintings[0].owned_by}<br>
+                    <strong>Painter:</strong> {paintings[0].painter}<br />
+                    <strong>Date:</strong> {paintings[0].date}<br />
+                    <strong>Place:</strong> {paintings[0].place}<br />
+                    <strong>Owned by:</strong> {paintings[0].owned_by}<br />
                     <strong>Size:</strong> {paintings[0].size}
                 </p>
             </div>
@@ -30,14 +32,62 @@ import paintings from '../../public/paintings.json';
             <button id="prev-btn">prev</button>
             <div id="thumbnails">
                 {paintings.map((painting, index) => (
-                    <div class="thumbnail">
-                        <img src={painting.image} alt={painting.title}>
+                    <div class="thumbnail" onclick={`showPainting(${index})`}>
+                        <img src={painting.image} alt={painting.title} />
                     </div>
                 ))}
             </div>
             <button id="next-btn">next</button>
         </div>
+        <div id="painting-counter">
+            <span id="current-painting">1</span> / <span id="total-paintings">{paintings.length}</span>
+        </div>
     </main>
-    <script src="/scripts/paintings.js" is:inline></script>
+    <script is:inline>
+        const paintingsData = JSON.parse('{JSON.stringify(paintings)}');
+        let currentPaintingIndex = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const mainPainting = document.getElementById('main-painting');
+            const paintingTitle = document.getElementById('painting-title');
+            const paintingDetails = document.getElementById('painting-details');
+            const currentPainting = document.getElementById('current-painting');
+
+            function displayPainting(index) {
+                const painting = paintingsData[index];
+                mainPainting.src = painting.image;
+                paintingTitle.textContent = painting.title;
+                paintingDetails.innerHTML = `
+                    <strong>Painter:</strong> ${painting.painter}<br />
+                    <strong>Date:</strong> ${painting.date}<br />
+                    <strong>Place:</strong> ${painting.place}<br />
+                    <strong>Owned by:</strong> ${painting.owned_by}<br />
+                    <strong>Size:</strong> ${painting.size}
+                `;
+                currentPainting.textContent = index + 1;
+            }
+
+            window.showPainting = function(index) {
+                currentPaintingIndex = index;
+                displayPainting(index);
+            };
+
+            document.getElementById('prev-btn').addEventListener('click', () => {
+                if (currentPaintingIndex > 0) {
+                    currentPaintingIndex--;
+                    displayPainting(currentPaintingIndex);
+                }
+            });
+
+            document.getElementById('next-btn').addEventListener('click', () => {
+                if (currentPaintingIndex < paintingsData.length - 1) {
+                    currentPaintingIndex++;
+                    displayPainting(currentPaintingIndex);
+                }
+            });
+
+            displayPainting(currentPaintingIndex);
+        });
+    </script>
 </body>
 </html>
