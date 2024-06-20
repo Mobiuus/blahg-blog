@@ -44,13 +44,19 @@ import BaseHead from '../components/BaseHead.astro';
         const ownedBy = document.getElementById('owned_by');
         const size = document.getElementById('size');
 
-        if (paintingImage) paintingImage.src = painting.image;
+        if (paintingImage) {
+          paintingImage.src = painting.image;
+          paintingImage.alt = painting.title;
+        } else {
+          console.error('Painting image element not found');
+        }
         if (painter) painter.innerText = painting.painter;
         if (title) title.innerText = painting.title;
         if (date) date.innerText = painting.date;
         if (place) place.innerText = painting.place;
         if (ownedBy) ownedBy.innerText = painting.owned_by;
         if (size) size.innerText = painting.size;
+
         currentIndex = index;
       }
 
