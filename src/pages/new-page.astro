@@ -1,0 +1,55 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <BaseHead title="New Page Title" />
+  <link href="/styles/global.css" rel="stylesheet">
+  <link href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-white text-black">
+  <div class="flex justify-center items-center h-screen">
+    <div class="flex flex-col items-center">
+      <div class="flex">
+        <img alt="Abstract painting with various colors and shapes" class="border" height="420" src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-sSsOulEoQY3dXtF2RiaK66Ja/user-XZ7Av8ZH1bvGvI0GdH7WwbAs/img-I3Cjq10e6z1x88xwzizvcwuO.png" width="520"/>
+        <div class="ml-8">
+          <p class="text-red-500">Smoking Joey</p>
+          <p class="text-blue-500">
+            52 × 42 cm<br/>
+            20,4 × 16,5 in
+          </p>
+          <p class="text-blue-500">
+            oil on linen<br/>
+            wooden frame<br/>
+            signed on verso
+          </p>
+          <p class="text-blue-500">
+            Melbourne<br/>
+            April 2021
+          </p>
+          <p class="text-green-500 italic">
+            Nicole Lawrence Showroom<br/>
+            Apr 1 – Apr 4, 2021<br/>
+            MA House<br/>
+            Melbourne, Australia
+          </p>
+          <p class="text-red-500">in private collection</p>
+        </div>
+      </div>
+      <div class="flex mt-8">
+        <button class="text-red-500 mr-4">prev</button>
+        <div class="flex overflow-x-auto space-x-2">
+          <!-- Thumbnails -->
+          <img alt="Thumbnail of abstract painting 1" class="border" height="50" src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-sSsOulEoQY3dXtF2RiaK66Ja/user-XZ7Av8ZH1bvGvI0GdH7WwbAs/img-3iI779wcexq4Uh6baEY7DdMX.png" width="50"/>
+          <!-- Add more thumbnails as needed -->
+        </div>
+        <button class="text-red-500 ml-4">next</button>
+      </div>
+      <div class="mt-4 text-green-500">14/271</div>
+      <div class="mt-2 text-blue-500">wall</div>
+    </div>
+  </div>
+</body>
+</html>
