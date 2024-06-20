@@ -50,15 +50,46 @@ import BaseHead from '../components/BaseHead.astro';
           if (paintingImage) {
             paintingImage.src = painting.image;
             paintingImage.alt = painting.title;
+            console.log('Painting image updated:', painting.image);
           } else {
             console.error('Painting image element not found');
           }
-          if (painter) painter.innerText = painting.painter;
-          if (title) title.innerText = painting.title;
-          if (date) date.innerText = painting.date;
-          if (place) place.innerText = painting.place;
-          if (ownedBy) ownedBy.innerText = painting.owned_by;
-          if (size) size.innerText = painting.size;
+          if (painter) {
+            painter.innerText = painting.painter;
+            console.log('Painter updated:', painting.painter);
+          } else {
+            console.error('Painter element not found');
+          }
+          if (title) {
+            title.innerText = painting.title;
+            console.log('Title updated:', painting.title);
+          } else {
+            console.error('Title element not found');
+          }
+          if (date) {
+            date.innerText = painting.date;
+            console.log('Date updated:', painting.date);
+          } else {
+            console.error('Date element not found');
+          }
+          if (place) {
+            place.innerText = painting.place;
+            console.log('Place updated:', painting.place);
+          } else {
+            console.error('Place element not found');
+          }
+          if (ownedBy) {
+            ownedBy.innerText = painting.owned_by;
+            console.log('Owned by updated:', painting.owned_by);
+          } else {
+            console.error('Owned by element not found');
+          }
+          if (size) {
+            size.innerText = painting.size;
+            console.log('Size updated:', painting.size);
+          } else {
+            console.error('Size element not found');
+          }
 
           currentIndex = index;
         } else {
