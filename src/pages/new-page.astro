@@ -108,24 +108,9 @@ import BaseHead from '../components/BaseHead.astro';
       const thumbnail0 = document.getElementById('thumbnail-0');
       const thumbnail1 = document.getElementById('thumbnail-1');
 
-      if (nextButton) {
-        nextButton.addEventListener('click', nextPainting);
-        console.log('Next button event listener added');
-      } else {
-        console.error('Next button element not found');
-      }
-      if (thumbnail0) {
-        thumbnail0.addEventListener('click', () => showPainting(0));
-        console.log('Thumbnail 0 event listener added');
-      } else {
-        console.error('Thumbnail 0 element not found');
-      }
-      if (thumbnail1) {
-        thumbnail1.addEventListener('click', () => showPainting(1));
-        console.log('Thumbnail 1 event listener added');
-      } else {
-        console.error('Thumbnail 1 element not found');
-      }
+      if (nextButton) nextButton.addEventListener('click', nextPainting);
+      if (thumbnail0) thumbnail0.addEventListener('click', () => showPainting(0));
+      if (thumbnail1) thumbnail1.addEventListener('click', () => showPainting(1));
     });
   </script>
 </head>
