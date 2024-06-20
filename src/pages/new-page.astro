@@ -36,24 +36,22 @@ import BaseHead from '../components/BaseHead.astro';
 
       function showPainting(index) {
         const painting = paintings[index];
-        if (painting) {
-          const paintingImage = document.getElementById('painting-image') as HTMLImageElement;
-          const painter = document.getElementById('painter');
-          const title = document.getElementById('title');
-          const date = document.getElementById('date');
-          const place = document.getElementById('place');
-          const ownedBy = document.getElementById('owned_by');
-          const size = document.getElementById('size');
+        const paintingImage = document.getElementById('painting-image') as HTMLImageElement;
+        const painter = document.getElementById('painter');
+        const title = document.getElementById('title');
+        const date = document.getElementById('date');
+        const place = document.getElementById('place');
+        const ownedBy = document.getElementById('owned_by');
+        const size = document.getElementById('size');
 
-          if (paintingImage) paintingImage.src = painting.image;
-          if (painter) painter.innerText = painting.painter;
-          if (title) title.innerText = painting.title;
-          if (date) date.innerText = painting.date;
-          if (place) place.innerText = painting.place;
-          if (ownedBy) ownedBy.innerText = painting.owned_by;
-          if (size) size.innerText = painting.size;
-          currentIndex = index;
-        }
+        if (paintingImage) paintingImage.src = painting.image;
+        if (painter) painter.innerText = painting.painter;
+        if (title) title.innerText = painting.title;
+        if (date) date.innerText = painting.date;
+        if (place) place.innerText = painting.place;
+        if (ownedBy) ownedBy.innerText = painting.owned_by;
+        if (size) size.innerText = painting.size;
+        currentIndex = index;
       }
 
       function nextPainting() {
@@ -85,7 +83,7 @@ import BaseHead from '../components/BaseHead.astro';
           <p class="text-green-500 italic" id="owned_by"></p>
           <p class="text-blue-500" id="size"></p>
         </div>
-        <img id="painting-image" class="border" height="420" width="520"/>
+        <img id="painting-image" class="border" height="420" width="520" alt="Painting"/>
       </div>
       <div class="flex mt-8">
         <button id="next-button" class="text-red-500 mr-4">next</button>
