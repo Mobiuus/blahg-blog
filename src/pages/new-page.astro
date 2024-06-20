@@ -9,45 +9,93 @@ import BaseHead from '../components/BaseHead.astro';
   <link href="/styles/global.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const paintings = [
+        {
+          painter: "Joseph Mallord William Turner",
+          title: "Pluie, Vapeur et Vitesse",
+          date: "1844",
+          place: "Londres",
+          owned_by: "National Gallery",
+          size: "91 cm × 121.8 cm",
+          image: "/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg"
+        },
+        {
+          painter: "Claude Monet",
+          title: "La Gare Saint-Lazare",
+          date: "1877",
+          place: "Paris",
+          owned_by: "Musée d'Orsay",
+          size: "75 cm × 105 cm",
+          image: "/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg"
+        }
+      ];
+
+      let currentIndex = 0;
+
+      function showPainting(index) {
+        const painting = paintings[index];
+        if (painting) {
+          const paintingImage = document.getElementById('painting-image') as HTMLImageElement;
+          const painter = document.getElementById('painter');
+          const title = document.getElementById('title');
+          const date = document.getElementById('date');
+          const place = document.getElementById('place');
+          const ownedBy = document.getElementById('owned_by');
+          const size = document.getElementById('size');
+
+          if (paintingImage) paintingImage.src = painting.image;
+          if (painter) painter.innerText = painting.painter;
+          if (title) title.innerText = painting.title;
+          if (date) date.innerText = painting.date;
+          if (place) place.innerText = painting.place;
+          if (ownedBy) ownedBy.innerText = painting.owned_by;
+          if (size) size.innerText = painting.size;
+          currentIndex = index;
+        }
+      }
+
+      function nextPainting() {
+        const nextIndex = (currentIndex + 1) % paintings.length;
+        showPainting(nextIndex);
+      }
+
+      showPainting(currentIndex);
+
+      const nextButton = document.getElementById('next-button');
+      const thumbnail0 = document.getElementById('thumbnail-0');
+      const thumbnail1 = document.getElementById('thumbnail-1');
+
+      if (nextButton) nextButton.addEventListener('click', nextPainting);
+      if (thumbnail0) thumbnail0.addEventListener('click', () => showPainting(0));
+      if (thumbnail1) thumbnail1.addEventListener('click', () => showPainting(1));
+    });
+  </script>
 </head>
 <body class="bg-white text-black">
   <div class="flex justify-center items-center h-screen">
     <div class="flex flex-col items-center">
-      <!-- First Painting -->
-      <div class="flex mb-12">
-        <img alt="Rain, Steam and Speed" class="border" height="420" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="520"/>
-        <div class="ml-8">
-          <p class="text-red-500">Joseph Mallord William Turner</p>
-          <p class="text-blue-500">Pluie, Vapeur et Vitesse</p>
-          <p class="text-blue-500">1844</p>
-          <p class="text-blue-500">Londres</p>
-          <p class="text-green-500 italic">National Gallery</p>
-          <p class="text-blue-500">91 cm × 121.8 cm</p>
-        </div>
-      </div>
-      <!-- Second Painting -->
       <div class="flex">
-        <img alt="La Gare Saint-Lazare" class="border" height="420" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="520"/>
-        <div class="ml-8">
-          <p class="text-red-500">Claude Monet</p>
-          <p class="text-blue-500">La Gare Saint-Lazare</p>
-          <p class="text-blue-500">1877</p>
-          <p class="text-blue-500">Paris</p>
-          <p class="text-green-500 italic">Musée d'Orsay</p>
-          <p class="text-blue-500">75 cm × 105 cm</p>
+        <div class="mr-8">
+          <p class="text-red-500" id="painter"></p>
+          <p class="text-blue-500" id="title"></p>
+          <p class="text-blue-500" id="date"></p>
+          <p class="text-blue-500" id="place"></p>
+          <p class="text-green-500 italic" id="owned_by"></p>
+          <p class="text-blue-500" id="size"></p>
         </div>
+        <img id="painting-image" class="border" height="420" width="520"/>
       </div>
       <div class="flex mt-8">
-        <button class="text-red-500 mr-4">prev</button>
+        <button id="next-button" class="text-red-500 mr-4">next</button>
         <div class="flex overflow-x-auto space-x-2">
           <!-- Thumbnails -->
-          <img alt="Thumbnail of Rain, Steam and Speed" class="border" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
-          <img alt="Thumbnail of La Gare Saint-Lazare" class="border" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
+          <img id="thumbnail-0" alt="Thumbnail of Rain, Steam and Speed" class="border cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
+          <img id="thumbnail-1" alt="Thumbnail of La Gare Saint-Lazare" class="border cursor-pointer" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
         </div>
-        <button class="text-red-500 ml-4">next</button>
       </div>
       <div class="mt-4 text-green-500">14/271</div>
-      <div class="mt-2 text-blue-500">wall</div>
     </div>
   </div>
 </body>
