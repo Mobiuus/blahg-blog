@@ -36,28 +36,34 @@ import BaseHead from '../components/BaseHead.astro';
 
       function showPainting(index) {
         const painting = paintings[index];
-        const paintingImage = document.getElementById('painting-image') as HTMLImageElement;
-        const painter = document.getElementById('painter');
-        const title = document.getElementById('title');
-        const date = document.getElementById('date');
-        const place = document.getElementById('place');
-        const ownedBy = document.getElementById('owned_by');
-        const size = document.getElementById('size');
+        if (painting) {
+          const paintingImage = document.getElementById('painting-image') as HTMLImageElement;
+          const painter = document.getElementById('painter');
+          const title = document.getElementById('title');
+          const date = document.getElementById('date');
+          const place = document.getElementById('place');
+          const ownedBy = document.getElementById('owned_by');
+          const size = document.getElementById('size');
 
-        if (paintingImage) {
-          paintingImage.src = painting.image;
-          paintingImage.alt = painting.title;
+          console.log('Updating painting details:', painting);
+
+          if (paintingImage) {
+            paintingImage.src = painting.image;
+            paintingImage.alt = painting.title;
+          } else {
+            console.error('Painting image element not found');
+          }
+          if (painter) painter.innerText = painting.painter;
+          if (title) title.innerText = painting.title;
+          if (date) date.innerText = painting.date;
+          if (place) place.innerText = painting.place;
+          if (ownedBy) ownedBy.innerText = painting.owned_by;
+          if (size) size.innerText = painting.size;
+
+          currentIndex = index;
         } else {
-          console.error('Painting image element not found');
+          console.error('Painting not found for index:', index);
         }
-        if (painter) painter.innerText = painting.painter;
-        if (title) title.innerText = painting.title;
-        if (date) date.innerText = painting.date;
-        if (place) place.innerText = painting.place;
-        if (ownedBy) ownedBy.innerText = painting.owned_by;
-        if (size) size.innerText = painting.size;
-
-        currentIndex = index;
       }
 
       function nextPainting() {
@@ -82,12 +88,12 @@ import BaseHead from '../components/BaseHead.astro';
     <div class="flex flex-col items-center">
       <div class="flex">
         <div class="mr-8">
-          <p class="text-red-500" id="painter"></p>
-          <p class="text-blue-500" id="title"></p>
-          <p class="text-blue-500" id="date"></p>
-          <p class="text-blue-500" id="place"></p>
-          <p class="text-green-500 italic" id="owned_by"></p>
-          <p class="text-blue-500" id="size"></p>
+          <p class="text-red-500" id="painter">Painter</p>
+          <p class="text-blue-500" id="title">Title</p>
+          <p class="text-blue-500" id="date">Date</p>
+          <p class="text-blue-500" id="place">Place</p>
+          <p class="text-green-500 italic" id="owned_by">Owned By</p>
+          <p class="text-blue-500" id="size">Size</p>
         </div>
         <img id="painting-image" class="border" height="420" width="520" alt="Painting"/>
       </div>
