@@ -5,45 +5,44 @@ import BaseHead from '../components/BaseHead.astro';
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <BaseHead title="New Page Title" />
+  <BaseHead title="Art Gallery" />
   <link href="/styles/global.css" rel="stylesheet">
-  <link href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white text-black">
   <div class="flex justify-center items-center h-screen">
     <div class="flex flex-col items-center">
-      <div class="flex">
-        <img alt="Abstract painting with various colors and shapes" class="border" height="420" src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-sSsOulEoQY3dXtF2RiaK66Ja/user-XZ7Av8ZH1bvGvI0GdH7WwbAs/img-I3Cjq10e6z1x88xwzizvcwuO.png" width="520"/>
+      <!-- First Painting -->
+      <div class="flex mb-12">
+        <img alt="Rain, Steam and Speed" class="border" height="420" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="520"/>
         <div class="ml-8">
-          <p class="text-red-500">Smoking Joey</p>
-          <p class="text-blue-500">
-            52 × 42 cm<br/>
-            20,4 × 16,5 in
-          </p>
-          <p class="text-blue-500">
-            oil on linen<br/>
-            wooden frame<br/>
-            signed on verso
-          </p>
-          <p class="text-blue-500">
-            Melbourne<br/>
-            April 2021
-          </p>
-          <p class="text-green-500 italic">
-            Nicole Lawrence Showroom<br/>
-            Apr 1 – Apr 4, 2021<br/>
-            MA House<br/>
-            Melbourne, Australia
-          </p>
-          <p class="text-red-500">in private collection</p>
+          <p class="text-red-500">Joseph Mallord William Turner</p>
+          <p class="text-blue-500">Pluie, Vapeur et Vitesse</p>
+          <p class="text-blue-500">1844</p>
+          <p class="text-blue-500">Londres</p>
+          <p class="text-green-500 italic">National Gallery</p>
+          <p class="text-blue-500">91 cm × 121.8 cm</p>
+        </div>
+      </div>
+      <!-- Second Painting -->
+      <div class="flex">
+        <img alt="La Gare Saint-Lazare" class="border" height="420" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="520"/>
+        <div class="ml-8">
+          <p class="text-red-500">Claude Monet</p>
+          <p class="text-blue-500">La Gare Saint-Lazare</p>
+          <p class="text-blue-500">1877</p>
+          <p class="text-blue-500">Paris</p>
+          <p class="text-green-500 italic">Musée d'Orsay</p>
+          <p class="text-blue-500">75 cm × 105 cm</p>
         </div>
       </div>
       <div class="flex mt-8">
         <button class="text-red-500 mr-4">prev</button>
         <div class="flex overflow-x-auto space-x-2">
           <!-- Thumbnails -->
-          <img alt="Thumbnail of abstract painting 1" class="border" height="50" src="https://oaidalleapiprodscus.blob.core.windows.net/private/org-sSsOulEoQY3dXtF2RiaK66Ja/user-XZ7Av8ZH1bvGvI0GdH7WwbAs/img-3iI779wcexq4Uh6baEY7DdMX.png" width="50"/>
-          <!-- Add more thumbnails as needed -->
+          <img alt="Thumbnail of Rain, Steam and Speed" class="border" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
+          <img alt="Thumbnail of La Gare Saint-Lazare" class="border" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
         </div>
         <button class="text-red-500 ml-4">next</button>
       </div>
