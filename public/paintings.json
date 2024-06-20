@@ -1,0 +1,20 @@
+[
+    {
+        "painter": "Claude Monet",
+        "title": "La Gare Saint-Lazare",
+        "date": "1877",
+        "place": "Paris",
+        "owned_by": "Musée d'Orsay",
+        "size": "75 cm × 105 cm",
+        "image": "/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg"
+    },
+    {
+        "painter": "Joseph Mallord William Turner",
+        "title": "Pluie, Vapeur et Vitesse",
+        "date": "1844",
+        "place": "Londres",
+        "owned_by": "National Gallery",
+        "size": "91 cm × 121.8 cm",
+        "image": "/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg"
+    }
+]

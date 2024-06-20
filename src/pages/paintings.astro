@@ -1,0 +1,45 @@
+---
+import paintings from '../../public/paintings.json';
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Imaginary Museum</title>
+    <link rel="stylesheet" href="/styles/paintings.css">
+</head>
+<body>
+    <header>
+        <h1>Imaginary Museum</h1>
+    </header>
+    <main>
+        <div id="painting-display">
+            <img id="main-painting" src={paintings[0].image} alt="Main Painting">
+            <div id="painting-info">
+                <h2 id="painting-title">{paintings[0].title}</h2>
+                <p id="painting-details">
+                    <strong>Painter:</strong> {paintings[0].painter}<br>
+                    <strong>Date:</strong> {paintings[0].date}<br>
+                    <strong>Place:</strong> {paintings[0].place}<br>
+                    <strong>Owned by:</strong> {paintings[0].owned_by}<br>
+                    <strong>Size:</strong> {paintings[0].size}
+                </p>
+            </div>
+        </div>
+        <div id="thumbnail-nav">
+            <button id="prev-btn">prev</button>
+            <div id="thumbnails">
+                {paintings.map((painting, index) => (
+                    <div class="thumbnail">
+                        <img src={painting.image} alt={painting.title}>
+                    </div>
+                ))}
+            </div>
+            <button id="next-btn">next</button>
+        </div>
+    </main>
+    <script src="/scripts/paintings.js"></script>
+</body>
+</html>
