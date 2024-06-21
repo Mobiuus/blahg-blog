@@ -129,11 +129,11 @@ import BaseHead from '../components/BaseHead.astro';
       justify-content: space-between;
       align-items: center;
       width: 100%;
+      margin-top: 1rem; /* Add some space between the thumbnails and the navigation bar */
     }
     .centered {
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
+      flex-grow: 1;
+      text-align: center;
     }
   </style>
 </head>
@@ -158,7 +158,7 @@ import BaseHead from '../components/BaseHead.astro';
         <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="border cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
         <img id="thumbnail-2" alt="Thumbnail of La Pie" class="border cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
       </div>
-      <div class="flex mt-4 w-full justify-between items-center">
+      <div class="navigation-bar">
         <button id="prev-button" class="text-red-500">prev</button>
         <div id="painting-index" class="text-green-500 centered"></div>
         <button id="next-button" class="text-red-500">next</button>
