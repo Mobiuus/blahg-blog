@@ -63,7 +63,6 @@ import BaseHead from '../components/BaseHead.astro';
           }
           if (paintingIndex) {
             paintingIndex.innerText = `${index + 1}/${paintings.length}`;
-            paintingIndex.style.color = window.getComputedStyle(document.body).color;
           }
 
           currentIndex = index;
@@ -84,6 +83,7 @@ import BaseHead from '../components/BaseHead.astro';
 
       const nextButton = document.getElementById('next-button');
       const prevButton = document.getElementById('prev-button');
+      const homeButton = document.getElementById('home-button');
       const thumbnail0 = document.getElementById('thumbnail-0');
       const thumbnail1 = document.getElementById('thumbnail-1');
       const thumbnail2 = document.getElementById('thumbnail-2');
@@ -93,6 +93,11 @@ import BaseHead from '../components/BaseHead.astro';
       }
       if (prevButton) {
         prevButton.addEventListener('click', prevPainting);
+      }
+      if (homeButton) {
+        homeButton.addEventListener('click', () => {
+          window.location.href = '/';
+        });
       }
       if (thumbnail0) {
         thumbnail0.addEventListener('click', () => showPainting(0));
@@ -108,6 +113,21 @@ import BaseHead from '../components/BaseHead.astro';
   <style>
     body {
       transition: background-color 0.3s, color 0.3s;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-color: var(--background-color);
+      color: var(--text-color);
+    }
+
+    .custom-container {
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
+      box-sizing: border-box;
     }
 
     .navigation-bar {
@@ -131,30 +151,30 @@ import BaseHead from '../components/BaseHead.astro';
     }
     
     @media (prefers-color-scheme: dark) {
-      body {
-        background-color: #333;
-        color: #efefef;
+      :root {
+        --background-color: #333;
+        --text-color: #efefef;
       }
-      .navigation .prev, .navigation .next {
+      .navigation .prev, .navigation .next, .navigation .home {
         color: #efefef;
         border: 1px solid #efefef;
       }
-      .navigation .prev:hover, .navigation .next:hover {
+      .navigation .prev:hover, .navigation .next:hover, .navigation .home:hover {
         background-color: #efefef;
         color: #333;
       }
     }
 
     @media (prefers-color-scheme: light) {
-      body {
-        background-color: #fff;
-        color: #000;
+      :root {
+        --background-color: #fff;
+        --text-color: #000;
       }
-      .navigation .prev, .navigation .next {
+      .navigation .prev, .navigation .next, .navigation .home {
         color: #000;
         border: 1px solid #000;
       }
-      .navigation .prev:hover, .navigation .next:hover {
+      .navigation .prev:hover, .navigation .next:hover, .navigation .home:hover {
         background-color: #000;
         color: #fff;
       }
@@ -166,7 +186,7 @@ import BaseHead from '../components/BaseHead.astro';
   </style>
 </head>
 <body>
-  <div class="flex justify-center items-center h-screen flex-col custom-container">
+  <div class="custom-container">
     <div class="flex flex-col items-center">
       <div class="flex flex-col items-center">
         <img id="painting-image" alt="Abstract painting with various colors and shapes" class="painting mb-4" height="420" width="520"/>
@@ -186,6 +206,7 @@ import BaseHead from '../components/BaseHead.astro';
         <button id="prev-button" class="prev">prev</button>
         <div id="painting-index" class="centered"></div>
         <button id="next-button" class="next">next</button>
+        <button id="home-button" class="home">home</button>
       </div>
     </div>
   </div>
