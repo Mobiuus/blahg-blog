@@ -123,6 +123,19 @@ import BaseHead from '../components/BaseHead.astro';
       }
     });
   </script>
+  <style>
+    .navigation-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+    .centered {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+  </style>
 </head>
 <body class="bg-white text-black">
   <div class="flex justify-center items-center h-screen flex-col custom-container">
@@ -140,16 +153,18 @@ import BaseHead from '../components/BaseHead.astro';
         </div>
       </div>
       <div class="flex mt-8">
-        <button id="prev-button" class="text-red-500 mr-4">prev</button>
-        <div class="flex overflow-x-auto space-x-2">
-          <!-- Thumbnails -->
-          <img id="thumbnail-0" alt="Thumbnail of La Gare Saint-Lazare" class="border cursor-pointer" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
-          <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="border cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
-          <img id="thumbnail-2" alt="Thumbnail of La Pie" class="border cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
+        <div class="navigation-bar">
+          <button id="prev-button" class="text-red-500 mr-4">prev</button>
+          <div class="centered text-green-500" id="painting-index"></div>
+          <button id="next-button" class="text-red-500 ml-4">next</button>
         </div>
-        <button id="next-button" class="text-red-500 ml-4">next</button>
       </div>
-      <div id="painting-index" class="mt-4 text-green-500"></div>
+      <div class="flex overflow-x-auto space-x-2 mt-4">
+        <!-- Thumbnails -->
+        <img id="thumbnail-0" alt="Thumbnail of La Gare Saint-Lazare" class="border cursor-pointer" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
+        <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="border cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
+        <img id="thumbnail-2" alt="Thumbnail of La Pie" class="border cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
+      </div>
     </div>
   </div>
 </body>
