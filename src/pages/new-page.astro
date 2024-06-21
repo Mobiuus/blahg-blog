@@ -52,6 +52,9 @@ import BaseHead from '../components/BaseHead.astro';
           const place = document.getElementById('place');
           const ownedBy = document.getElementById('owned_by');
           const size = document.getElementById('size');
+          const paintingIndex = document.getElementById('painting-index');
+
+          console.log('Showing painting:', painting);
 
           if (paintingImage) {
             paintingImage.src = painting.image;
@@ -75,8 +78,13 @@ import BaseHead from '../components/BaseHead.astro';
           if (size) {
             size.innerText = painting.size;
           }
+          if (paintingIndex) {
+            paintingIndex.innerText = `${index + 1}/${paintings.length}`;
+          }
 
           currentIndex = index;
+        } else {
+          console.error('No painting found at index', index);
         }
       }
 
@@ -117,7 +125,7 @@ import BaseHead from '../components/BaseHead.astro';
   </script>
 </head>
 <body class="bg-white text-black">
-  <div class="flex justify-center items-center h-screen flex-col">
+  <div class="flex justify-center items-center h-screen flex-col custom-container">
     <h1 class="text-2xl font-bold mb-8">Mon musée imaginaire</h1>
     <div class="flex flex-col items-center">
       <div class="flex">
@@ -141,7 +149,7 @@ import BaseHead from '../components/BaseHead.astro';
         </div>
         <button id="next-button" class="text-red-500 ml-4">next</button>
       </div>
-      <div class="mt-4 text-green-500">14/271</div>
+      <div id="painting-index" class="mt-4 text-green-500"></div>
     </div>
   </div>
 </body>
