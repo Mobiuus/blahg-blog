@@ -17,7 +17,6 @@ import BaseHead from '../components/BaseHead.astro';
           date: "1877",
           place: "Paris",
           owned_by: "Musée d'Orsay",
-          size: "75 cm × 105 cm",
           image: "/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg"
         },
         {
@@ -26,7 +25,6 @@ import BaseHead from '../components/BaseHead.astro';
           date: "1844",
           place: "Londres",
           owned_by: "National Gallery",
-          size: "91 cm × 121.8 cm",
           image: "/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg"
         },
         {
@@ -35,7 +33,6 @@ import BaseHead from '../components/BaseHead.astro';
           date: "1868",
           place: "Paris",
           owned_by: "Musée d'Orsay",
-          size: "89 cm × 130 cm",
           image: "/assets/paintings/Claude_Monet_-_La_pie.jpg"
         }
       ];
@@ -122,11 +119,14 @@ import BaseHead from '../components/BaseHead.astro';
     .description p {
       line-height: 1.2; /* Adjust this value to reduce/increase line spacing */
     }
+    .title-center {
+      text-align: center;
+    }
   </style>
 </head>
 <body class="bg-white text-black">
   <div class="flex justify-center items-center h-screen flex-col custom-container">
-    <h1 class="text-2xl font-bold mb-8">Mon musée imaginaire</h1>
+    <h1 class="text-2xl font-bold mb-8 title-center">Mon musée imaginaire</h1>
     <div class="flex flex-col items-center">
       <div class="flex">
         <img id="painting-image" alt="Abstract painting with various colors and shapes" class="border" height="420" width="520"/>
