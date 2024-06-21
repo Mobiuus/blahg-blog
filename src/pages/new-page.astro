@@ -54,8 +54,6 @@ import BaseHead from '../components/BaseHead.astro';
           const size = document.getElementById('size');
           const paintingIndex = document.getElementById('painting-index');
 
-          console.log('Showing painting:', painting);
-
           if (paintingImage) {
             paintingImage.src = painting.image;
             paintingImage.alt = painting.title;
@@ -83,8 +81,6 @@ import BaseHead from '../components/BaseHead.astro';
           }
 
           currentIndex = index;
-        } else {
-          console.error('No painting found at index', index);
         }
       }
 
@@ -135,6 +131,9 @@ import BaseHead from '../components/BaseHead.astro';
       flex-grow: 1;
       text-align: center;
     }
+    .description p {
+      line-height: 1.2; /* Adjust this value to reduce/increase line spacing */
+    }
   </style>
 </head>
 <body class="bg-white text-black">
@@ -143,7 +142,7 @@ import BaseHead from '../components/BaseHead.astro';
     <div class="flex flex-col items-center">
       <div class="flex">
         <img id="painting-image" alt="Abstract painting with various colors and shapes" class="border" height="420" width="520"/>
-        <div class="ml-8">
+        <div class="ml-8 description">
           <p class="text-red-500" id="painter">Painter</p>
           <p class="text-blue-500" id="title">Title</p>
           <p class="text-blue-500" id="date">Date</p>
