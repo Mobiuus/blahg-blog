@@ -7,6 +7,7 @@ import BaseHead from '../components/BaseHead.astro';
 <head>
   <BaseHead title="Mon musée imaginaire" />
   <link href="/styles/global.css" rel="stylesheet">
+  <link href="/styles/new-page.css" rel="stylesheet">
   <link href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -30,13 +31,13 @@ import BaseHead from '../components/BaseHead.astro';
           image: "/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg"
         },
         {
-          painter: "Claude Monet",
-          title: "La Pie",
-          date: "1868",
-          place: "Paris",
-          owned_by: "Musée d'Orsay",
-          size: "89 cm × 130 cm",
-          image: "/assets/paintings/Claude_Monet_-_La_pie.jpg"
+          painter: "Nouvelle Peinture",
+          title: "Titre de la nouvelle peinture",
+          date: "2024",
+          place: "Lieu",
+          owned_by: "Collection",
+          size: "Dimensions",
+          image: "/assets/paintings/new-painting.jpg"
         }
       ];
 
@@ -117,7 +118,7 @@ import BaseHead from '../components/BaseHead.astro';
   </script>
 </head>
 <body class="bg-white text-black">
-  <div class="flex justify-center items-center h-screen flex-col">
+  <div class="flex justify-center items-center h-screen flex-col custom-container">
     <h1 class="text-2xl font-bold mb-8">Mon musée imaginaire</h1>
     <div class="flex flex-col items-center">
       <div class="flex">
@@ -137,7 +138,7 @@ import BaseHead from '../components/BaseHead.astro';
           <!-- Thumbnails -->
           <img id="thumbnail-0" alt="Thumbnail of La Gare Saint-Lazare" class="border cursor-pointer" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
           <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="border cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
-          <img id="thumbnail-2" alt="Thumbnail of new painting" class="border cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
+          <img id="thumbnail-2" alt="Thumbnail of new painting" class="border cursor-pointer" height="50" src="/assets/paintings/new-painting.jpg" width="50"/>
         </div>
         <button id="next-button" class="text-red-500 ml-4">next</button>
       </div>
