@@ -11,6 +11,7 @@
     }
 </style>
 
-
->"The choices and actions implemented in this decade will have impacts now and for thousands of years (high confidence)." 
-*IPCC, AR6, 2023, Summary for Policymakers*
+<blockquote>
+    “The choices and actions implemented in this decade will have impacts now and for thousands of years (high confidence).” 
+    <cite>IPCC, AR6, 2023, Summary for Policymakers</cite>
+</blockquote>
