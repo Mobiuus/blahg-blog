@@ -1,0 +1,14 @@
+---
+import Bookshelf from '../components/Books.astro';
+import { books } from '../lib/books';
+---
+
+<html>
+  <head>
+    <title>Books</title>
+  </head>
+  <body>
+    <h1>Books</h1>
+    <Bookshelf books={books} />
+  </body>
+</html>
