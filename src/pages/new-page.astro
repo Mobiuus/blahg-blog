@@ -46,35 +46,23 @@ import BaseHead from '../components/BaseHead.astro';
         const painting = paintings[index];
         if (painting) {
           const paintingImage = document.getElementById('painting-image') as HTMLImageElement;
-          const painter = document.getElementById('painter');
           const title = document.getElementById('title');
-          const date = document.getElementById('date');
-          const place = document.getElementById('place');
-          const ownedBy = document.getElementById('owned_by');
-          const size = document.getElementById('size');
+          const painterAndDate = document.getElementById('painter-and-date');
+          const placeAndOwnedBy = document.getElementById('place-and-owned-by');
           const paintingIndex = document.getElementById('painting-index');
 
           if (paintingImage) {
             paintingImage.src = painting.image;
             paintingImage.alt = painting.title;
           }
-          if (painter) {
-            painter.innerText = painting.painter;
-          }
           if (title) {
             title.innerText = painting.title;
           }
-          if (date) {
-            date.innerText = painting.date;
+          if (painterAndDate) {
+            painterAndDate.innerText = `${painting.painter}, ${painting.date}`;
           }
-          if (place) {
-            place.innerText = painting.place;
-          }
-          if (ownedBy) {
-            ownedBy.innerText = painting.owned_by;
-          }
-          if (size) {
-            size.innerText = painting.size;
+          if (placeAndOwnedBy) {
+            placeAndOwnedBy.innerText = `${painting.place}, ${painting.owned_by}`;
           }
           if (paintingIndex) {
             paintingIndex.innerText = `${index + 1}/${paintings.length}`;
@@ -143,12 +131,9 @@ import BaseHead from '../components/BaseHead.astro';
       <div class="flex">
         <img id="painting-image" alt="Abstract painting with various colors and shapes" class="border" height="420" width="520"/>
         <div class="ml-8 description">
-          <p class="text-red-500" id="painter">Painter</p>
           <p class="text-blue-500" id="title">Title</p>
-          <p class="text-blue-500" id="date">Date</p>
-          <p class="text-blue-500" id="place">Place</p>
-          <p class="text-green-500 italic" id="owned_by">Owned By</p>
-          <p class="text-blue-500" id="size">Size</p>
+          <p class="text-red-500" id="painter-and-date">Painter, Date</p>
+          <p class="text-green-500 italic" id="place-and-owned-by">Place, Owned By</p>
         </div>
       </div>
       <div class="flex overflow-x-auto space-x-2 mt-8">
