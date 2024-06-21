@@ -1,115 +1,11 @@
----
-import BaseHead from '../components/BaseHead.astro';
----
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <BaseHead />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art Gallery</title>
   <link href="/styles/global.css" rel="stylesheet">
   <link href="/node_modules/@fortawesome/fontawesome-free/css/all.min.css" rel="stylesheet">
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const paintings = [
-        {
-          painter: "Claude Monet",
-          title: "La Gare Saint-Lazare",
-          date: "1877",
-          place: "Paris",
-          owned_by: "Musée d'Orsay",
-          image: "/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg"
-        },
-        {
-          painter: "Joseph Mallord William Turner",
-          title: "Pluie, Vapeur et Vitesse",
-          date: "1844",
-          place: "Londres",
-          owned_by: "National Gallery",
-          image: "/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg"
-        },
-        {
-          painter: "Claude Monet",
-          title: "La Pie",
-          date: "1868",
-          place: "Paris",
-          owned_by: "Musée d'Orsay",
-          image: "/assets/paintings/Claude_Monet_-_La_pie.jpg"
-        }
-      ];
-
-      let currentIndex = 0;
-
-      function showPainting(index) {
-        const painting = paintings[index];
-        if (painting) {
-          const paintingImage = document.getElementById('painting-image') as HTMLImageElement;
-          const title = document.getElementById('title');
-          const painterAndDate = document.getElementById('painter-and-date');
-          const placeAndOwnedBy = document.getElementById('place-and-owned-by');
-          const paintingIndex = document.getElementById('painting-index');
-
-          if (paintingImage) {
-            paintingImage.src = painting.image;
-            paintingImage.alt = painting.title;
-          }
-          if (title) {
-            title.innerText = painting.title;
-          }
-          if (painterAndDate) {
-            painterAndDate.innerText = `${painting.painter}, ${painting.date}`;
-          }
-          if (placeAndOwnedBy) {
-            placeAndOwnedBy.innerText = `${painting.place}, ${painting.owned_by}`;
-          }
-          if (paintingIndex) {
-            paintingIndex.innerText = `${index + 1}/${paintings.length}`;
-          }
-
-          currentIndex = index;
-        }
-      }
-
-      function nextPainting() {
-        const nextIndex = (currentIndex + 1) % paintings.length;
-        showPainting(nextIndex);
-      }
-
-      function prevPainting() {
-        const prevIndex = (currentIndex - 1 + paintings.length) % paintings.length;
-        showPainting(prevIndex);
-      }
-
-      showPainting(currentIndex);
-
-      const nextButton = document.getElementById('next-button');
-      const prevButton = document.getElementById('prev-button');
-      const homeButton = document.getElementById('home-button');
-      const thumbnail0 = document.getElementById('thumbnail-0');
-      const thumbnail1 = document.getElementById('thumbnail-1');
-      const thumbnail2 = document.getElementById('thumbnail-2');
-
-      if (nextButton) {
-        nextButton.addEventListener('click', nextPainting);
-      }
-      if (prevButton) {
-        prevButton.addEventListener('click', prevPainting);
-      }
-      if (homeButton) {
-        homeButton.addEventListener('click', () => {
-          window.location.href = '/';
-        });
-      }
-      if (thumbnail0) {
-        thumbnail0.addEventListener('click', () => showPainting(0));
-      }
-      if (thumbnail1) {
-        thumbnail1.addEventListener('click', () => showPainting(1));
-      }
-      if (thumbnail2) {
-        thumbnail2.addEventListener('click', () => showPainting(2));
-      }
-    });
-  </script>
   <style>
     :root {
       --background-light: #f0f0f0; /* Couleur de fond harmonisée */
@@ -132,7 +28,7 @@ import BaseHead from '../components/BaseHead.astro';
 
     .content-wrapper {
       width: 100%;
-      max-width: 800px;
+      max-width: 100%;
       padding: 20px;
       box-sizing: border-box;
       background-color: var(--background-light); /* Utilise la même couleur que le body */
@@ -208,6 +104,108 @@ import BaseHead from '../components/BaseHead.astro';
       border: none; /* Remove borders around images */
     }
   </style>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const paintings = [
+        {
+          painter: "Claude Monet",
+          title: "La Gare Saint-Lazare",
+          date: "1877",
+          place: "Paris",
+          owned_by: "Musée d'Orsay",
+          image: "/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg"
+        },
+        {
+          painter: "Joseph Mallord William Turner",
+          title: "Pluie, Vapeur et Vitesse",
+          date: "1844",
+          place: "Londres",
+          owned_by: "National Gallery",
+          image: "/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg"
+        },
+        {
+          painter: "Claude Monet",
+          title: "La Pie",
+          date: "1868",
+          place: "Paris",
+          owned_by: "Musée d'Orsay",
+          image: "/assets/paintings/Claude_Monet_-_La_pie.jpg"
+        }
+      ];
+
+      let currentIndex = 0;
+
+      function showPainting(index: number) {
+        const painting = paintings[index];
+        if (painting) {
+          const paintingImage = document.getElementById('painting-image') as HTMLImageElement;
+          const title = document.getElementById('title') as HTMLElement;
+          const painterAndDate = document.getElementById('painter-and-date') as HTMLElement;
+          const placeAndOwnedBy = document.getElementById('place-and-owned-by') as HTMLElement;
+          const paintingIndex = document.getElementById('painting-index') as HTMLElement;
+
+          if (paintingImage) {
+            paintingImage.src = painting.image;
+            paintingImage.alt = painting.title;
+          }
+          if (title) {
+            title.innerText = painting.title;
+          }
+          if (painterAndDate) {
+            painterAndDate.innerText = `${painting.painter}, ${painting.date}`;
+          }
+          if (placeAndOwnedBy) {
+            placeAndOwnedBy.innerText = `${painting.place}, ${painting.owned_by}`;
+          }
+          if (paintingIndex) {
+            paintingIndex.innerText = `${index + 1}/${paintings.length}`;
+          }
+
+          currentIndex = index;
+        }
+      }
+
+      function nextPainting() {
+        const nextIndex = (currentIndex + 1) % paintings.length;
+        showPainting(nextIndex);
+      }
+
+      function prevPainting() {
+        const prevIndex = (currentIndex - 1 + paintings.length) % paintings.length;
+        showPainting(prevIndex);
+      }
+
+      showPainting(currentIndex);
+
+      const nextButton = document.getElementById('next-button') as HTMLElement;
+      const prevButton = document.getElementById('prev-button') as HTMLElement;
+      const homeButton = document.getElementById('home-button') as HTMLElement;
+      const thumbnail0 = document.getElementById('thumbnail-0') as HTMLElement;
+      const thumbnail1 = document.getElementById('thumbnail-1') as HTMLElement;
+      const thumbnail2 = document.getElementById('thumbnail-2') as HTMLElement;
+
+      if (nextButton) {
+        nextButton.addEventListener('click', nextPainting);
+      }
+      if (prevButton) {
+        prevButton.addEventListener('click', prevPainting);
+      }
+      if (homeButton) {
+        homeButton.addEventListener('click', () => {
+          window.location.href = '/';
+        });
+      }
+      if (thumbnail0) {
+        thumbnail0.addEventListener('click', () => showPainting(0));
+      }
+      if (thumbnail1) {
+        thumbnail1.addEventListener('click', () => showPainting(1));
+      }
+      if (thumbnail2) {
+        thumbnail2.addEventListener('click', () => showPainting(2));
+      }
+    });
+  </script>
 </head>
 <body>
   <button id="home-button" class="home-button">home</button>
@@ -230,4 +228,9 @@ import BaseHead from '../components/BaseHead.astro';
       <div class="navigation-bar mt-4">
         <button id="prev-button" class="prev">prev</button>
         <div id="painting-index" class="centered"></div>
-        <button id="nex
+        <button id="next-button" class="next">next</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
