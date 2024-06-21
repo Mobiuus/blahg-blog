@@ -105,6 +105,10 @@ import BaseHead from '../components/BaseHead.astro';
     });
   </script>
   <style>
+    body {
+      transition: background-color 0.3s, color 0.3s;
+    }
+
     .navigation-bar {
       display: flex;
       justify-content: space-between;
@@ -122,18 +126,65 @@ import BaseHead from '../components/BaseHead.astro';
     .title-center {
       text-align: center;
     }
+    
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #333;
+        color: #efefef;
+      }
+      .description .title {
+        color: #8ab4f8; /* Lighter blue */
+      }
+      .description .artist {
+        color: #e69a8d; /* Lighter red */
+      }
+      .description .location {
+        color: #a1d9a7; /* Lighter green */
+      }
+      .navigation .prev, .navigation .next {
+        color: #efefef;
+        border: 1px solid #efefef;
+      }
+      .navigation .prev:hover, .navigation .next:hover {
+        background-color: #efefef;
+        color: #333;
+      }
+    }
+
+    @media (prefers-color-scheme: light) {
+      body {
+        background-color: #fff;
+        color: #000;
+      }
+      .description .title {
+        color: blue;
+      }
+      .description .artist {
+        color: red;
+      }
+      .description .location {
+        color: green;
+      }
+      .navigation .prev, .navigation .next {
+        color: #000;
+        border: 1px solid #000;
+      }
+      .navigation .prev:hover, .navigation .next:hover {
+        background-color: #000;
+        color: #fff;
+      }
+    }
   </style>
 </head>
-<body class="bg-white text-black">
+<body>
   <div class="flex justify-center items-center h-screen flex-col custom-container">
-    <!-- <h1 class="text-2xl font-bold mb-8 title-center">Mon musée imaginaire</h1> -->
     <div class="flex flex-col items-center">
       <div class="flex flex-col items-center">
         <img id="painting-image" alt="Abstract painting with various colors and shapes" class="border mb-4" height="420" width="520"/>
         <div class="description text-center">
-          <p class="text-blue-500 title" id="title">Title</p>
-          <p class="text-red-500 artist" id="painter-and-date">Painter, Date</p>
-          <p class="text-green-500 italic location" id="place-and-owned-by">Place, Owned By</p>
+          <p class="title" id="title">Title</p>
+          <p class="artist" id="painter-and-date">Painter, Date</p>
+          <p class="location" id="place-and-owned-by">Place, Owned By</p>
         </div>
       </div>
       <div class="flex overflow-x-auto space-x-2 mt-8">
@@ -143,9 +194,9 @@ import BaseHead from '../components/BaseHead.astro';
         <img id="thumbnail-2" alt="Thumbnail of La Pie" class="border cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
       </div>
       <div class="navigation-bar mt-4">
-        <button id="prev-button" class="bg-transparent text-white border border-white py-2 px-4">prev</button>
-        <div id="painting-index" class="text-white centered"></div>
-        <button id="next-button" class="bg-transparent text-white border border-white py-2 px-4">next</button>
+        <button id="prev-button" class="prev">prev</button>
+        <div id="painting-index" class="centered"></div>
+        <button id="next-button" class="next">next</button>
       </div>
     </div>
   </div>
