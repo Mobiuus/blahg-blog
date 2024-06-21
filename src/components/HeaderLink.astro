@@ -4,17 +4,18 @@ let isActive = href === Astro.url.pathname;
 ---
 
 <a href={href} class:list={[className, { active: isActive }]} {...props}>
-	<slot />
+    <slot />
 </a>
 <style>
-	a {
-		display: inline-block;
-		text-decoration: none;
-	}
-	a.active {
-		font-weight: bolder;
-		text-decoration: underline;
-		text-decoration-thickness: 0.3ex;
-		text-underline-offset: 0.3ex;
-	}
+    a {
+        display: inline-block;
+        text-decoration: underline;
+        text-decoration-thickness: 0.1ex;
+        text-underline-offset: 0.1ex;
+    }
+    a.active {
+        font-weight: bolder;
+        text-decoration-thickness: 0.3ex;
+        text-underline-offset: 0.3ex;
+    }
 </style>

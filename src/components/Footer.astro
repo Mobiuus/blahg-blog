@@ -3,12 +3,17 @@ const today = new Date();
 ---
 
 <footer>
-	&copy; {today.getFullYear()} Valentin Courtaud. <a href="https://github.com/cassidoo/blahg">This blog is open source</a>!
+    &copy; {today.getFullYear()} Valentin Courtaud. <a href="https://github.com/cassidoo/blahg">This blog is open source</a>!
 </footer>
 <style>
-	footer {
-		padding: 25px;
-		text-align: center;
-		font-size: 0.8rem;
-	}
+    footer {
+        padding: 25px;
+        text-align: center;
+        font-size: 0.8rem;
+    }
+    footer a {
+        text-decoration: underline;
+        text-decoration-thickness: 0.1ex;
+        text-underline-offset: 0.1ex;
+    }
 </style>
