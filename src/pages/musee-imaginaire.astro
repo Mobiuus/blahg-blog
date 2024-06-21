@@ -63,6 +63,7 @@ import BaseHead from '../components/BaseHead.astro';
           }
           if (paintingIndex) {
             paintingIndex.innerText = `${index + 1}/${paintings.length}`;
+            paintingIndex.style.color = window.getComputedStyle(document.body).color;
           }
 
           currentIndex = index;
@@ -119,9 +120,11 @@ import BaseHead from '../components/BaseHead.astro';
     .centered {
       flex-grow: 1;
       text-align: center;
+      color: inherit;
     }
     .description p {
       line-height: 1.2; /* Adjust this value to reduce/increase line spacing */
+      color: inherit; /* Match the color with the counter */
     }
     .title-center {
       text-align: center;
@@ -131,15 +134,6 @@ import BaseHead from '../components/BaseHead.astro';
       body {
         background-color: #333;
         color: #efefef;
-      }
-      .description .title {
-        color: #8ab4f8; /* Lighter blue */
-      }
-      .description .artist {
-        color: #e69a8d; /* Lighter red */
-      }
-      .description .location {
-        color: #a1d9a7; /* Lighter green */
       }
       .navigation .prev, .navigation .next {
         color: #efefef;
@@ -156,15 +150,6 @@ import BaseHead from '../components/BaseHead.astro';
         background-color: #fff;
         color: #000;
       }
-      .description .title {
-        color: blue;
-      }
-      .description .artist {
-        color: red;
-      }
-      .description .location {
-        color: green;
-      }
       .navigation .prev, .navigation .next {
         color: #000;
         border: 1px solid #000;
@@ -174,13 +159,17 @@ import BaseHead from '../components/BaseHead.astro';
         color: #fff;
       }
     }
+
+    .thumbnail, .painting {
+      border: none; /* Remove borders around images */
+    }
   </style>
 </head>
 <body>
   <div class="flex justify-center items-center h-screen flex-col custom-container">
     <div class="flex flex-col items-center">
       <div class="flex flex-col items-center">
-        <img id="painting-image" alt="Abstract painting with various colors and shapes" class="border mb-4" height="420" width="520"/>
+        <img id="painting-image" alt="Abstract painting with various colors and shapes" class="painting mb-4" height="420" width="520"/>
         <div class="description text-center">
           <p class="title" id="title">Title</p>
           <p class="artist" id="painter-and-date">Painter, Date</p>
@@ -189,9 +178,9 @@ import BaseHead from '../components/BaseHead.astro';
       </div>
       <div class="flex overflow-x-auto space-x-2 mt-8">
         <!-- Thumbnails -->
-        <img id="thumbnail-0" alt="Thumbnail of La Gare Saint-Lazare" class="border cursor-pointer" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
-        <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="border cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
-        <img id="thumbnail-2" alt="Thumbnail of La Pie" class="border cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
+        <img id="thumbnail-0" alt="Thumbnail of La Gare Saint-Lazare" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
+        <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
+        <img id="thumbnail-2" alt="Thumbnail of La Pie" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
       </div>
       <div class="navigation-bar mt-4">
         <button id="prev-button" class="prev">prev</button>
