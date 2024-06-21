@@ -1,17 +1,11 @@
+// src/components/Bookshelf.jsx
 import React, { useRef, useState } from 'react';
 import { ChakraProvider, Box, HStack, Image, IconButton } from '@chakra-ui/react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
-import Bookshelf from '../components/Bookshelf.jsx';
-import { books } from '../lib/books';
----
-
-<Bookshelf books={books} />
-
-
 
 const Bookshelf = ({ books }) => {
   const [scroll, setScroll] = useState(0);
-  const bookshelfRef = useRef(null); // No need for TypeScript type here
+  const bookshelfRef = useRef(null);
 
   const handleScroll = (direction) => {
     if (bookshelfRef.current) {
