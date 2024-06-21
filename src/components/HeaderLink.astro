@@ -10,16 +10,18 @@ let isActive = href === Astro.url.pathname;
     a {
         display: inline-block;
         text-decoration: underline;
-        text-decoration-thickness: 0.1ex;
-        text-underline-offset: 0.1ex;
+        text-decoration-thickness: 2px; /* Thicker underline for better visibility */
+        text-underline-offset: 4px; /* Offset to improve readability */
         color: inherit;
     }
     a:hover,
     a:focus {
-        text-decoration-thickness: 0.2ex;
-        text-underline-offset: 0.2ex;
+        text-decoration-thickness: 3px; /* Slightly thicker on hover/focus */
+        text-underline-offset: 5px;
     }
     a.active {
-        font-weight: bolder;
+        font-weight: bold; /* Bold font for active link */
+        text-decoration-thickness: 3px; /* Thicker underline for active link */
+        text-underline-offset: 5px;
     }
 </style>
