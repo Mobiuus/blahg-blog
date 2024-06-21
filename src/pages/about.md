@@ -3,7 +3,6 @@
     Currently on academic exchange in Brazil
     Democratizing sustainable finance with <a href="https://www.reboot-asso.com/">re.boot</a>
     Interested in healthcare, finance and climate related topics.
-    Also cooking, impressionism and Universal Geneve!
 </p>
 
 <style>
