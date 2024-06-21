@@ -9,7 +9,7 @@ console.log(books);
 
 const Bookshelf = ({ books }) => {
   const [scroll, setScroll] = useState(0);
-  const bookshelfRef = useRef<HTMLDivElement>(null);
+  const bookshelfRef = useRef<HTMLDivElement>(null); // Explicitly type the ref
 
   const handleScroll = (direction) => {
     if (bookshelfRef.current) {
@@ -54,5 +54,6 @@ const Bookshelf = ({ books }) => {
     </ChakraProvider>
   );
 };
+---
 
 export default Bookshelf;
