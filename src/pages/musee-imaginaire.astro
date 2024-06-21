@@ -130,6 +130,12 @@ import BaseHead from '../components/BaseHead.astro';
       box-sizing: border-box;
     }
 
+    .home-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+    }
+
     .navigation-bar {
       display: flex;
       justify-content: space-between;
@@ -155,11 +161,11 @@ import BaseHead from '../components/BaseHead.astro';
         --background-color: #333;
         --text-color: #efefef;
       }
-      .navigation .prev, .navigation .next, .navigation .home {
+      .navigation .prev, .navigation .next, .home-button {
         color: #efefef;
         border: 1px solid #efefef;
       }
-      .navigation .prev:hover, .navigation .next:hover, .navigation .home:hover {
+      .navigation .prev:hover, .navigation .next:hover, .home-button:hover {
         background-color: #efefef;
         color: #333;
       }
@@ -170,11 +176,11 @@ import BaseHead from '../components/BaseHead.astro';
         --background-color: #fff;
         --text-color: #000;
       }
-      .navigation .prev, .navigation .next, .navigation .home {
+      .navigation .prev, .navigation .next, .home-button {
         color: #000;
         border: 1px solid #000;
       }
-      .navigation .prev:hover, .navigation .next:hover, .navigation .home:hover {
+      .navigation .prev:hover, .navigation .next:hover, .home-button:hover {
         background-color: #000;
         color: #fff;
       }
@@ -186,6 +192,7 @@ import BaseHead from '../components/BaseHead.astro';
   </style>
 </head>
 <body>
+  <button id="home-button" class="home-button">home</button>
   <div class="custom-container">
     <div class="flex flex-col items-center">
       <div class="flex flex-col items-center">
@@ -206,7 +213,6 @@ import BaseHead from '../components/BaseHead.astro';
         <button id="prev-button" class="prev">prev</button>
         <div id="painting-index" class="centered"></div>
         <button id="next-button" class="next">next</button>
-        <button id="home-button" class="home">home</button>
       </div>
     </div>
   </div>
