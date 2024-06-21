@@ -112,7 +112,7 @@ import BaseHead from '../components/BaseHead.astro';
   </script>
   <style>
     :root {
-      --background-light: #fff;
+      --background-light: #f0f0f0; /* Couleur de fond harmonisée */
       --background-dark: #333;
       --text-light: #000;
       --text-dark: #efefef;
@@ -135,7 +135,7 @@ import BaseHead from '../components/BaseHead.astro';
       max-width: 800px;
       padding: 20px;
       box-sizing: border-box;
-      background-color: transparent; /* Ensure it inherits the body background color */
+      background-color: var(--background-light); /* Utilise la même couleur que le body */
     }
 
     .home-button {
@@ -181,6 +181,9 @@ import BaseHead from '../components/BaseHead.astro';
         background-color: var(--text-dark);
         color: var(--background-dark);
       }
+      .content-wrapper {
+        background-color: var(--background-dark); /* Utilise la même couleur que le body */
+      }
     }
 
     @media (prefers-color-scheme: light) {
@@ -195,6 +198,9 @@ import BaseHead from '../components/BaseHead.astro';
       .navigation .prev:hover, .navigation .next:hover, .home-button:hover {
         background-color: var(--text-light);
         color: var(--background-light);
+      }
+      .content-wrapper {
+        background-color: var(--background-light); /* Utilise la même couleur que le body */
       }
     }
 
@@ -224,9 +230,4 @@ import BaseHead from '../components/BaseHead.astro';
       <div class="navigation-bar mt-4">
         <button id="prev-button" class="prev">prev</button>
         <div id="painting-index" class="centered"></div>
-        <button id="next-button" class="next">next</button>
-      </div>
-    </div>
-  </div>
-</body>
-</html>
+        <button id="nex
