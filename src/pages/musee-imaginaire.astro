@@ -121,12 +121,21 @@ import BaseHead from '../components/BaseHead.astro';
     body {
       transition: background-color 0.3s, color 0.3s;
       margin: 0;
-      padding: 20px;
+      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
+      background-color: var(--background-light);
+      color: var(--text-light);
+    }
+
+    .content-wrapper {
+      width: 100%;
+      max-width: 800px;
+      padding: 20px;
       box-sizing: border-box;
+      background-color: transparent; /* Ensure it inherits the body background color */
     }
 
     .home-button {
@@ -196,25 +205,27 @@ import BaseHead from '../components/BaseHead.astro';
 </head>
 <body>
   <button id="home-button" class="home-button">home</button>
-  <div class="flex flex-col items-center">
+  <div class="content-wrapper">
     <div class="flex flex-col items-center">
-      <img id="painting-image" alt="Abstract painting with various colors and shapes" class="painting mb-4" height="420" width="520"/>
-      <div class="description text-center">
-        <p class="title" id="title">Title</p>
-        <p class="artist" id="painter-and-date">Painter, Date</p>
-        <p class="location" id="place-and-owned-by">Place, Owned By</p>
+      <div class="flex flex-col items-center">
+        <img id="painting-image" alt="Abstract painting with various colors and shapes" class="painting mb-4" height="420" width="520"/>
+        <div class="description text-center">
+          <p class="title" id="title">Title</p>
+          <p class="artist" id="painter-and-date">Painter, Date</p>
+          <p class="location" id="place-and-owned-by">Place, Owned By</p>
+        </div>
       </div>
-    </div>
-    <div class="flex overflow-x-auto space-x-2 mt-8">
-      <!-- Thumbnails -->
-      <img id="thumbnail-0" alt="Thumbnail of La Gare Saint-Lazare" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
-      <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
-      <img id="thumbnail-2" alt="Thumbnail of La Pie" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
-    </div>
-    <div class="navigation-bar mt-4">
-      <button id="prev-button" class="prev">prev</button>
-      <div id="painting-index" class="centered"></div>
-      <button id="next-button" class="next">next</button>
+      <div class="flex overflow-x-auto space-x-2 mt-8">
+        <!-- Thumbnails -->
+        <img id="thumbnail-0" alt="Thumbnail of La Gare Saint-Lazare" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" width="50"/>
+        <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
+        <img id="thumbnail-2" alt="Thumbnail of La Pie" class="thumbnail cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
+      </div>
+      <div class="navigation-bar mt-4">
+        <button id="prev-button" class="prev">prev</button>
+        <div id="painting-index" class="centered"></div>
+        <button id="next-button" class="next">next</button>
+      </div>
     </div>
   </div>
 </body>
