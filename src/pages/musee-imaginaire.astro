@@ -126,7 +126,7 @@ import BaseHead from '../components/BaseHead.astro';
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: transparent;
+      background-color: var(--background-light);
       color: var(--text-light);
     }
 
@@ -135,7 +135,7 @@ import BaseHead from '../components/BaseHead.astro';
       max-width: 800px;
       padding: 20px;
       box-sizing: border-box;
-      background-color: transparent; /* Ensure it inherits the body background color */
+      background-color: inherit; /* Ensure it inherits the body background color */
     }
 
     .home-button {
@@ -170,8 +170,12 @@ import BaseHead from '../components/BaseHead.astro';
         background-color: var(--background-dark);
         color: var(--text-dark);
       }
+      .custom-container {
+        background-color: var(--background-dark);
+      }
       .navigation .prev, .navigation .next, .home-button {
         color: var(--text-dark);
+        border: 1px solid var(--text-dark);
       }
       .navigation .prev:hover, .navigation .next:hover, .home-button:hover {
         background-color: var(--text-dark);
@@ -183,6 +187,9 @@ import BaseHead from '../components/BaseHead.astro';
       body {
         background-color: var(--background-light);
         color: var(--text-light);
+      }
+      .custom-container {
+        background-color: var(--background-light);
       }
       .navigation .prev, .navigation .next, .home-button {
         color: var(--text-light);
