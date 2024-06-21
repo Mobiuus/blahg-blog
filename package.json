@@ -3,34 +3,34 @@
 	"version": "0.0.1",
 	"private": true,
 	"scripts": {
-	  "dev": "npx tinacms dev -c 'astro dev'",
-	  "start": "astro dev",
-	  "build": "cross-env TINACLIENTID=9855ccfc-c174-472a-9c18-2e731fb9a977 TINATOKEN=9f500d21e11b1b1224e341b7737c9b5684bf3f20 TINASEARCH=f7b7bca605f51e3463b9f3bfe74390a65e629589 CI=false npx tinacms build && astro build",
-	  "preview": "astro preview",
-	  "astro": "astro"
+		"dev": "npx tinacms dev -c 'astro dev'",
+		"start": "astro dev",
+		"build": "cross-env TINACLIENTID=9855ccfc-c174-472a-9c18-2e731fb9a977 TINATOKEN=9f500d21e11b1b1224e341b7737c9b5684bf3f20 TINASEARCH=f7b7bca605f51e3463b9f3bfe74390a65e629589 CI=false npx tinacms build && astro build",
+		"preview": "astro preview",
+		"astro": "astro"
 	},
 	"devDependencies": {
-	  "@astrojs/rss": "^4.0.1",
-	  "@astrojs/sitemap": "^3.0.5",
-	  "astro": "^4.1.1",
-	  "prettier": "^3.1.0",
-	  "prettier-plugin-astro": "^0.12.2"
+		"@astrojs/rss": "^4.0.1",
+		"@astrojs/sitemap": "^3.0.5",
+		"astro": "^4.1.1",
+		"prettier": "^3.1.0",
+		"prettier-plugin-astro": "^0.12.2"
 	},
 	"dependencies": {
-	  "@astrojs/react": "^3.6.0",
-	  "@chakra-ui/react": "^2.8.2",
-	  "@emotion/react": "^11.11.4",
-	  "@emotion/styled": "^11.11.5",
-	  "@fortawesome/fontawesome-free": "^6.5.2",
-	  "@tailwindcss/forms": "^0.5.7",
-	  "@tailwindcss/typography": "^0.5.13",
-	  "@tinacms/cli": "^1.5.46",
-	  "dotenv": "^16.4.5",
-	  "framer-motion": "^11.2.11",
-	  "react-icons": "^5.2.1",
-	  "tailwindcss": "^3.4.4",
-	  "tinacms": "^1.6.1",
-	  "cross-env": "^7.0.3"
+		"@astrojs/react": "^3.6.0",
+		"@astrojs/tailwind": "^5.1.0",
+		"@chakra-ui/react": "^2.8.2",
+		"@emotion/react": "^11.11.4",
+		"@emotion/styled": "^11.11.5",
+		"@fortawesome/fontawesome-free": "^6.5.2",
+		"@tailwindcss/forms": "^0.5.7",
+		"@tailwindcss/typography": "^0.5.13",
+		"@tinacms/cli": "^1.5.46",
+		"cross-env": "^7.0.3",
+		"dotenv": "^16.4.5",
+		"framer-motion": "^11.2.11",
+		"react-icons": "^5.2.1",
+		"tailwindcss": "^3.4.4",
+		"tinacms": "^1.6.1"
 	}
-  }
-  
+}
