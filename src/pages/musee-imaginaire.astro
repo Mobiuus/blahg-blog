@@ -128,12 +128,12 @@ import BaseHead from '../components/BaseHead.astro';
   <div class="flex justify-center items-center h-screen flex-col custom-container">
     <!-- <h1 class="text-2xl font-bold mb-8 title-center">Mon musée imaginaire</h1> -->
     <div class="flex flex-col items-center">
-      <div class="flex">
-        <img id="painting-image" alt="Abstract painting with various colors and shapes" class="border" height="420" width="520"/>
-        <div class="ml-8 description">
-          <p class="text-blue-500" id="title">Title</p>
-          <p class="text-red-500" id="painter-and-date">Painter, Date</p>
-          <p class="text-green-500 italic" id="place-and-owned-by">Place, Owned By</p>
+      <div class="flex flex-col items-center">
+        <img id="painting-image" alt="Abstract painting with various colors and shapes" class="border mb-4" height="420" width="520"/>
+        <div class="description text-center">
+          <p class="text-blue-500 title" id="title">Title</p>
+          <p class="text-red-500 artist" id="painter-and-date">Painter, Date</p>
+          <p class="text-green-500 italic location" id="place-and-owned-by">Place, Owned By</p>
         </div>
       </div>
       <div class="flex overflow-x-auto space-x-2 mt-8">
@@ -142,10 +142,10 @@ import BaseHead from '../components/BaseHead.astro';
         <img id="thumbnail-1" alt="Thumbnail of Pluie, Vapeur et Vitesse" class="border cursor-pointer" height="50" src="/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" width="50"/>
         <img id="thumbnail-2" alt="Thumbnail of La Pie" class="border cursor-pointer" height="50" src="/assets/paintings/Claude_Monet_-_La_pie.jpg" width="50"/>
       </div>
-      <div class="navigation-bar">
-        <button id="prev-button" class="text-red-500">prev</button>
-        <div id="painting-index" class="text-green-500 centered"></div>
-        <button id="next-button" class="text-red-500">next</button>
+      <div class="navigation-bar mt-4">
+        <button id="prev-button" class="bg-transparent text-white border border-white py-2 px-4">prev</button>
+        <div id="painting-index" class="text-white centered"></div>
+        <button id="next-button" class="bg-transparent text-white border border-white py-2 px-4">next</button>
       </div>
     </div>
   </div>
