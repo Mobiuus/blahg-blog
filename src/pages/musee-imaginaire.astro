@@ -126,16 +126,14 @@ import BaseHead from '../components/BaseHead.astro';
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background-color: var(--background-light);
-      color: var(--text-light);
     }
 
-    .content-wrapper {
+    .main-content {
       width: 100%;
       max-width: 800px;
       padding: 20px;
       box-sizing: border-box;
-      background-color: transparent; /* Ensure it inherits the body background color */
+      background-color: inherit;
     }
 
     .home-button {
@@ -143,6 +141,7 @@ import BaseHead from '../components/BaseHead.astro';
       top: 20px;
       left: 20px;
       z-index: 1000;
+      background-color: inherit;
     }
 
     .navigation-bar {
@@ -151,6 +150,7 @@ import BaseHead from '../components/BaseHead.astro';
       align-items: center;
       width: 100%;
       margin-top: 1rem;
+      background-color: inherit;
     }
 
     .centered {
@@ -173,6 +173,9 @@ import BaseHead from '../components/BaseHead.astro';
         background-color: var(--background-dark);
         color: var(--text-dark);
       }
+      .main-content, .home-button, .navigation-bar {
+        background-color: inherit;
+      }
       .navigation .prev, .navigation .next, .home-button {
         color: var(--text-dark);
         border: 1px solid var(--text-dark);
@@ -187,6 +190,9 @@ import BaseHead from '../components/BaseHead.astro';
       body {
         background-color: var(--background-light);
         color: var(--text-light);
+      }
+      .main-content, .home-button, .navigation-bar {
+        background-color: inherit;
       }
       .navigation .prev, .navigation .next, .home-button {
         color: var(--text-light);
@@ -205,7 +211,7 @@ import BaseHead from '../components/BaseHead.astro';
 </head>
 <body>
   <button id="home-button" class="home-button">home</button>
-  <div class="content-wrapper">
+  <div class="main-content">
     <div class="flex flex-col items-center">
       <div class="flex flex-col items-center">
         <img id="painting-image" alt="Abstract painting with various colors and shapes" class="painting mb-4" height="420" width="520"/>
