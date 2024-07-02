@@ -2,25 +2,23 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { getCollection } from 'astro:content';
-import type { CollectionEntry } from 'astro:content';
 import { Content as AboutContent } from './about.md';
 
 // Get the most recent posts
-const allPosts = await getCollection('blog');
-const recentPosts = allPosts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => 
-  new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
-).slice(0, 3);
+const allPosts = await Astro.glob('../posts/*.md');
+const recentPosts = allPosts
+  .sort((a, b) => new Date(b.frontmatter.pubDate).valueOf() - new Date(a.frontmatter.pubDate).valueOf())
+  .slice(0, 3);
 
 // Get all unique tags
-const allTags = [...new Set(allPosts.map((post: CollectionEntry<'blog'>) => post.data.tags).flat())];
+const allTags = [...new Set(allPosts.flatMap(post => post.frontmatter.tags || []))];
 ---
 
 <html lang="en">
   <head>
     <BaseHead title="Valentin Courtaud" description="Personal website of Valentin Courtaud" />
-    <link rel="stylesheet" href="/styles/font.css" />
-    <link rel="stylesheet" href="/styles/global.css" />
+    <link rel="stylesheet" href="/style/font.css" />
+    <link rel="stylesheet" href="/style/global.css" />
   </head>
   <body>
     <Header title="Home" />
@@ -28,28 +26,26 @@ const allTags = [...new Set(allPosts.map((post: CollectionEntry<'blog'>) => post
       <section class="intro">
         <AboutContent />
       </section>
-
       <section class="recent-posts">
         <h2>Here's my most recent posts</h2>
         <ul>
-          {recentPosts.map((post: CollectionEntry<'blog'>) => (
+          {recentPosts.map((post) => (
             <li>
-              <a href={`/blog/${post.slug}`}>
-                {post.data.emoji} {post.data.title} 
-                <span class="post-date">{new Date(post.data.pubDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</span>
+              <a href={`/post/${post.frontmatter.slug}`}>
+                {post.frontmatter.emoji} {post.frontmatter.title}
+                <span class="post-date">{new Date(post.frontmatter.pubDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</span>
               </a>
             </li>
           ))}
         </ul>
-        <a href="/blog">View all posts</a>
+        <a href="/posts">View all posts</a>
       </section>
-
       <section class="tags">
         <h2>View posts by tag</h2>
         <ul>
           {allTags.map((tag) => (
             <li>
-              <a href={`/tags/${tag}`}>{tag}</a>
+              <a href={`/tag/${tag}`}>{tag}</a>
             </li>
           ))}
         </ul>

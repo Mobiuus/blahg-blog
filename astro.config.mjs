@@ -14,7 +14,13 @@ export default defineConfig({
       langs: [],
     },
   },
-  pages: {
-    '/books/*': 'src/pages/books/[[...slug]].tsx',
-  },
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          additionalData: `@import "src/style/global.css"; @import "src/style/font.css";`
+        }
+      }
+    }
+  }
 });

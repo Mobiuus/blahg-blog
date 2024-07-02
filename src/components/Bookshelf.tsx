@@ -11,10 +11,13 @@ import {
   Center,
 } from "@chakra-ui/react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { Book, getAllBooks } from "../lib/books";
+import { Book } from "../lib/books";
 
-const Bookshelf: React.FC = () => {
-  const books = getAllBooks();
+interface BookshelfProps {
+  books: Book[];
+}
+
+const Bookshelf: React.FC<BookshelfProps> = ({ books }) => {
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [scroll, setScroll] = useState(0);
 

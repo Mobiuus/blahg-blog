@@ -66,7 +66,7 @@ export const books: Book[] = [
     coverImage: "https://m.media-amazon.com/images/I/81f6t+bfccL._SL1500_.jpg",
     spineColor: "#FEFCE6",
     textColor: "#2A7CEE",
-    summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile. In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile. In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile. In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile. In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile. In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile. In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
+    summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
   },
   {
     slug: "Race et histoire",
@@ -90,7 +90,6 @@ export const books: Book[] = [
     textColor: "#FFF",
     summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
   }
-  // Add other books here
 ];
 
 export function getAllBooks(): Book[] {
