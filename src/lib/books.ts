@@ -71,7 +71,7 @@ export const books: Book[] = [
   {
     slug: "Race et histoire",
     title: "Race et histoire",
-    author: " Claude Lévi-Strauss ",
+    author: "Claude Lévi-Strauss",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/91DBHOzcPcL._SL1500_.jpg",
@@ -80,9 +80,9 @@ export const books: Book[] = [
     summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
   },
   {
-    slug: "La démocratie aux marges ",
-    title: "La démocratie aux marges ",
-    author: "David Graeber ",
+    slug: "La démocratie aux marges",
+    title: "La démocratie aux marges",
+    author: "David Graeber",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/61JY0fSThwL._SL1051_.jpg",
@@ -90,13 +90,13 @@ export const books: Book[] = [
     textColor: "#FFF",
     summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
   }
-  // Ajoutez d'autres livres ici
+  // Add other books here
 ];
 
 export function getAllBooks(): Book[] {
   return books;
 }
 
-export function getBookBySlug(slug: string): Book | undefined {
+export function getBook(slug: string): Book | undefined {
   return books.find(book => book.slug === slug);
 }
