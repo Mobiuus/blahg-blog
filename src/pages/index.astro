@@ -2,38 +2,98 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import HomePosts from "../components/HomePosts.astro";
-import ColorScript from "../components/ColorScript.astro";
-import Tags from "../components/Tags.astro";
-import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
-import { Content as About } from "./about.md";
-import getTags from "../scripts/getTags";
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import { Content as AboutContent } from './about.md';
 
-const posts = await Astro.glob("../posts/*.md");
+// Get the most recent posts
+const allPosts = await getCollection('blog');
+const recentPosts = allPosts.sort((a: CollectionEntry<'blog'>, b: CollectionEntry<'blog'>) => 
+  new Date(b.data.pubDate).valueOf() - new Date(a.data.pubDate).valueOf()
+).slice(0, 3);
 
-const tags = getTags(posts);
+// Get all unique tags
+const allTags = [...new Set(allPosts.map((post: CollectionEntry<'blog'>) => post.data.tags).flat())];
 ---
 
-<!doctype html>
-<html lang="en-us">
-	<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	<body>
-		<Header title={SITE_TITLE} />
-		<main>
-			<About />
+<html lang="en">
+  <head>
+    <BaseHead title="Valentin Courtaud" description="Personal website of Valentin Courtaud" />
+    <link rel="stylesheet" href="/styles/font.css" />
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body>
+    <Header title="Home" />
+    <main>
+      <section class="intro">
+        <AboutContent />
+      </section>
 
-			<br />
+      <section class="recent-posts">
+        <h2>Here's my most recent posts</h2>
+        <ul>
+          {recentPosts.map((post: CollectionEntry<'blog'>) => (
+            <li>
+              <a href={`/blog/${post.slug}`}>
+                {post.data.emoji} {post.data.title} 
+                <span class="post-date">{new Date(post.data.pubDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <a href="/blog">View all posts</a>
+      </section>
 
-			<h3>Here's my most recent posts</h3>
-
-			<HomePosts allPosts={posts} />
-
-	
-			<br />
-
-			<Tags tags={tags} all />
-		</main>
-		<Footer />
-		<ColorScript />
-	</body>
+      <section class="tags">
+        <h2>View posts by tag</h2>
+        <ul>
+          {allTags.map((tag) => (
+            <li>
+              <a href={`/tags/${tag}`}>{tag}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </main>
+    <Footer />
+  </body>
 </html>
+
+<style>
+  .intro {
+    margin-bottom: 2rem;
+  }
+  .intro :global(.my-text) {
+    white-space: pre-line;
+  }
+  .intro :global(blockquote) {
+    border-left: 4px solid #ccc;
+    margin: 1.5em 10px;
+    padding: 0.5em 10px;
+    quotes: "\201C""\201D""\2018""\2019";
+  }
+  .intro :global(blockquote:before) {
+    color: #ccc;
+    content: open-quote;
+    font-size: 4em;
+    line-height: 0.1em;
+    margin-right: 0.25em;
+    vertical-align: -0.4em;
+  }
+  .intro :global(blockquote cite) {
+    display: block;
+    margin-top: 0.5em;
+    font-style: italic;
+  }
+  .recent-posts ul, .tags ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  .recent-posts li, .tags li {
+    margin-bottom: 0.5rem;
+  }
+  .post-date {
+    font-size: 0.8em;
+    color: #666;
+  }
+</style>

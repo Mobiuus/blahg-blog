@@ -1,0 +1,16 @@
+---
+import ChakraProviderWrapper from "./ChakraProviderWrapper.jsx";
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Your Site Title</title>
+  </head>
+  <body>
+    <ChakraProviderWrapper client:load>
+      <slot />
+    </ChakraProviderWrapper>
+  </body>
+</html>

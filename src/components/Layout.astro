@@ -1,0 +1,24 @@
+---
+import ChakraWrapper from './ChakraWrapper.astro';
+const { title } = Astro.props;
+---
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title || 'My Site'}</title>
+  </head>
+  <body>
+    <ChakraWrapper>
+      <header>
+        <!-- Your header content -->
+      </header>
+      <main>
+        <slot />
+      </main>
+      <footer>
+        <!-- Your footer content -->
+      </footer>
+    </ChakraWrapper>
+  </body>
+</html>

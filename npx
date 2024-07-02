@@ -1,0 +1,42 @@
+Starting Tina Dev Server
+Indexing local files
+Building search index
+{
+  "heading": "Tina Dev Server is running...",
+  "items": [
+    {
+      "emoji": "🦙",
+      "heading": "Tina Config",
+      "subItems": [
+        {
+          "key": "CMS",
+          "value": "<your-dev-server-url>/C:\\Users\\letst\\blahg-blog\\public\\admin\\index.html"
+        },
+        {
+          "key": "API playground",
+          "value": "<your-dev-server-url>/C:\\Users\\letst\\blahg-blog\\public\\admin\\index.html#/graphql"
+        },
+        {
+          "key": "API url",
+          "value": "http://localhost:4001/graphql"
+        }
+      ]
+    },
+    {
+      "emoji": "🤖",
+      "heading": "Auto-generated files",
+      "subItems": [
+        {
+          "key": "GraphQL Client",
+          "value": "C:\\Users\\letst\\blahg-blog\\tina\\__generated__\\client.js"
+        },
+        {
+          "key": "Typescript Types",
+          "value": "C:\\Users\\letst\\blahg-blog\\tina\\__generated__\\types.ts"
+        }
+      ]
+    }
+  ]
+}
+Starting subprocess: astro dev
+child process exited with code 1
