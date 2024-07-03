@@ -2,10 +2,8 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import ChakraProviderWrapper from "../components/ChakraWrapper.astro";
-import Bookshelf from "../components/Bookshelf";
-import BookList from "../components/BookList";
 import { getAllBooks } from "../lib/books";
+import BookList from "../components/BookList";
 
 const books = getAllBooks();
 const sortedBooks = books.sort((a, b) => b.rating - a.rating);
@@ -16,13 +14,10 @@ const sortedBooks = books.sort((a, b) => b.rating - a.rating);
     <BaseHead title="Books | Your Site" description="My bookshelf" />
   </head>
   <body>
-    <ChakraProviderWrapper>
-      <Header title="Books" />
-      <main>
-        <Bookshelf books={books} client:load />
-        <BookList books={sortedBooks} client:load />
-      </main>
-      <Footer />
-    </ChakraProviderWrapper>
+    <Header title="Books" />
+    <main>
+      <BookList books={sortedBooks} client:load />
+    </main>
+    <Footer />
   </body>
 </html>
