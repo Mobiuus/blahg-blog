@@ -4,8 +4,8 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ChakraProviderWrapper from "../components/ChakraWrapper.astro";
 import Bookshelf from "../components/Bookshelf";
+import BookList from "../components/BookList";
 import { getAllBooks } from "../lib/books";
-import { Stack, Divider, Flex, VStack, Heading, Text } from "@chakra-ui/react";
 
 const books = getAllBooks();
 const sortedBooks = books.sort((a, b) => b.rating - a.rating);
@@ -20,38 +20,7 @@ const sortedBooks = books.sort((a, b) => b.rating - a.rating);
       <Header title="Books" />
       <main>
         <Bookshelf books={books} client:load />
-        <Stack spacing={5}>
-          {sortedBooks.map((book, index) => (
-            <Stack key={book.title} scroll-margin-top={20}>
-              <Stack>
-                {index > 0 && <Divider mb={3} width="100%" />}
-                <Flex direction="row" align="flex-start" gap={6}>
-                  <img
-                    style={{
-                      border: "1px solid",
-                      borderColor: "gray.200",
-                      height: "160px"
-                    }}
-                    src={book.coverImage}
-                    alt={book.title}
-                  />
-                  <VStack align="flex-start" flexGrow={1}>
-                    <a href={`/books/${book.slug}`}>
-                      <Heading as="h2" size="md">{book.title}</Heading>
-                    </a>
-                    <Text style={{ color: "#999" }} size="md">
-                      {book.author}
-                    </Text>
-                    <Text style={{ color: "#666" }}>
-                      Read: {book.date} • Rating: {book.rating}/10
-                    </Text>
-                    <div set:html={book.summary} />
-                  </VStack>
-                </Flex>
-              </Stack>
-            </Stack>
-          ))}
-        </Stack>
+        <BookList books={sortedBooks} client:load />
       </main>
       <Footer />
     </ChakraProviderWrapper>

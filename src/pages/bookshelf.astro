@@ -187,7 +187,7 @@ const books = getAllBooks();
         <div class="scroll-arrow scroll-right"><FaChevronRight /></div>
         <div class="bookshelf" id="bookshelf">
           {books.map((book) => (
-            <div class="book-container" key={book.slug}>
+            <div class="book-container">
               <div class="book" data-slug={book.slug} data-author={book.author} data-summary={book.summary}>
                 <div 
                   class="book-spine"
@@ -222,9 +222,9 @@ const books = getAllBooks();
 
       const bookshelf = document.getElementById('bookshelf');
       const books: NodeListOf<Element> = document.querySelectorAll('.book');
-      const scrollLeftArrow = document.querySelector('.scroll-left') as HTMLElement;
-      const scrollRightArrow = document.querySelector('.scroll-right') as HTMLElement;
-      const bookDetails = document.getElementById('book-details') as HTMLElement;
+      const scrollLeftArrow = document.querySelector('.scroll-left');
+      const scrollRightArrow = document.querySelector('.scroll-right');
+      const bookDetails = document.getElementById('book-details');
       let scrollPosition = 0;
       let scrollInterval: number | null = null;
 
@@ -236,8 +236,8 @@ const books = getAllBooks();
         scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
         (bookshelf as HTMLElement).style.transform = `translateX(${-scrollPosition}px)`;
 
-        if (scrollLeftArrow) scrollLeftArrow.style.display = scrollPosition > 0 ? 'block' : 'none';
-        if (scrollRightArrow) scrollRightArrow.style.display = scrollPosition < maxScroll ? 'block' : 'none';
+        if (scrollLeftArrow) (scrollLeftArrow as HTMLElement).style.display = scrollPosition > 0 ? 'block' : 'none';
+        if (scrollRightArrow) (scrollRightArrow as HTMLElement).style.display = scrollPosition < maxScroll ? 'block' : 'none';
       }
 
       function startScroll(direction: number) {
@@ -267,13 +267,13 @@ const books = getAllBooks();
           const isOpening = !container.classList.contains('open');
           
           books.forEach((b) => {
-            const cont = b.closest('.book-container') as HTMLElement;
+            const cont = b.closest('.book-container');
             if (!cont) return;
             b.classList.remove('open');
             cont.classList.remove('open');
-            cont.style.width = '41.5px';
-            cont.style.marginLeft = '0';
-            cont.style.transform = 'translateX(0)';
+            (cont as HTMLElement).style.width = '41.5px';
+            (cont as HTMLElement).style.marginLeft = '0';
+            (cont as HTMLElement).style.transform = 'translateX(0)';
           });
           
           if (isOpening) {
@@ -323,14 +323,14 @@ const books = getAllBooks();
               bookDetails.style.display = 'block';
             }
           } else {
-            bookDetails.style.display = 'none';
+            if (bookDetails) bookDetails.style.display = 'none';
           }
         });
       });
 
-      if (scrollLeftArrow) scrollLeftArrow.style.display = 'none';
+      if (scrollLeftArrow) (scrollLeftArrow as HTMLElement).style.display = 'none';
       if (scrollRightArrow && bookshelf) {
-        scrollRightArrow.style.display = bookshelf.scrollWidth > bookshelf.clientWidth ? 'block' : 'none';
+        (scrollRightArrow as HTMLElement).style.display = bookshelf.scrollWidth > bookshelf.clientWidth ? 'block' : 'none';
       }
     </script>
   </body>
