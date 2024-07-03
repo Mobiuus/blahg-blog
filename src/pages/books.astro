@@ -5,7 +5,7 @@ import Footer from "../components/Footer.astro";
 import ChakraProviderWrapper from "../components/ChakraWrapper.astro";
 import Bookshelf from "../components/Bookshelf";
 import { getAllBooks } from "../lib/books";
-import { Stack, Divider, Flex, Image, VStack, Heading, Text } from "@chakra-ui/react";
+import { Stack, Divider, Flex, VStack, Heading, Text } from "@chakra-ui/react";
 
 const books = getAllBooks();
 const sortedBooks = books.sort((a, b) => b.rating - a.rating);
@@ -26,21 +26,23 @@ const sortedBooks = books.sort((a, b) => b.rating - a.rating);
               <Stack>
                 {index > 0 && <Divider mb={3} width="100%" />}
                 <Flex direction="row" align="flex-start" gap={6}>
-                  <Image
-                    border="1px solid"
-                    borderColor="gray.200"
+                  <img
+                    style={{
+                      border: "1px solid",
+                      borderColor: "gray.200",
+                      height: "160px"
+                    }}
                     src={book.coverImage}
                     alt={book.title}
-                    height="160px"
                   />
                   <VStack align="flex-start" flexGrow={1}>
                     <a href={`/books/${book.slug}`}>
-                      <Heading size="md">{book.title}</Heading>
+                      <Heading as="h2" size="md">{book.title}</Heading>
                     </a>
-                    <Text color="#999" size="md">
+                    <Text style={{ color: "#999" }} size="md">
                       {book.author}
                     </Text>
-                    <Text color="#666">
+                    <Text style={{ color: "#666" }}>
                       Read: {book.date} • Rating: {book.rating}/10
                     </Text>
                     <div set:html={book.summary} />
