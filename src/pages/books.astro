@@ -4,7 +4,6 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { getAllBooks } from "../lib/books";
 import BookList from "../components/BookList";
-import { ChakraProvider } from "@chakra-ui/react";
 
 const books = getAllBooks();
 ---
@@ -16,9 +15,7 @@ const books = getAllBooks();
   <body>
     <Header title="Books" />
     <main>
-      <ChakraProvider client:load>
-        <BookList books={books} client:load />
-      </ChakraProvider>
+      <BookList books={books} client:only="react" />
     </main>
     <Footer />
   </body>
