@@ -6,33 +6,33 @@ import Layout from '../../layouts/BlogPost.astro';
 interface Frontmatter {
   slug: string;
   title: string;
-  // Add other frontmatter properties as needed
+  description?: string;
+  added?: string;
+  updated?: string;
+  tags?: string[];
+  heroImage?: string;
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts: MarkdownInstance<Frontmatter>[] = await Astro.glob('../../posts/*.md');
   return posts.map((post: MarkdownInstance<Frontmatter>) => ({
     params: { slug: post.frontmatter.slug },
-    props: { post },
+    props: { frontmatter: post.frontmatter, Content: post.Content },
   }));
 };
 
 type Props = {
-  post: MarkdownInstance<Frontmatter>;
+  frontmatter: Frontmatter;
+  Content: any;
 };
 
-const { post } = Astro.props;
+const { frontmatter, Content } = Astro.props;
 
-if (!post) {
+if (!frontmatter) {
   return Astro.redirect('/404');
 }
-
-const { Content } = post;
 ---
 
-<Layout title={post.frontmatter.title}>
-  <article>
-    <h1>{post.frontmatter.title}</h1>
-    <Content />
-  </article>
+<Layout content={frontmatter}>
+  <Content />
 </Layout>

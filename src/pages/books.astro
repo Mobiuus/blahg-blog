@@ -4,9 +4,9 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import { getAllBooks } from "../lib/books";
 import BookList from "../components/BookList";
+import { ChakraProvider } from "@chakra-ui/react";
 
 const books = getAllBooks();
-const sortedBooks = books.sort((a, b) => b.rating - a.rating);
 ---
 
 <html lang="en-us">
@@ -16,7 +16,9 @@ const sortedBooks = books.sort((a, b) => b.rating - a.rating);
   <body>
     <Header title="Books" />
     <main>
-      <BookList books={sortedBooks} client:load />
+      <ChakraProvider client:load>
+        <BookList books={books} client:load />
+      </ChakraProvider>
     </main>
     <Footer />
   </body>
