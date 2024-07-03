@@ -14,26 +14,26 @@ export interface Book {
 
 export const books: Book[] = [
   {
-    slug: "zero-to-one",
-    title: "Zero to One",
-    author: "Peter Thiel",
+    slug: "Le Grand retour de la terre dans les patrimoines",
+    title: "Le Grand retour de la terre dans les patrimoines",
+    author: "Alain Trannoy - Etienne Wasmer",
     date: "July 3, 2022",
     rating: 9,
-    coverImage: "https://img.wook.pt/images/zero-to-one-blake-masters/MXwyMjE1NzUyM3wxODAzNjM1OXwxNTcxMDIyMTAyMDAw/500x",
-    spineColor: "#5e7fa6",
-    textColor: "#fff",
-    summary: "The bible of starting a massive technology company. Anyone interested in startups needs to read this. The first principles on (1) what to work on (2) how to work on it to create massive value and (3) how to capture part of the value to build a valuable company."
+    coverImage: "https://m.media-amazon.com/images/I/61KxJ2kJp4L._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#805B53",
+    summary: ""
   },
   {
-    slug: "antifragile",
-    title: "Antifragile",
-    author: "Nassim Taleb",
+    slug: "Décroissances: Regards croisés sur les urgences du temps",
+    title: "Décroissances",
+    author: "Quatorze penseurs",
     date: "May 16, 2024",
     rating: 8,
-    coverImage: "https://m.media-amazon.com/images/I/61cmwTmON3L._AC_UF1000,1000_QL80_.jpg",
-    spineColor: "#D35D2D",
-    textColor: "#FFF",
-    summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
+    coverImage: "https://m.media-amazon.com/images/I/610e61liI-L._SL1066_.jpg",
+    spineColor: "#FFF",
+    textColor: "#FBA859",
+    summary: ""
   },
   {
     slug: "Atlas de l'anthropocène",
@@ -44,7 +44,7 @@ export const books: Book[] = [
     coverImage: "https://m.media-amazon.com/images/I/712FqGQWe-L._SL1193_.jpg",
     spineColor: "#046CB5",
     textColor: "#FFF",
-    summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
+    summary: ""
   },
   {
     slug: "La mer - Une infographie",
@@ -55,7 +55,7 @@ export const books: Book[] = [
     coverImage: "https://m.media-amazon.com/images/I/41eCvRauIyL._SY522_.jpg",
     spineColor: "#FFF",
     textColor: "#02243C",
-    summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
+    summary: ""
   },
   {
     slug: "Culture écologique",
@@ -66,7 +66,7 @@ export const books: Book[] = [
     coverImage: "https://m.media-amazon.com/images/I/81f6t+bfccL._SL1500_.jpg",
     spineColor: "#FEFCE6",
     textColor: "#2A7CEE",
-    summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
+    summary: ""
   },
   {
     slug: "Race et histoire",
@@ -77,7 +77,7 @@ export const books: Book[] = [
     coverImage: "https://m.media-amazon.com/images/I/91DBHOzcPcL._SL1500_.jpg",
     spineColor: "#FAB56C",
     textColor: "#FFF",
-    summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
+    summary: ""
   },
   {
     slug: "La démocratie aux marges",
@@ -88,8 +88,41 @@ export const books: Book[] = [
     coverImage: "https://m.media-amazon.com/images/I/61JY0fSThwL._SL1051_.jpg",
     spineColor: "#FBCF06",
     textColor: "#FFF",
-    summary: "In a world full of randomness and disorder, building things that benefit from volatility is the only way to ensure robustness. Taleb calls these things that gain from disorder antifragile."
-  }
+    summary: ""
+  },
+  {
+    slug: "Comment les économistes réchauffent la planète",
+    title: "Comment les économistes réchauffent la planète",
+    author: "Antonin Pottier",
+    date: "September 02, 2021",
+    rating: 8,
+    coverImage: "https://m.media-amazon.com/images/I/81kl+IUD5TL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#622577",
+    summary: ""
+  },
+  {
+    slug: "Un nouveau contrat écologique",
+    title: "Un nouveau contrat écologique",
+    author: "Antonin Pottier - Emmanuel Combet",
+    date: "September 02, 2021",
+    rating: 8,
+    coverImage: "https://m.media-amazon.com/images/I/71DQAqREOeL._SL1500_.jpg",
+    spineColor: "#507A48",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Concilier économie et écologie : les textes fondateurs du CIRED",
+    title: "Concilier économie et écologie",
+    author: "Antonin Pottier - Franck Lecocq",
+    date: "September 02, 2021",
+    rating: 8,
+    coverImage: "https://m.media-amazon.com/images/I/81oDXjoOnZL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#3D656C",
+    summary: ""
+  },
 ];
 
 export function getAllBooks(): Book[] {
