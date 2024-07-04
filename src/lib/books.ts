@@ -85,7 +85,12 @@ export const books: Book[] = [
     coverImage: "https://m.media-amazon.com/images/I/91DBHOzcPcL._SL1500_.jpg",
     spineColor: "#FAB56C",
     textColor: "#FFF",
-    summary: ""
+    summary: `
+      ◦ Nous avons suggéré que chaque société peut, de son propre point de vue, répartir les cultures en trois catégories: celles qui sont ses contemporaines, mais se trouvent situées en un autre lieu du globe; celles qui se sont manifestées approximativement dans le même espace, mais l’ont précédée dans le temps; celles, enfin, qui ont existé à la fois dans un temps antérieur au sien et dans un espace différent de celui où elle se place.<br>
+      ◦ Cela si d’abord de « progrès » (si ce terme convient encore pour désigner une réalité très différente de celle à laquelle on l’avait d’abord appliqué) n’est ni nécéssaire, ni continu ; il procède pas sauts, par bonds, ou, comme diraient les biologistes , par mutations. Ces sauts et ces bonds ne consistent pas à aller toujours plus loin dans la même direction, ils s’accompagnent de changements d’orientation, un peu à la manière du cavalier des échecs qui a toujours à sa disposition plusieurs progression mais jamais dans le même sens.<br>
+      ◦ Mais quelle serait notre position, en présence d’une civilisation qui se serait attachée à développer des valeurs propres, dont aucune ne serait susceptible d’intéresser la civilisation de l’observateur ? Celui-ci ne serait-il pas porté à qualifier cette civilisation de stationnaire ? En d'autres termes la distinction entre les deux formes d’histoire dépend-elle de la nature intrinsèque des cultures auxquelles on l’applique, ou ne résulte-t-elle pas de la perspective ethnocentrique dans laquelle nous nous plaçons toujours pour évaluer une culture différente ?<br>
+      ◦ Nous considérerions ainsi comme cumulative toute culture qui se développerait dans un sens analogue au nôtre, c’est-à-dire dont le développement serait doté pour nous de signification. Tandis que les autres cultures nous apparaîtraient comme stationnaires, non pas nécessairement parce qu’elles le sont, mais parce que leur ligne de développement ne signifie rien pour nous, n’est pas mesurable dans les termes du système de référence que nous utilisons.
+    `
   },
   {
     slug: "La démocratie aux marges",
