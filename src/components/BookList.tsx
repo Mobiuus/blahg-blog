@@ -43,7 +43,7 @@ const BookList: React.FC<BookListProps> = ({ books }) => {
                   <Text color="#666">
                     Read: {book.date} • Rating: {book.rating}/10
                   </Text>
-                  <div dangerouslySetInnerHTML={{ __html: book.summary }} />
+                  <div dangerouslySetInnerHTML={{ __html: book.summary.replace(/\n/g, "<br>") }} />
                 </VStack>
               </Flex>
             </Stack>

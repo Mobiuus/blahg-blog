@@ -67,18 +67,12 @@ export const books: Book[] = [
     spineColor: "#FEFCE6",
     textColor: "#2A7CEE",
     summary: `
-      • Les cyanobactéries sont des microorganismes qui sont à l’origine de la « grande oxydation » de la Terre, il y a environ 2,5 milliards d’années, qui ont permis le développement de la vie animale et végétale.
-      
-      • Échange colombien : intervention écologique aux conséquences néfastes issue de la colonisation des Amériques par l’Europe → un pont biologique et épidémiologique s’est établi entre les deux continents (blé, riz, bovins, cochons, chevaux… vs tabac, quinine, pomme de terre, tomate, maïs, cacao, dinde).
-      
-      • Éco-paternalisme (Baptiste Morizot) : le monde vivant est entièrement tributaire du soin apporté par les humains, il serait immature et incomplet sans son intervention et par conséquent les humains sont investis d’une mission de supervision quasi divine à l’égard du monde.
-      
-      • Les deux innovations techno-scientifiques qui ont brisé le métabolisme organique des sociétés préindustrielles ont été la machine à vapeur et le procédé Haber-Bosch.
-      
-      • Hans Blumenberg (La légitimité des temps modernes, 1966) : le progrès se définit comme l’auto-justification permanente du présent par l’avenir qu’il se donne face au passé, auquel il se compare.
-      
-      • Thea RioFrancos – Dans le Sud Global, la tension entre le pétro-nationalisme et le post-extractivisme est un défi constant à cause des limites écologiques et sociales de la croissance et l’impératif de développement.
-      
+      • Les cyanobactéries sont des microorganismes qui sont à l’origine de la « grande oxydation » de la Terre, il y a environ 2,5 milliards d’années, qui ont permis le développement de la vie animale et végétale.<br>
+      • Échange colombien : intervention écologique aux conséquences néfastes issue de la colonisation des Amériques par l’Europe → un pont biologique et épidémiologique s’est établi entre les deux continents (blé, riz, bovins, cochons, chevaux… vs tabac, quinine, pomme de terre, tomate, maïs, cacao, dinde).<br>
+      • Éco-paternalisme (Baptiste Morizot) : le monde vivant est entièrement tributaire du soin apporté par les humains, il serait immature et incomplet sans son intervention et par conséquent les humains sont investis d’une mission de supervision quasi divine à l’égard du monde.<br>
+      • Les deux innovations techno-scientifiques qui ont brisé le métabolisme organique des sociétés préindustrielles ont été la machine à vapeur et le procédé Haber-Bosch.<br>
+      • Hans Blumenberg (La légitimité des temps modernes, 1966) : le progrès se définit comme l’auto-justification permanente du présent par l’avenir qu’il se donne face au passé, auquel il se compare.<br>
+      • Thea RioFrancos – Dans le Sud Global, la tension entre le pétro-nationalisme et le post-extractivisme est un défi constant à cause des limites écologiques et sociales de la croissance et l’impératif de développement.<br>
       • Les trois matrices de la modernité : l’encadrement scientifique de la nature, l’horizon du progrès, et le schème de la conquête.
     `
   },
