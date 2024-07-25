@@ -2,6 +2,9 @@
 import ChakraWrapper from './ChakraWrapper.astro';
 import ColorScript from './ColorScript.astro';
 import BaseHead from './BaseHead.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+
 const { title, description } = Astro.props;
 ---
 <html lang="en">
@@ -10,15 +13,11 @@ const { title, description } = Astro.props;
   </head>
   <body>
     <ChakraWrapper>
-      <header>
-        <!-- Your header content -->
-      </header>
+      <Header />
       <main>
         <slot />
       </main>
-      <footer>
-        <!-- Your footer content -->
-      </footer>
+      <Footer />
     </ChakraWrapper>
     <ColorScript />
   </body>
