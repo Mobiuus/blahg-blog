@@ -3,15 +3,9 @@ layout: ../layouts/BlogPost.astro
 title: "Note de lecture : Comment les économistes réchauffent la planète - Antonin Pottier"
 slug: economistes
 description: Note de lecture 
-tags: [Econ]
+tags: []
 added:
 ---
-import ChakraBox from '../components/ChakraBox.jsx' 
-
-<ChakraBox client:load bg="tomato" p={4} color="white">
-  This is a client-rendered Chakra UI Box
-</ChakraBox>
-
 ## L'Économiste 
 
 L'Économiste est présenté comme un idéal-type qui représente certains traits particulièrement visibles dans la profession des économistes. Il s'agit d'une figure qui incarne le discours économique dominant, issu de la théorie économique néoclassique, focalisé sur des modèles abstraits et des concepts théoriques, souvent déconnectés de la réalité empirique. Il a tendance à simplifier les problèmes complexes pour les faire entrer dans son cadre conceptuel. L'Économiste est présenté comme ayant une grande confiance dans les mécanismes de marché et l'efficacité des prix pour résoudre les problèmes, avec une recherche systématique de l'optimisation et de la maximisation dans ses analyses.

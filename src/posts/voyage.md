@@ -6,11 +6,6 @@ description: Lieu cool
 tags: []
 added: 
 ---
-import ChakraBox from '../components/ChakraBox.jsx' 
-
-<ChakraBox client:load bg="tomato" p={4} color="white">
-  This is a client-rendered Chakra UI Box
-</ChakraBox>
 
 # 🇧🇷 Brésil
 
