@@ -7,8 +7,4 @@ const ChakraProviderWrapper = ({ children }) => (
   </ChakraProvider>
 );
 
-ChakraProviderWrapper.propTypes = {
-  children: PropTypes.node.isRequired,
-};
-
 export default ChakraProviderWrapper;
