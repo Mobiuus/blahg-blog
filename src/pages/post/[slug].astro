@@ -1,8 +1,7 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import type { MarkdownInstance } from 'astro';
-import Layout from '../../layouts/BlogPost.astro';
-import ChakraProviderWrapper from '../../components/ChakraProviderWrapper';
+import BlogPost from '../../layouts/BlogPost.astro';
 
 interface Frontmatter {
   slug: string;
@@ -33,9 +32,6 @@ if (!frontmatter) {
   return Astro.redirect('/404');
 }
 ---
-
-<Layout content={frontmatter}>
-  <ChakraProviderWrapper client:only="react">
-    <Content />
-  </ChakraProviderWrapper>
-</Layout>
+<BlogPost content={frontmatter}>
+  <Content />
+</BlogPost>
