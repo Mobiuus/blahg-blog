@@ -1,6 +1,5 @@
 import React from 'react';
 import { ChakraProvider } from "@chakra-ui/react";
-import PropTypes from "prop-types";
 
 const ChakraProviderWrapper = ({ children }) => (
   <ChakraProvider>

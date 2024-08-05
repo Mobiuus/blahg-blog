@@ -7,7 +7,7 @@ import mdx from '@astrojs/mdx';
 export default defineConfig({
   site: "https://valentin.vc",
   base: "/",
-  integrations: [sitemap(), react(), tailwind(), mdx()],
+  integrations: [sitemap(), react({ ssr: true }), tailwind(), mdx()],
   markdown: {
     shikiConfig: {
       theme: "material-theme-darker",
