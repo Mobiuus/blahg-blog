@@ -5,7 +5,7 @@ slug: economistes
 description: Note de lecture 
 added: 2023-08-10
 updated: 2023-08-10
-tags: [economics, climate]
+tags: []
 ---
 ## L'Économiste 
 

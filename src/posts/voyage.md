@@ -5,6 +5,7 @@ slug: Voyage
 description: Lieu cool
 tags: []
 added: 2023-07-01
+updated: 2023-07-01
 ---
 
 # 🇧🇷 Brésil
