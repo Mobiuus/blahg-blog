@@ -8,9 +8,10 @@ const posts = await Astro.glob("../posts/*.md");
 const tags = getTags(posts);
 ---
 
-<Layout title={SITE_TITLE} description={SITE_DESCRIPTION}>
+<Layout title={`404: Not Found | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
   <main>
     <h1>404: Page not found</h1>
+    <p>Sorry, the page you are looking for doesn't exist.</p>
     <Tags tags={tags} all />
   </main>
 </Layout>

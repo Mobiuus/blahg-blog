@@ -7,7 +7,14 @@ import mdx from '@astrojs/mdx';
 export default defineConfig({
   site: "https://valentin.vc",
   base: "/",
-  integrations: [sitemap(), react({ ssr: true,include:['**/react/*'] }), tailwind(), mdx()],
+  integrations: [
+    sitemap(),
+    react({
+      ssr: false,
+    }),
+    tailwind(),
+    mdx()
+  ],
   markdown: {
     shikiConfig: {
       theme: "material-theme-darker",
@@ -21,6 +28,9 @@ export default defineConfig({
           additionalData: `@import "src/style/global.css"; @import "src/style/font.css";`
         }
       }
+    },
+    ssr: {
+      noExternal: ['@chakra-ui/react', '@emotion/react']
     }
   }
 });
