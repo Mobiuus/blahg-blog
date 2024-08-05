@@ -16,19 +16,6 @@
     --blue: #10a2f5;
     --yellow: #e9bc3f;
 }
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --white: #252525;
-        --transwhite: rgba(37, 37, 37, 0.7);
-        --moretranswhite: rgba(37, 37, 37, 0.1);
-        --black: #efefef;
-        --transblack: rgba(239, 239, 239, 0.7);
-        --moretransblack: rgba(239, 239, 239, 0.1);
-        --gray: #a4a4a4;
-        --highlight: #3a3a3a;
-    }
-}
 ::selection {
     background-color: var(--highlight);
     color: var(--black);
