@@ -1,28 +1,38 @@
 ---
-import Post from "../components/Post.astro";
+import Post from "./Post.astro";
+import type { MarkdownInstance } from 'astro';
 
-const { allPosts } = Astro.props;
+interface FrontmatterType {
+    description: string;
+    slug: string;
+    title: string;
+    tags: string[];
+    date: string;
+}
 
-//.sort(() => 0.5 - Math.random()).slice(0, 3);
-
-let posts = allPosts
-	.sort(
-		(a, b) =>
-			new Date(b.frontmatter.updated || b.frontmatter.added).valueOf() -
-			new Date(a.frontmatter.updated || a.frontmatter.added).valueOf()
-	)
-	.slice(0, 5);
+const posts = await Astro.glob<FrontmatterType>("../posts/*.md");
+const sortedPosts = posts.sort((a, b) => 
+    new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf()
+);
+const featuredPosts = sortedPosts.slice(0, 3);
 ---
 
-<content>
-	<ul class="posts-list">
-		{
-			posts.map(
-				({
-					url,
-					frontmatter: { description, slug, title, tags, added: date },
-				}) => <Post {url} {description} {date} {slug} {title} {tags} />
-			)
-		}
-	</ul>
-</content>
+<section>
+    {
+        featuredPosts.map((post) => (
+            <Post
+                title={post.frontmatter.title}
+                description={post.frontmatter.description}
+                slug={post.frontmatter.slug}
+                tags={post.frontmatter.tags}
+                date={post.frontmatter.date}
+            />
+        ))
+    }
+</section>
+
+<style>
+    section {
+        padding: 1rem;
+    }
+</style>

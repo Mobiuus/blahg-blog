@@ -2,7 +2,6 @@
 import Layout from "../components/Layout.astro";
 import Tags from "../components/Tags.astro";
 import getTags from "../scripts/getTags";
-
 const posts = await Astro.glob("../posts/*.md");
 const allTags = getTags(posts);
 const { content } = Astro.props;
