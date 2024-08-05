@@ -4,7 +4,7 @@ title: "Note de lecture : Comment les économistes réchauffent la planète - An
 slug: economistes
 description: Note de lecture 
 tags: []
-added:
+added: 2023-08-10
 ---
 ## L'Économiste 
 

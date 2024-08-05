@@ -4,7 +4,7 @@ title: "\U0001F30D Amérique du Sud "
 slug: Voyage
 description: Lieu cool
 tags: []
-added: 
+added: 2023-08-11
 ---
 
 # 🇧🇷 Brésil
