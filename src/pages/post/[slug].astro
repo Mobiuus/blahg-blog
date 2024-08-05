@@ -1,8 +1,8 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import type { MarkdownInstance } from 'astro';
-import Layout from '../../components/Layout.astro';
-import BlogPost from '../../layouts/BlogPost.astro';
+import Layout from '../../layouts/BlogPost.astro';
+import ChakraProviderWrapper from '../../components/ChakraProviderWrapper';
 
 interface Frontmatter {
   slug: string;
@@ -34,8 +34,8 @@ if (!frontmatter) {
 }
 ---
 
-<Layout title={frontmatter.title} description={frontmatter.description}>
-  <BlogPost content={frontmatter}>
+<Layout content={frontmatter}>
+  <ChakraProviderWrapper client:only="react">
     <Content />
-  </BlogPost>
+  </ChakraProviderWrapper>
 </Layout>
