@@ -3,8 +3,9 @@ layout: ../layouts/BlogPost.astro
 title: "Note de lecture : Comment les économistes réchauffent la planète - Antonin Pottier"
 slug: economistes
 description: Note de lecture 
-tags: []
 added: 2023-08-10
+updated: 2023-08-10
+tags: [economics, climate]
 ---
 ## L'Économiste 
 

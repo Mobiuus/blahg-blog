@@ -4,20 +4,32 @@ import ColorScript from './ColorScript.astro';
 import BaseHead from './BaseHead.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
+
 const { title, description } = Astro.props;
 ---
+
 <html lang="en">
   <head>
     <BaseHead title={title} description={description} />
   </head>
   <body>
-    <ChakraProviderWrapper client:only="react">
-      <Header />
-      <main>
-        <slot />
-      </main>
-      <Footer />
-    </ChakraProviderWrapper>
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
     <ColorScript />
   </body>
 </html>
+
+<style>
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--white);
+  }
+  main {
+    flex: 1;
+  }
+</style>
