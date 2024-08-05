@@ -1,8 +1,7 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import type { MarkdownInstance } from 'astro';
-import Layout from '../../components/Layout.astro';
-import BlogPost from '../../layouts/BlogPost.astro';
+import Layout from '../../layouts/BlogPost.astro';
 
 interface Frontmatter {
   slug: string;
@@ -34,8 +33,6 @@ if (!frontmatter) {
 }
 ---
 
-<Layout title={frontmatter.title} description={frontmatter.description}>
-  <BlogPost content={frontmatter}>
-    <Content />
-  </BlogPost>
+<Layout content={frontmatter}>
+  <Content />
 </Layout>
