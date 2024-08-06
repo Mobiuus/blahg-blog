@@ -1,6 +1,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
 :root {
     --white: #efefef;
     --transwhite: rgba(239, 239, 239, 0.7);
@@ -15,20 +16,19 @@
     --pink: #eb4888;
     --blue: #10a2f5;
     --yellow: #e9bc3f;
-}
-::selection {
-    background-color: var(--highlight);
-    color: var(--black);
+
+    --background-color: var(--white);
+    --text-color: var(--black);
 }
 html,
 body {
     margin: auto;
     padding: 20px;
     max-width: 70ch;
-    background-color: var(--white);
+    background-color: var(--background-color);
     word-wrap: break-word;
     overflow-wrap: break-word;
-    color: var(--black);
+    color: var(--text-color);
 }
 html,
 body,
