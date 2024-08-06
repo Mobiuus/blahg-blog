@@ -2,40 +2,38 @@
 import Layout from "../components/Layout.astro";
 import Tags from "../components/Tags.astro";
 import getTags from "../scripts/getTags";
-
+import ChakraProviderWrapper from "../components/ChakraProviderWrapper";
 const posts = await Astro.glob("../posts/*.md");
 const allTags = getTags(posts);
 const { content } = Astro.props;
 const { title, description, added, updated, tags, heroImage } = content;
-
 const formattedAdded = added ? new Date(added).toLocaleDateString("en-us", {
     year: "numeric",
     month: "short",
     day: "numeric",
 }) : null;
-
 const formattedUpdated = updated ? new Date(updated).toLocaleDateString("en-us", {
     year: "numeric",
     month: "short",
     day: "numeric",
 }) : null;
 ---
-
 <Layout title={title} description={description}>
-  <article>
-    {heroImage && <img width={720} height={360} src={heroImage} alt="" />}
-    <h1 class="article-title">{title}</h1>
-    {formattedAdded && (
-      <p>
-        <time datetime={added}>{formattedAdded}</time>
-        {formattedUpdated && `, last updated on ${formattedUpdated}`}
-      </p>
-    )}
-    <Tags tags={tags} />
-    <hr />
-    <div class="blog-post">
-      <slot />
-    </div>
-  </article>
-  <Tags tags={allTags} all />
+  <ChakraProviderWrapper client:only="react">
+    <article>
+      {heroImage && <img width={720} height={360} src={heroImage} alt="" />}
+      <h1 class="article-title">{title}</h1>
+      {formattedUpdated ? (
+        <span><time>{formattedAdded}</time>, last updated on <time>{formattedUpdated}</time></span>
+      ) : (
+        <span>{formattedAdded && <time>{formattedAdded}</time>}</span>
+      )}
+      <Tags tags={tags} />
+      <hr />
+      <div class="blog-post">
+        <slot />
+      </div>
+    </article>
+    <Tags tags={allTags} all />
+  </ChakraProviderWrapper>
 </Layout>

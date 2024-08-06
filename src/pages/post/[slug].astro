@@ -1,8 +1,8 @@
 ---
 import type { GetStaticPaths } from 'astro';
 import type { MarkdownInstance } from 'astro';
-import BlogPost from '../../layouts/BlogPost.astro';
-
+import Layout from '../../layouts/BlogPost.astro';
+import ChakraProviderWrapper from '../../components/ChakraProviderWrapper';
 interface Frontmatter {
   slug: string;
   title: string;
@@ -12,7 +12,6 @@ interface Frontmatter {
   tags?: string[];
   heroImage?: string;
 }
-
 export const getStaticPaths: GetStaticPaths = async () => {
   const posts: MarkdownInstance<Frontmatter>[] = await Astro.glob('../../posts/*.md');
   return posts.map((post: MarkdownInstance<Frontmatter>) => ({
@@ -20,19 +19,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
     props: { frontmatter: post.frontmatter, Content: post.Content },
   }));
 };
-
 type Props = {
   frontmatter: Frontmatter;
   Content: any;
 };
-
 const { frontmatter, Content } = Astro.props;
-
 if (!frontmatter) {
   return Astro.redirect('/404');
 }
 ---
-
-<BlogPost content={frontmatter}>
-  <Content />
-</BlogPost>
+<Layout content={frontmatter}>
+  <ChakraProviderWrapper client:only="react">
+    <Content />
+  </ChakraProviderWrapper>
+</Layout>

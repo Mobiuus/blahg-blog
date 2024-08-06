@@ -1,7 +1,6 @@
 ---
 import Post from "./Post.astro";
 import type { MarkdownInstance } from 'astro';
-
 interface FrontmatterType {
     description: string;
     slug: string;
@@ -9,14 +8,12 @@ interface FrontmatterType {
     tags: string[];
     date: string;
 }
-
 const posts = await Astro.glob<FrontmatterType>("../posts/*.md");
-const sortedPosts = posts.sort((a, b) => 
+const sortedPosts = posts.sort((a, b) =>
     new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf()
 );
 const featuredPosts = sortedPosts.slice(0, 3);
 ---
-
 <section>
     {
         featuredPosts.map((post) => (
@@ -30,7 +27,6 @@ const featuredPosts = sortedPosts.slice(0, 3);
         ))
     }
 </section>
-
 <style>
     section {
         padding: 1rem;
