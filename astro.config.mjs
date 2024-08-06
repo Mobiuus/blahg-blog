@@ -20,13 +20,6 @@ export default defineConfig({
     },
   },
   vite: {
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: `@import "src/style/global.css"; @import "src/style/font.css";`
-        }
-      }
-    },
     ssr: {
       noExternal: ['@chakra-ui/react', '@emotion/react']
     }
