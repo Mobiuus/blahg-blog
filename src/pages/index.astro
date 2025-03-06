@@ -38,16 +38,6 @@ const allTags = [...new Set(allPosts.flatMap(post => post.frontmatter.tags || []
         </ul>
         <a href="/posts">View all posts</a>
       </section>
-      <section class="tags">
-        <h2>View posts by tag</h2>
-        <ul>
-          {allTags.map((tag) => (
-            <li>
-              <a href={`/tag/${tag}`}>{tag}</a>
-            </li>
-          ))}
-        </ul>
-      </section>
     </main>
     <Footer />
     <ColorScript />
