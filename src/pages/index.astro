@@ -4,13 +4,6 @@ import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import ColorScript from "../components/ColorScript.astro";
 import { Content as AboutContent } from './about.md';
-// Get the most recent posts
-const allPosts = await Astro.glob('../posts/*.md');
-const recentPosts = allPosts
-  .sort((a, b) => new Date(b.frontmatter.pubDate).valueOf() - new Date(a.frontmatter.pubDate).valueOf())
-  .slice(0, 3);
-// Get all unique tags
-const allTags = [...new Set(allPosts.flatMap(post => post.frontmatter.tags || []))];
 ---
 <html lang="en">
   <head>
@@ -23,20 +16,6 @@ const allTags = [...new Set(allPosts.flatMap(post => post.frontmatter.tags || []
     <main>
       <section class="intro">
         <AboutContent />
-      </section>
-      <section class="recent-posts">
-        <h2>Here's my most recent posts</h2>
-        <ul>
-          {recentPosts.map((post) => (
-            <li>
-              <a href={`/post/${post.frontmatter.slug}`}>
-                {post.frontmatter.emoji} {post.frontmatter.title}
-                <span class="post-date">{new Date(post.frontmatter.pubDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-        <a href="/posts">View all posts</a>
       </section>
     </main>
     <Footer />
@@ -63,20 +42,5 @@ const allTags = [...new Set(allPosts.flatMap(post => post.frontmatter.tags || []
     display: block;
     margin-top: 0.5em;
     font-style: italic;
-  }
-  .recent-posts h2, .tags h2 {
-    text-align: center;
-    font-size: 1.2em;
-  }
-  .recent-posts ul, .tags ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  .recent-posts li, .tags li {
-    margin-bottom: 0.5rem;
-  }
-  .post-date {
-    font-size: 0.8em;
-    color: #666;
   }
 </style>

@@ -1,17 +1,11 @@
 ---
 import Layout from "../components/Layout.astro";
-import Tags from "../components/Tags.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
-import getTags from "../scripts/getTags";
-
-const posts = await Astro.glob("../posts/*.md");
-const tags = getTags(posts);
 ---
 
 <Layout title={`404: Not Found | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
   <main>
     <h1>404: Page not found</h1>
     <p>Sorry, the page you are looking for doesn't exist.</p>
-    <Tags tags={tags} all />
   </main>
 </Layout>
