@@ -29,6 +29,7 @@ type Props = {
 };
 
 const { frontmatter, Content } = Astro.props;
+const isPresentationPost = frontmatter.slug === 'presentation';
 
 if (!frontmatter) {
   return Astro.redirect('/404');
@@ -36,7 +37,7 @@ if (!frontmatter) {
 ---
 <Layout title={frontmatter.title} description={frontmatter.description}>
   <ChakraProviderWrapper client:only="react">
-    <BlogPost content={frontmatter}>
+    <BlogPost content={frontmatter} removeTitleDisplay={isPresentationPost}>
       <Content />
     </BlogPost>
   </ChakraProviderWrapper>

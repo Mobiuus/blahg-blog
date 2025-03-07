@@ -17,6 +17,8 @@ added: 2025-03-07
     width: 100%;
     padding-top: 56.25%; /* 16:9 Aspect Ratio */
     overflow: hidden;
+    margin-left: -15%;
+    width: 130%;
   }
   .presentation-container iframe {
     position: absolute;
@@ -26,5 +28,13 @@ added: 2025-03-07
     right: 0;
     width: 100%;
     height: 100%;
+  }
+  
+  /* This ensures the wider container doesn't create horizontal scrolling on small screens */
+  @media (max-width: 900px) {
+    .presentation-container {
+      margin-left: 0;
+      width: 100%;
+    }
   }
 </style>
