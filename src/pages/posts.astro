@@ -5,7 +5,7 @@ import Footer from "../components/Footer.astro";
 import Layout from "../components/Layout.astro";
 
 const posts = await Astro.glob('../posts/*.md');
-const sortedPosts = posts.sort((a, b) => new Date(b.frontmatter.pubDate).valueOf() - new Date(a.frontmatter.pubDate).valueOf());
+const sortedPosts = posts.sort((a, b) => new Date(b.frontmatter.added || new Date()).valueOf() - new Date(a.frontmatter.added || new Date()).valueOf());
 ---
 <Layout title="All Posts" description="All blog posts">
   <main>
@@ -15,7 +15,9 @@ const sortedPosts = posts.sort((a, b) => new Date(b.frontmatter.pubDate).valueOf
           <li>
             <a href={`/post/${post.frontmatter.slug}`}>
               {post.frontmatter.emoji} {post.frontmatter.title}
-              <span class="post-date">{new Date(post.frontmatter.pubDate).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}</span>
+              <span class="post-date">
+                {new Date(post.frontmatter.added).toLocaleDateString('en-US', {year: 'numeric', month: 'short', day: 'numeric'})}
+              </span>
             </a>
           </li>
         ))}

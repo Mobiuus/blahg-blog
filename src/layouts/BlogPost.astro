@@ -1,8 +1,5 @@
 ---
 import Tags from "../components/Tags.astro";
-import getTags from "../scripts/getTags";
-const posts = await Astro.glob("../posts/*.md");
-const allTags = getTags(posts);
 const { content } = Astro.props;
 const { title, description, added, updated, tags, heroImage } = content;
 const formattedAdded = added ? new Date(added).toLocaleDateString("en-us", {
@@ -16,7 +13,7 @@ const formattedUpdated = updated ? new Date(updated).toLocaleDateString("en-us",
     day: "numeric",
 }) : null;
 ---
-<article>
+<article class="blog-article">
   {heroImage && <img width={720} height={360} src={heroImage} alt="" />}
   <h1 class="article-title">{title}</h1>
   {formattedUpdated ? (
@@ -24,10 +21,26 @@ const formattedUpdated = updated ? new Date(updated).toLocaleDateString("en-us",
   ) : (
     <span>{formattedAdded && <time>{formattedAdded}</time>}</span>
   )}
-  <Tags tags={tags} />
+  {tags && tags.length > 0 && <Tags tags={tags} />}
   <hr />
   <div class="blog-post">
     <slot />
   </div>
 </article>
-<Tags tags={allTags} all />
+
+<style>
+  .blog-article {
+    max-width: 90%;
+    margin: 0 auto;
+  }
+  .article-title {
+    font-size: 2em;
+    margin: 0.25em 0;
+  }
+  .blog-post {
+    font-size: clamp(1rem, 0.96rem + 0.22vw, 1.125rem);
+  }
+  .blog-post > * + * {
+    margin-block-start: 1em;
+  }
+</style>
