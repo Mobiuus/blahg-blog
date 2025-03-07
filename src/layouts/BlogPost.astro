@@ -1,7 +1,7 @@
 ---
 import Tags from "../components/Tags.astro";
 const { content, removeTitleDisplay = false } = Astro.props;
-const { title, description, added, updated, tags, heroImage } = content;
+const { title, description, added, updated, tags, heroImage, slug } = content;
 const formattedAdded = added ? new Date(added).toLocaleDateString("en-us", {
     year: "numeric",
     month: "short",
@@ -12,8 +12,10 @@ const formattedUpdated = updated ? new Date(updated).toLocaleDateString("en-us",
     month: "short",
     day: "numeric",
 }) : null;
+
+const isPresentationPage = slug === 'presentation';
 ---
-<article class="blog-article">
+<article class={`blog-article ${isPresentationPage ? 'presentation-page' : ''}`}>
   {heroImage && <img width={720} height={360} src={heroImage} alt="" />}
   {!removeTitleDisplay && (
     <>
@@ -37,6 +39,14 @@ const formattedUpdated = updated ? new Date(updated).toLocaleDateString("en-us",
     max-width: 90%;
     margin: 0 auto;
   }
+  
+  /* Special styling for presentation page */
+  .blog-article.presentation-page {
+    max-width: 100%;
+    width: 100%;
+    overflow-x: hidden;
+  }
+  
   .article-title {
     font-size: 2em;
     margin: 0.25em 0;
