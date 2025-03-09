@@ -31,7 +31,7 @@ export const books: Book[] = [
     date: "January 1, 1938",
     rating: 10,
     coverImage: "https://m.media-amazon.com/images/I/71PFN2L54OL._SL1500_.jpg",
-    spineColor: "CB103B",
+    spineColor: "#CB103B",
     textColor: "#FFF",
     summary: ""
   },
