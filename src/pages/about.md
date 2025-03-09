@@ -17,6 +17,7 @@
 </style>
 
 <blockquote>
+    <h3>Urgency of Near-Term Integrated Climate Action</h3>
     "The choices and actions implemented in this decade will have impacts now and for thousands of years (high confidence)."
     <cite>IPCC, AR6, 2023, Summary for Policymakers</cite>
 </blockquote>
