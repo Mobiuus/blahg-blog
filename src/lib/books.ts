@@ -25,6 +25,17 @@ export const books: Book[] = [
     summary: ""
   },
   {
+    slug: "Magellan",
+    title: "Magellan",
+    author: "Stefan Sweig",
+    date: "January 1, 1938",
+    rating: 10,
+    coverImage: "https://m.media-amazon.com/images/I/71PFN2L54OL._SL1500_.jpg",
+    spineColor: "CB103B",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
     slug: "Décroissances: Regards croisés sur les urgences du temps",
     title: "Décroissances",
     author: "Quatorze penseurs",
@@ -136,6 +147,50 @@ export const books: Book[] = [
     textColor: "#3D656C",
     summary: ""
   },
+  {
+    slug: "Le Brésil, terre d'avenir",
+    title: "Le Brésil, terre d'avenir",
+    author: "Stefan Sweig",
+    date: "January 1, 1941",
+    rating: 8,
+    coverImage: "https://m.media-amazon.com/images/I/71okS9zXyWL._SL1500_.jpg",
+    spineColor: "#95C78A",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Dette : 5 000 ans d'histoire",
+    title: "Dette : 5 000 ans d'histoire",
+    author: "Stefan Sweig",
+    date: "July 12, 2011",
+    rating: 8,
+    coverImage: "https://m.media-amazon.com/images/I/41bNKPzXByL.jpg",
+    spineColor: "#FAE091",
+    textColor: "#D23E3A",
+    summary: ""
+  },
+  {
+    slug: "Homo Domesticus",
+    title: "Homo Domesticus",
+    author: "James C. Scott",
+    date: "January 1, 2017",
+    rating: 10,
+    coverImage: "https://m.media-amazon.com/images/I/618MClX7uLL._SL1216_.jpg",
+    spineColor: "#E6D8BE",
+    textColor: "#000002",
+    summary: ""
+  }, 
+  {
+    slug: "Less is More",
+    title: "Less is More",
+    author: "Jason Hickel",
+    date: "August 13, 2020",
+    rating: 5,
+    coverImage: "https://m.media-amazon.com/images/I/71j0zYJm3cL._SL1500_.jpg",
+    spineColor: "#5FB133",
+    textColor: "#000002",
+    summary: ""
+  },    
 ];
 
 export function getAllBooks(): Book[] {
