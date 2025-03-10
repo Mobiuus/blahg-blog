@@ -287,3 +287,17 @@ body, main {
     max-width: none;
     text-align: center;
   }
+  .main-title.typing-effect {
+    margin: 0 auto;
+    font-family: "iA Writer Mono", monospace;
+}
+.subtitle {
+    opacity: 0;
+    animation: fadeIn 1s ease-in forwards;
+    animation-delay: 2s; 
+}
+
+@keyframes fadeIn {
+    from { opacity: 0 }
+    to { opacity: 1 }
+}
