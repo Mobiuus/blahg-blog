@@ -3,19 +3,19 @@ const today = new Date();
 ---
 <footer>
     <div class="footer-content">
-        <div class="copyright">
-            &copy; 2025 Valentin Courtaud. <a href="https://github.com/cassidoo/blahg">This blog is open source</a>!
-        </div>
-        
         <div class="email-button-container">
             <button id="email-button" class="email-button">
                 <div class="icon">
-                    <svg viewBox="0 0 16 16" width="16" height="16">
-                        <path d="M1.5 2h13a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5zm13 1h-13v.94l6.5 4.48 6.5-4.48V3zm0 1.88-6.5 4.48-6.5-4.48V12h13V4.88z" fill="currentColor"/>
+                    <svg viewBox="0 0 24 24" width="16" height="16">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" fill="currentColor"/>
                     </svg>
                 </div>
                 <span id="button-text">E-Mail Valentin</span>
             </button>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2025 Valentin Courtaud. <a href="https://github.com/cassidoo/blahg">This blog is open source</a>!
         </div>
     </div>
 </footer>
@@ -76,22 +76,29 @@ const today = new Date();
     }
     
     .email-button-container {
-        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
     }
     
     .email-button {
         display: flex;
         align-items: center;
-        padding: 12px 24px 12px 16px;
+        justify-content: center;
+        padding: 8px 24px;
         background-color: var(--background-color);
         color: var(--text-color);
         border-radius: 6px;
         border: 1px solid var(--text-color);
         text-decoration: none;
-        font-size: 14px;
+        font-size: 0.8rem;
         font-weight: 600;
         transition: background-color 0.2s, color 0.2s;
         cursor: pointer;
+        min-width: 200px;
+        height: 32px;
+        white-space: nowrap;
     }
     
     .email-button:hover {
@@ -107,12 +114,12 @@ const today = new Date();
     
     @media (min-width: 768px) {
         .footer-content {
-            flex-direction: row;
-            justify-content: space-between;
+            flex-direction: column;
+            align-items: center;
         }
         
-        .email-button-container {
-            margin-top: 0;
+        .email-button {
+            min-width: 220px;
         }
     }
 </style>
