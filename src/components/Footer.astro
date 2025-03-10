@@ -2,17 +2,117 @@
 const today = new Date();
 ---
 <footer>
-    &copy; 2025 Valentin Courtaud. <a href="https://github.com/cassidoo/blahg">This blog is open source</a>!
+    <div class="footer-content">
+        <div class="copyright">
+            &copy; 2025 Valentin Courtaud. <a href="https://github.com/cassidoo/blahg">This blog is open source</a>!
+        </div>
+        
+        <div class="email-button-container">
+            <button id="email-button" class="email-button">
+                <div class="icon">
+                    <svg viewBox="0 0 16 16" width="16" height="16">
+                        <path d="M1.5 2h13a.5.5 0 0 1 .5.5v10a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5zm13 1h-13v.94l6.5 4.48 6.5-4.48V3zm0 1.88-6.5 4.48-6.5-4.48V12h13V4.88z" fill="currentColor"/>
+                    </svg>
+                </div>
+                <span id="button-text">E-Mail Valentin</span>
+            </button>
+        </div>
+    </div>
 </footer>
+
+<script>
+    // Function to handle the email button click
+    document.addEventListener('DOMContentLoaded', () => {
+        const emailButton = document.getElementById('email-button');
+        const buttonText = document.getElementById('button-text');
+        const emailAddress = 'valentin.courtaud@protonmail.com';
+        
+        if (emailButton) {
+            emailButton.addEventListener('click', async () => {
+                // Copy email to clipboard
+                try {
+                    await navigator.clipboard.writeText(emailAddress);
+                    
+                    // Change button text to "Copied!"
+                    if (buttonText) {
+                        buttonText.textContent = 'Copied!';
+                        
+                        // Reset text after 2 seconds
+                        setTimeout(() => {
+                            buttonText.textContent = 'E-Mail Valentin';
+                        }, 2000);
+                    }
+                    
+                    // Open mail client
+                    window.location.href = `mailto:${emailAddress}`;
+                } catch (err) {
+                    console.error('Failed to copy email: ', err);
+                    // If copy fails, just open the mail client
+                    window.location.href = `mailto:${emailAddress}`;
+                }
+            });
+        }
+    });
+</script>
+
 <style>
     footer {
         padding: 25px;
         text-align: center;
         font-size: 0.8rem;
     }
-    footer a {
+    
+    .footer-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    
+    .copyright a {
         text-decoration: underline;
         text-decoration-thickness: 0.1ex;
         text-underline-offset: 0.1ex;
+    }
+    
+    .email-button-container {
+        margin-top: 10px;
+    }
+    
+    .email-button {
+        display: flex;
+        align-items: center;
+        padding: 12px 24px 12px 16px;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        border-radius: 6px;
+        border: 1px solid var(--text-color);
+        text-decoration: none;
+        font-size: 14px;
+        font-weight: 600;
+        transition: background-color 0.2s, color 0.2s;
+        cursor: pointer;
+    }
+    
+    .email-button:hover {
+        background-color: var(--text-color);
+        color: var(--background-color);
+    }
+    
+    .email-button .icon {
+        margin-right: 8px;
+        display: flex;
+        align-items: center;
+    }
+    
+    @media (min-width: 768px) {
+        .footer-content {
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        
+        .email-button-container {
+            margin-top: 0;
+        }
     }
 </style>
