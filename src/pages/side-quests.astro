@@ -2,8 +2,14 @@
 import Layout from "../components/Layout.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
 
+interface Quest {
+  text: string;
+  status: "doing" | "notdone" | "done";
+  color?: string;
+}
+
 // Définition des quêtes
-const leftColumnQuests = [
+const leftColumnQuests: Quest[] = [
   { text: "Introduction to history of art - Ecole du Louvre", status: "doing", color: "orange" },
   { text: "Learn to sail", status: "notdone" },
   { text: "Living abroad", status: "notdone" },
@@ -11,7 +17,7 @@ const leftColumnQuests = [
   { text: "Read The Brothers Karamazov", status: "notdone" }
 ];
 
-const rightColumnQuests = [
+const rightColumnQuests: Quest[] = [
   { text: "Copenhagen", status: "done" },
   { text: "Berlin", status: "notdone" },
   { text: "Vienne", status: "notdone" },
@@ -91,21 +97,33 @@ const rightColumnQuests = [
     text-decoration: line-through;
   }
   
-  /* Couleurs pour les spans */
+  /* Couleurs pour les spans - style surbrillance */
   span.orange {
-    color: var(--red); /* Utilise la variable --red qui est #e48500 (orange) */
+    color: white;
+    background-color: var(--red);
+    padding: 1px 3px;
+    border-radius: 2px;
   }
   
   span.yellow {
-    color: var(--yellow);
+    color: white;
+    background-color: var(--yellow);
+    padding: 1px 3px;
+    border-radius: 2px;
   }
   
   span.blue {
-    color: var(--blue);
+    color: white;
+    background-color: var(--blue);
+    padding: 1px 3px;
+    border-radius: 2px;
   }
   
   span.green {
-    color: var(--green);
+    color: white;
+    background-color: var(--green);
+    padding: 1px 3px;
+    border-radius: 2px;
   }
   
   /* Responsive */

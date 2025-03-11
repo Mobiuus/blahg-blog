@@ -1,7 +1,7 @@
 <p class="my-text">
-    👋 I'm Valentin, MSc student in finance at Skema BS
+    MiM & MSc Finance student at Skema BS
     Democratizing sustainable finance with <a href="https://www.reboot-asso.com/">re.boot</a>
-    Interested in tech, finance & climate related topics
+    Interested in environemental problems, finance & tech related topics
 </p>
 
 <style>
