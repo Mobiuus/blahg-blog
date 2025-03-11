@@ -1,0 +1,124 @@
+---
+import Layout from "../components/Layout.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
+import ColorScript from '../components/ColorScript.astro';
+
+// Définition des quêtes
+const leftColumnQuests = [
+  { text: "Introduction to history of art - Ecole du Louvre", status: "doing" },
+  { text: "Learn to sail", status: "notdone" },
+  { text: "Living abroad", status: "notdone" },
+  { text: "Sometimes write blog post", status: "doing" },
+  { text: "Read The Brothers Karamazov", status: "notdone" }
+];
+
+const rightColumnQuests = [
+  { text: "Visit Copenhagen", status: "done" },
+  { text: "Visit Berlin", status: "notdone" },
+  { text: "Visit Vienne", status: "notdone" },
+  { text: "Visit Prague", status: "notdone" },
+  { text: "Visit Budapest", status: "notdone" }
+];
+---
+
+<Layout title={`Side Quests | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
+  <main>
+    <div class="side-quests-container">
+      <h1>⚔️ side quests</h1>
+      
+      <div class="quests-content">
+        <div class="quests-column">
+          {leftColumnQuests.map(quest => (
+            <div class={`quest-item status-${quest.status}`}>
+              {quest.status === "done" ? 
+                <del>{quest.text}</del> : 
+                (quest.status === "doing" ? 
+                  <>• <span>{quest.text}</span></> : 
+                  quest.text
+                )
+              }
+            </div>
+          ))}
+        </div>
+        
+        <div class="quests-column">
+          {rightColumnQuests.map(quest => (
+            <div class={`quest-item status-${quest.status}`}>
+              {quest.status === "done" ? 
+                <del>{quest.text}</del> : 
+                (quest.status === "doing" ? 
+                  <>• <span>{quest.text}</span></> : 
+                  quest.text
+                )
+              }
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </main>
+  <ColorScript />
+</Layout>
+
+<style>
+  h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .side-quests-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 0;
+  }
+  
+  .quests-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: space-between;
+  }
+  
+  .quests-column {
+    flex: 1;
+    min-width: 250px;
+  }
+  
+  .quest-item {
+    margin-bottom: 1.5rem;
+    line-height: 1.5;
+  }
+  
+  .status-done {
+    color: #666; /* Même gris que "Here's my most recent posts" */
+    text-decoration: line-through;
+  }
+  
+  .status-doing {
+    color: var(--text-color);
+  }
+  
+  /* Le point pour les éléments en cours */
+  .status-doing {
+    color: #10a2f5; /* Couleur bleue pour le point */
+  }
+  
+  /* Les spans dans les éléments doing auront des couleurs aléatoires via ColorScript */
+  .status-doing span {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  
+  /* Gestion responsive */
+  @media (max-width: 600px) {
+    .quests-content {
+      flex-direction: column;
+    }
+    
+    .quests-column {
+      width: 100%;
+    }
+  }
+</style>
