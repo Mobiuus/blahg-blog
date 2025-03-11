@@ -1,7 +1,6 @@
 ---
 import Layout from "../components/Layout.astro";
 import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
-import ColorScript from '../components/ColorScript.astro';
 
 // Définition des quêtes
 const leftColumnQuests = [
@@ -13,27 +12,28 @@ const leftColumnQuests = [
 ];
 
 const rightColumnQuests = [
-  { text: "Visit Copenhagen", status: "done" },
-  { text: "Visit Berlin", status: "notdone" },
-  { text: "Visit Vienne", status: "notdone" },
-  { text: "Visit Prague", status: "notdone" },
-  { text: "Visit Budapest", status: "notdone" }
+  { text: "Copenhagen", status: "done" },
+  { text: "Berlin", status: "notdone" },
+  { text: "Vienne", status: "notdone" },
+  { text: "Prague", status: "notdone" },
+  { text: "Budapest", status: "notdone" }
 ];
+
+// Couleurs pour les spans
+const colors = ["red", "yellow", "blue", "green"];
 ---
 
 <Layout title={`Side Quests | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
   <main>
     <div class="side-quests-container">
-      <h1>⚔️ side quests</h1>
-      
-      <div class="quests-content">
-        <div class="quests-column">
-          {leftColumnQuests.map(quest => (
+      <div class="quests-columns">
+        <div class="quests-list">
+          {leftColumnQuests.map((quest, index) => (
             <div class={`quest-item status-${quest.status}`}>
               {quest.status === "done" ? 
                 <del>{quest.text}</del> : 
                 (quest.status === "doing" ? 
-                  <>• <span>{quest.text}</span></> : 
+                  <span class={colors[index % colors.length]}>{quest.text}</span> : 
                   quest.text
                 )
               }
@@ -41,13 +41,14 @@ const rightColumnQuests = [
           ))}
         </div>
         
-        <div class="quests-column">
-          {rightColumnQuests.map(quest => (
+        <div class="quests-list">
+          <div class="quest-header">Next train trip:</div>
+          {rightColumnQuests.map((quest, index) => (
             <div class={`quest-item status-${quest.status}`}>
               {quest.status === "done" ? 
                 <del>{quest.text}</del> : 
                 (quest.status === "doing" ? 
-                  <>• <span>{quest.text}</span></> : 
+                  <span class={colors[(index + leftColumnQuests.length) % colors.length]}>{quest.text}</span> : 
                   quest.text
                 )
               }
@@ -57,36 +58,33 @@ const rightColumnQuests = [
       </div>
     </div>
   </main>
-  <ColorScript />
 </Layout>
 
 <style>
-  h1 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    text-align: center;
-  }
-  
   .side-quests-container {
     max-width: 800px;
     margin: 0 auto;
     padding: 2rem 0;
   }
   
-  .quests-content {
-    display: flex;
-    flex-wrap: wrap;
+  .quests-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 2rem;
-    justify-content: space-between;
   }
   
-  .quests-column {
-    flex: 1;
-    min-width: 250px;
+  .quests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .quest-header {
+    margin-bottom: 0.5rem;
+    font-weight: normal;
   }
   
   .quest-item {
-    margin-bottom: 1.5rem;
     line-height: 1.5;
   }
   
@@ -95,30 +93,27 @@ const rightColumnQuests = [
     text-decoration: line-through;
   }
   
-  .status-doing {
-    color: var(--text-color);
+  /* Couleurs pour les spans */
+  span.red {
+    color: var(--red);
   }
   
-  /* Le point pour les éléments en cours */
-  .status-doing {
-    color: #10a2f5; /* Couleur bleue pour le point */
+  span.yellow {
+    color: var(--yellow);
   }
   
-  /* Les spans dans les éléments doing auront des couleurs aléatoires via ColorScript */
-  .status-doing span {
-    text-decoration: underline;
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
+  span.blue {
+    color: var(--blue);
   }
   
-  /* Gestion responsive */
+  span.green {
+    color: var(--green);
+  }
+  
+  /* Responsive */
   @media (max-width: 600px) {
-    .quests-content {
-      flex-direction: column;
-    }
-    
-    .quests-column {
-      width: 100%;
+    .quests-columns {
+      grid-template-columns: 1fr;
     }
   }
 </style>
