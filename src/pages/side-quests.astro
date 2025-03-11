@@ -4,10 +4,10 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
 
 // Définition des quêtes
 const leftColumnQuests = [
-  { text: "Introduction to history of art - Ecole du Louvre", status: "doing" },
+  { text: "Introduction to history of art - Ecole du Louvre", status: "doing", color: "orange" },
   { text: "Learn to sail", status: "notdone" },
   { text: "Living abroad", status: "notdone" },
-  { text: "Sometimes write blog post", status: "doing" },
+  { text: "Sometimes write blog post", status: "doing", color: "green" },
   { text: "Read The Brothers Karamazov", status: "notdone" }
 ];
 
@@ -18,9 +18,6 @@ const rightColumnQuests = [
   { text: "Prague", status: "notdone" },
   { text: "Budapest", status: "notdone" }
 ];
-
-// Couleurs pour les spans
-const colors = ["red", "yellow", "blue", "green"];
 ---
 
 <Layout title={`Side Quests | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
@@ -28,12 +25,12 @@ const colors = ["red", "yellow", "blue", "green"];
     <div class="side-quests-container">
       <div class="quests-columns">
         <div class="quests-list">
-          {leftColumnQuests.map((quest, index) => (
+          {leftColumnQuests.map((quest) => (
             <div class={`quest-item status-${quest.status}`}>
               {quest.status === "done" ? 
                 <del>{quest.text}</del> : 
                 (quest.status === "doing" ? 
-                  <span class={colors[index % colors.length]}>{quest.text}</span> : 
+                  <span class={quest.color || ""}>{quest.text}</span> : 
                   quest.text
                 )
               }
@@ -43,12 +40,12 @@ const colors = ["red", "yellow", "blue", "green"];
         
         <div class="quests-list">
           <div class="quest-header">Next train trip:</div>
-          {rightColumnQuests.map((quest, index) => (
+          {rightColumnQuests.map((quest) => (
             <div class={`quest-item status-${quest.status}`}>
               {quest.status === "done" ? 
                 <del>{quest.text}</del> : 
                 (quest.status === "doing" ? 
-                  <span class={colors[(index + leftColumnQuests.length) % colors.length]}>{quest.text}</span> : 
+                  <span class={quest.color || ""}>{quest.text}</span> : 
                   quest.text
                 )
               }
@@ -71,6 +68,7 @@ const colors = ["red", "yellow", "blue", "green"];
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
+    align-items: start;
   }
   
   .quests-list {
@@ -80,12 +78,12 @@ const colors = ["red", "yellow", "blue", "green"];
   }
   
   .quest-header {
-    margin-bottom: 0.5rem;
-    font-weight: normal;
+    margin-bottom: 0;
   }
   
   .quest-item {
     line-height: 1.5;
+    white-space: nowrap;
   }
   
   .status-done {
@@ -94,8 +92,8 @@ const colors = ["red", "yellow", "blue", "green"];
   }
   
   /* Couleurs pour les spans */
-  span.red {
-    color: var(--red);
+  span.orange {
+    color: var(--red); /* Utilise la variable --red qui est #e48500 (orange) */
   }
   
   span.yellow {
