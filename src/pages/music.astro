@@ -25,6 +25,15 @@ async function fetchTopAlbums(period: string, limit: number = 5): Promise<AlbumD
   }));
 }
 
+async function fetchRegistrationYear(): Promise<number> {
+  const url = `https://ws.audioscrobbler.com/2.0/?method=user.getinfo&user=${LASTFM_USER}&api_key=${LASTFM_API_KEY}&format=json`;
+  const res = await fetch(url);
+  if (!res.ok) return new Date().getFullYear();
+  const data = await res.json();
+  const unixtime = data?.user?.registered?.unixtime;
+  return unixtime ? new Date(unixtime * 1000).getFullYear() : new Date().getFullYear();
+}
+
 function hashString(str: string): number {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -39,13 +48,15 @@ const discColors = ["#ff8477", "#6ad09d", "#b3cdfb", "#ffc700", "#c6b9ff", "#635
 let monthly: AlbumDetails[] = [];
 let yearly: AlbumDetails[] = [];
 let overall: AlbumDetails[] = [];
+let since: number = new Date().getFullYear();
 let error: string | null = null;
 
 try {
-  [monthly, yearly, overall] = await Promise.all([
+  [monthly, yearly, overall, since] = await Promise.all([
     fetchTopAlbums("1month"),
     fetchTopAlbums("12month"),
     fetchTopAlbums("overall"),
+    fetchRegistrationYear(),
   ]);
 } catch (e) {
   error = e instanceof Error ? e.message : "Unknown error";
@@ -61,10 +72,7 @@ const sections = [
 <Layout title={`Music | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
   <main>
     <div class="music-page">
-      <p class="intro">
-        I've been tracking my listening habits on <a href="https://www.last.fm/user/VaKaas" target="_blank" rel="noopener">Last.fm</a>.
-        Here are my most played albums.
-      </p>
+      <p class="intro">Since {since}</p>
 
       {error && <p class="error">Failed to load: {error}</p>}
 
@@ -111,9 +119,12 @@ const sections = [
     padding: 1rem 0 3rem;
   }
 
+  /* Same style as .bookshelf-title */
   .intro {
-    color: var(--gray);
-    margin-bottom: 3rem;
+    text-align: center;
+    font-size: 1.2em;
+    color: #888;
+    margin-bottom: 2rem;
   }
 
   .error {
@@ -124,7 +135,16 @@ const sections = [
     color: var(--gray);
   }
 
+  /* ── Full-bleed carousel section ── */
+  /*
+   * Breaks out of the 70ch body constraint.
+   * margin-left: calc(50% - 50vw + 20px) moves the section to the left
+   * until its left edge aligns with viewport-left + 20px.
+   * width: calc(100vw - 40px) spans the full viewport minus 2×20px edges.
+   */
   .carousel-section {
+    width: calc(100vw - 40px);
+    margin-left: calc(50% - 50vw + 20px);
     margin-bottom: 3rem;
   }
 
@@ -132,32 +152,38 @@ const sections = [
     margin-bottom: 1.25rem;
   }
 
+  /* ── 5-column grid, no scroll on desktop ── */
   .carousel {
-    display: flex;
-    gap: 1.25rem;
-    overflow-x: auto;
-    padding-bottom: 1rem;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
   }
 
-  .carousel::-webkit-scrollbar {
-    height: 4px;
-  }
-
-  .carousel::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .carousel::-webkit-scrollbar-thumb {
-    background: var(--gray);
-    border-radius: 2px;
+  /* ── Mobile: revert to scroll ── */
+  @media (max-width: 600px) {
+    .carousel-section {
+      width: 100vw;
+      margin-left: calc(50% - 50vw);
+      padding: 0 20px;
+      box-sizing: border-box;
+    }
+    .carousel {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 0.5rem;
+    }
+    .album-item {
+      flex-shrink: 0;
+      scroll-snap-align: start;
+      width: 140px;
+    }
+    .carousel::-webkit-scrollbar { height: 3px; }
+    .carousel::-webkit-scrollbar-thumb { background: var(--gray); border-radius: 2px; }
   }
 
   .album-item {
-    flex-shrink: 0;
-    scroll-snap-align: start;
-    width: 160px;
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
@@ -169,7 +195,7 @@ const sections = [
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem 1rem;
+    padding: 1.75rem 1rem;
     overflow: hidden;
   }
 
