@@ -5,104 +5,115 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
 const LASTFM_API_KEY = "e8f7cc2bf5c0782e9f79cc243a7fe496";
 const LASTFM_USER = "VaKaas";
 
-async function fetchTopTracks(period: string, limit: number = 5) {
-  const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=${LASTFM_USER}&api_key=${LASTFM_API_KEY}&period=${period}&limit=${limit}&format=json`;
+interface AlbumDetails {
+  title: string;
+  artist: string;
+  cover: string;
+  playCount: number;
+}
+
+async function fetchTopAlbums(period: string, limit: number = 5): Promise<AlbumDetails[]> {
+  const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${LASTFM_USER}&api_key=${LASTFM_API_KEY}&period=${period}&limit=${limit}&format=json`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Last.fm error: ${res.status}`);
   const data = await res.json();
-  return data.toptracks?.track ?? [];
+  return (data.topalbums?.album ?? []).map((a: any) => ({
+    title: a.name,
+    artist: a.artist.name,
+    cover: a.image?.find((img: any) => img.size === "extralarge")?.["#text"] ?? "",
+    playCount: parseInt(a.playcount, 10) || 0,
+  }));
 }
 
-let monthly: any[] = [];
-let yearly: any[] = [];
-let overall: any[] = [];
+function hashString(str: string): number {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return Math.abs(hash);
+}
+
+const discColors = ["#ff8477", "#6ad09d", "#b3cdfb", "#ffc700", "#c6b9ff", "#635c7f", "#ffc1bb"];
+
+let monthly: AlbumDetails[] = [];
+let yearly: AlbumDetails[] = [];
+let overall: AlbumDetails[] = [];
 let error: string | null = null;
 
 try {
   [monthly, yearly, overall] = await Promise.all([
-    fetchTopTracks("1month"),
-    fetchTopTracks("12month"),
-    fetchTopTracks("overall"),
+    fetchTopAlbums("1month"),
+    fetchTopAlbums("12month"),
+    fetchTopAlbums("overall"),
   ]);
 } catch (e) {
   error = e instanceof Error ? e.message : "Unknown error";
 }
 
 const sections = [
-  { label: "last 30 days", tracks: monthly },
-  { label: "last 365 days", tracks: yearly },
-  { label: "all time", tracks: overall },
+  { label: "Last 30 days", albums: monthly },
+  { label: "Last 365 days", albums: yearly },
+  { label: "All time", albums: overall },
 ];
 ---
 
 <Layout title={`Music | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
   <main>
-    <div class="music-container">
+    <div class="music-page">
       <p class="intro">
-        tracking my listening habits on <a href="https://www.last.fm/user/VaKaas" target="_blank" rel="noopener">last.fm</a>.
+        I've been tracking my listening habits on <a href="https://www.last.fm/user/VaKaas" target="_blank" rel="noopener">Last.fm</a>.
+        Here are my most played albums.
       </p>
 
-      {error && (
-        <p class="error">failed to load: {error}</p>
-      )}
+      {error && <p class="error">Failed to load: {error}</p>}
 
-      {!error && sections.map(({ label, tracks }) => (
-        <div class="section">
+      {!error && sections.map(({ label, albums }) => (
+        <section class="carousel-section">
           <h2>{label}</h2>
-          {tracks.length === 0 ? (
-            <p class="empty">no data yet.</p>
+          {albums.length === 0 ? (
+            <p class="empty">No data yet.</p>
           ) : (
-            <ol>
-              {tracks.map((track: any) => (
-                <li>
-                  <a href={track.url} target="_blank" rel="noopener">
-                    {track.name}
-                  </a>
-                  <span class="artist"> — {track.artist.name}</span>
-                </li>
-              ))}
-            </ol>
+            <div class="carousel">
+              {albums.map((album) => {
+                const colorIndex = hashString(album.title + album.artist) % discColors.length;
+                const discColor = discColors[colorIndex];
+                return (
+                  <div class="album-item">
+                    <div class="album-card">
+                      <div class="album-wrap">
+                        <div
+                          class="album-cover"
+                          style={album.cover ? `background-image: url(${album.cover})` : ""}
+                        />
+                        <div class="disk" style={`--disc-color: ${discColor}`}>
+                          <div class="disk-inside" />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="album-info">
+                      <p class="album-title">{album.title}</p>
+                      <p class="album-artist">{album.artist}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           )}
-        </div>
+        </section>
       ))}
     </div>
   </main>
 </Layout>
 
 <style>
-  .music-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem 0;
+  .music-page {
+    padding: 1rem 0 3rem;
   }
 
   .intro {
     color: var(--gray);
-    margin-bottom: 2.5rem;
-  }
-
-  .section {
-    margin-bottom: 2.5rem;
-  }
-
-  h2 {
-    margin-bottom: 0.75rem;
-  }
-
-  ol {
-    padding-left: 1.5rem;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-  }
-
-  li {
-    line-height: 1.5;
-  }
-
-  .artist {
-    color: var(--gray);
+    margin-bottom: 3rem;
   }
 
   .error {
@@ -111,5 +122,175 @@ const sections = [
 
   .empty {
     color: var(--gray);
+  }
+
+  .carousel-section {
+    margin-bottom: 3rem;
+  }
+
+  .carousel-section h2 {
+    margin-bottom: 1.25rem;
+  }
+
+  .carousel {
+    display: flex;
+    gap: 1.25rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .carousel::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  .carousel::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .carousel::-webkit-scrollbar-thumb {
+    background: var(--gray);
+    border-radius: 2px;
+  }
+
+  .album-item {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    width: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .album-card {
+    background-color: var(--moretransblack);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow: hidden;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .album-card {
+      background-color: var(--moretranswhite);
+    }
+  }
+
+  /* ── Album wrap ── */
+  .album-wrap {
+    --album-size: 120px;
+    --disk-size: 108px;
+    position: relative;
+    width: var(--album-size);
+    height: var(--album-size);
+  }
+
+  .album-cover {
+    position: absolute;
+    z-index: 1;
+    border-radius: 2px;
+    width: var(--album-size);
+    height: var(--album-size);
+    background-size: cover;
+    background-color: var(--gray);
+    transition: all ease-in-out 0.35s;
+    box-shadow:
+      10px 40px 40px -10px #00000030,
+      inset 2px 1px 3px #ffffff60,
+      inset 0 -1px 2px #00000080;
+  }
+
+  .album-item:hover .album-cover {
+    margin-left: -20px;
+    box-shadow:
+      10px 24px 24px -10px #00000030,
+      inset 4px 1px 3px #ffffff60,
+      inset 0 -1px 2px #00000080;
+  }
+
+  .disk {
+    position: absolute;
+    width: var(--disk-size);
+    height: var(--disk-size);
+    border-radius: calc(var(--disk-size) / 2);
+    background: #222;
+    left: 8px;
+    top: 6px;
+    transition: margin cubic-bezier(0.6, -0.28, 0.735, 0.045) 0.4s;
+    animation: rotating 2.5s linear paused infinite;
+    overflow: hidden;
+  }
+
+  .disk::after {
+    box-sizing: border-box;
+    content: "";
+    width: calc(var(--disk-size) / 3);
+    height: calc(var(--disk-size) / 3);
+    border: 16px solid var(--disc-color);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    margin-top: calc(var(--disk-size) / 6 * -1);
+    margin-left: calc(var(--disk-size) / 6 * -1);
+  }
+
+  .disk::before {
+    box-sizing: border-box;
+    content: "";
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: calc(var(--disk-size) - 10px);
+    height: calc(var(--disk-size) - 10px);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    margin-top: calc((var(--disk-size) - 10px) / -2);
+    margin-left: calc((var(--disk-size) - 10px) / -2);
+  }
+
+  .disk-inside {
+    width: calc(var(--disk-size) / 2);
+    height: calc(var(--disk-size) / 2);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    background: rgba(255, 255, 255, 0.15);
+    filter: blur(2px);
+  }
+
+  .album-item:hover .disk {
+    margin-left: 40px;
+    animation-play-state: running;
+    box-shadow: 0px 0px 24px -10px #00000030;
+  }
+
+  @keyframes rotating {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ── Info ── */
+  .album-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .album-title {
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: var(--text-color);
+    line-height: 1.3;
+    margin: 0;
+  }
+
+  .album-artist {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin: 0;
   }
 </style>
