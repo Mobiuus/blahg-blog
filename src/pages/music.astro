@@ -1,0 +1,115 @@
+---
+import Layout from "../components/Layout.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../config";
+
+const LASTFM_API_KEY = "e8f7cc2bf5c0782e9f79cc243a7fe496";
+const LASTFM_USER = "VaKaas";
+
+async function fetchTopTracks(period: string, limit: number = 5) {
+  const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettoptracks&user=${LASTFM_USER}&api_key=${LASTFM_API_KEY}&period=${period}&limit=${limit}&format=json`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`Last.fm error: ${res.status}`);
+  const data = await res.json();
+  return data.toptracks?.track ?? [];
+}
+
+let monthly: any[] = [];
+let yearly: any[] = [];
+let overall: any[] = [];
+let error: string | null = null;
+
+try {
+  [monthly, yearly, overall] = await Promise.all([
+    fetchTopTracks("1month"),
+    fetchTopTracks("12month"),
+    fetchTopTracks("overall"),
+  ]);
+} catch (e) {
+  error = e instanceof Error ? e.message : "Unknown error";
+}
+
+const sections = [
+  { label: "last 30 days", tracks: monthly },
+  { label: "last 365 days", tracks: yearly },
+  { label: "all time", tracks: overall },
+];
+---
+
+<Layout title={`Music | ${SITE_TITLE}`} description={SITE_DESCRIPTION}>
+  <main>
+    <div class="music-container">
+      <p class="intro">
+        tracking my listening habits on <a href="https://www.last.fm/user/VaKaas" target="_blank" rel="noopener">last.fm</a>.
+      </p>
+
+      {error && (
+        <p class="error">failed to load: {error}</p>
+      )}
+
+      {!error && sections.map(({ label, tracks }) => (
+        <div class="section">
+          <h2>{label}</h2>
+          {tracks.length === 0 ? (
+            <p class="empty">no data yet.</p>
+          ) : (
+            <ol>
+              {tracks.map((track: any) => (
+                <li>
+                  <a href={track.url} target="_blank" rel="noopener">
+                    {track.name}
+                  </a>
+                  <span class="artist"> — {track.artist.name}</span>
+                </li>
+              ))}
+            </ol>
+          )}
+        </div>
+      ))}
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .music-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 0;
+  }
+
+  .intro {
+    color: var(--gray);
+    margin-bottom: 2.5rem;
+  }
+
+  .section {
+    margin-bottom: 2.5rem;
+  }
+
+  h2 {
+    margin-bottom: 0.75rem;
+  }
+
+  ol {
+    padding-left: 1.5rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  li {
+    line-height: 1.5;
+  }
+
+  .artist {
+    color: var(--gray);
+  }
+
+  .error {
+    color: var(--red);
+  }
+
+  .empty {
+    color: var(--gray);
+  }
+</style>
