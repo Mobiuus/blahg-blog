@@ -1,0 +1,405 @@
+---
+import Layout from "../components/Layout.astro";
+import { SITE_TITLE } from "../config";
+---
+
+<Layout title={`Trafic | ${SITE_TITLE}`} description="Prochains passages RATP en temps réel">
+  <div class="trafic-page">
+    <div class="trafic-header">
+      <p class="subtitle">temps réel · RATP</p>
+      <button id="refresh-btn" class="refresh-btn" title="Rafraîchir">↺</button>
+    </div>
+
+    <div id="stations-container" class="stations">
+      <div class="loading">
+        <span class="loading-dot">·</span>
+        <span class="loading-dot">·</span>
+        <span class="loading-dot">·</span>
+      </div>
+    </div>
+
+    <p class="last-updated" id="last-updated"></p>
+  </div>
+</Layout>
+
+<script>
+  const API_BASE = "https://api-ratp.pierre-grimaud.fr/v4";
+
+  const LINE_COLORS: Record<string, { bg: string; text: string }> = {
+    "metros-1":  { bg: "#FFBE00", text: "#000" },
+    "metros-3":  { bg: "#837902", text: "#fff" },
+    "metros-8":  { bg: "#C04191", text: "#fff" },
+    "metros-9":  { bg: "#B5A228", text: "#000" },
+    "metros-12": { bg: "#007852", text: "#fff" },
+    "metros-14": { bg: "#68217A", text: "#fff" },
+    "rers-A":    { bg: "#E2231A", text: "#fff" },
+  };
+
+  interface LineConfig {
+    type: string;
+    code: string;
+    label: string;
+  }
+
+  interface StationConfig {
+    name: string;
+    stationKey: string;
+    lines: LineConfig[];
+  }
+
+  const STATIONS: StationConfig[] = [
+    {
+      name: "Madeleine",
+      stationKey: "madeleine",
+      lines: [
+        { type: "metros", code: "8",  label: "8" },
+        { type: "metros", code: "12", label: "12" },
+        { type: "metros", code: "14", label: "14" },
+      ],
+    },
+    {
+      name: "Concorde",
+      stationKey: "concorde",
+      lines: [
+        { type: "metros", code: "1", label: "1" },
+      ],
+    },
+    {
+      name: "Opéra",
+      stationKey: "opera",
+      lines: [
+        { type: "metros", code: "3",  label: "3" },
+        { type: "metros", code: "9",  label: "9" },
+        { type: "rers",   code: "A",  label: "A" },
+      ],
+    },
+  ];
+
+  interface Schedule {
+    message: string;
+    destination: string;
+  }
+
+  async function fetchSchedule(
+    type: string,
+    code: string,
+    station: string,
+    way: string
+  ): Promise<Schedule[]> {
+    try {
+      const url = `${API_BASE}/schedules/${type}/${code}/${station}/${way}`;
+      const res = await fetch(url);
+      if (!res.ok) return [];
+      const data = await res.json();
+      return (data?.result?.schedules ?? []).slice(0, 2);
+    } catch {
+      return [];
+    }
+  }
+
+  function formatTime(message: string): string {
+    if (!message) return "—";
+    // "Train à l'approche" → "approche"
+    if (message.toLowerCase().includes("approche")) return "à l'approche";
+    if (message.toLowerCase().includes("terminus")) return "terminus";
+    return message;
+  }
+
+  function renderScheduleRow(schedule: Schedule, isFirst: boolean): string {
+    const time = formatTime(schedule.message);
+    const isUrgent = time.includes("approche") || time === "0 mn" || time === "1 mn";
+    return `
+      <div class="schedule-row ${isFirst ? "schedule-first" : ""}">
+        <span class="schedule-dest">${schedule.destination || "—"}</span>
+        <span class="schedule-time ${isUrgent ? "urgent" : ""}">${time}</span>
+      </div>`;
+  }
+
+  function renderLineCard(
+    line: LineConfig,
+    schedA: Schedule[],
+    schedR: Schedule[]
+  ): string {
+    const colorKey = `${line.type}-${line.code}`;
+    const color = LINE_COLORS[colorKey] ?? { bg: "#888", text: "#fff" };
+    const badge = `<span class="line-badge" style="background:${color.bg};color:${color.text}">${line.label}</span>`;
+
+    const dirA = schedA.length
+      ? schedA.map((s, i) => renderScheduleRow(s, i === 0)).join("")
+      : `<div class="schedule-row"><span class="schedule-dest no-data">aucun passage</span></div>`;
+
+    const dirR = schedR.length
+      ? schedR.map((s, i) => renderScheduleRow(s, i === 0)).join("")
+      : `<div class="schedule-row"><span class="schedule-dest no-data">aucun passage</span></div>`;
+
+    return `
+      <div class="line-card">
+        <div class="line-header">
+          ${badge}
+          <div class="directions">
+            <div class="direction">
+              <span class="dir-label">→</span>
+              <div class="schedules">${dirA}</div>
+            </div>
+            <div class="direction">
+              <span class="dir-label">←</span>
+              <div class="schedules">${dirR}</div>
+            </div>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  async function loadAll() {
+    const container = document.getElementById("stations-container");
+    const lastUpdated = document.getElementById("last-updated");
+    if (!container) return;
+
+    // Fetch all schedules in parallel
+    const allFetches = STATIONS.map((station) =>
+      Promise.all(
+        station.lines.flatMap((line) => [
+          fetchSchedule(line.type, line.code, station.stationKey, "A"),
+          fetchSchedule(line.type, line.code, station.stationKey, "R"),
+        ])
+      )
+    );
+
+    const results = await Promise.all(allFetches);
+
+    const html = STATIONS.map((station, si) => {
+      const lineResults = results[si];
+      const lineCards = station.lines.map((line, li) => {
+        const schedA = lineResults[li * 2];
+        const schedR = lineResults[li * 2 + 1];
+        return renderLineCard(line, schedA, schedR);
+      }).join("");
+
+      return `
+        <section class="station">
+          <h2 class="station-name">
+            <span class="station-dot">◎</span>
+            ${station.name}
+          </h2>
+          <div class="line-cards">${lineCards}</div>
+        </section>`;
+    }).join("");
+
+    container.innerHTML = html;
+
+    if (lastUpdated) {
+      const now = new Date();
+      lastUpdated.textContent = `mis à jour à ${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+    }
+  }
+
+  // Initial load
+  loadAll();
+
+  // Auto-refresh every 60s
+  let intervalId = setInterval(loadAll, 60_000);
+
+  // Manual refresh
+  document.getElementById("refresh-btn")?.addEventListener("click", () => {
+    clearInterval(intervalId);
+    loadAll();
+    intervalId = setInterval(loadAll, 60_000);
+  });
+</script>
+
+<style>
+  .trafic-page {
+    padding: 1rem 0 3rem;
+    max-width: 70ch;
+  }
+
+  .trafic-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+  }
+
+  .subtitle {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .refresh-btn {
+    background: none;
+    border: 1px solid var(--gray);
+    color: var(--gray);
+    border-radius: 4px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  .refresh-btn:hover {
+    color: var(--text-color);
+    border-color: var(--text-color);
+  }
+
+  /* Loading dots */
+  .loading {
+    display: flex;
+    gap: 4px;
+    color: var(--gray);
+    font-size: 2rem;
+    padding: 2rem 0;
+  }
+
+  .loading-dot {
+    animation: pulse 1.2s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.2; }
+    50% { opacity: 1; }
+  }
+
+  /* Stations */
+  .stations {
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+
+  .station-name {
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0 0 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .station-dot {
+    color: var(--gray);
+    font-size: 0.85rem;
+  }
+
+  .line-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Line card */
+  .line-card {
+    border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    background: color-mix(in srgb, var(--text-color) 3%, transparent);
+  }
+
+  .line-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* Line badge */
+  .line-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 0.4rem;
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+    letter-spacing: -0.02em;
+  }
+
+  /* Directions */
+  .directions {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .direction {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+
+  .dir-label {
+    color: var(--gray);
+    font-size: 0.85rem;
+    width: 1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .schedules {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .schedule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    font-size: 0.85rem;
+    color: color-mix(in srgb, var(--text-color) 70%, transparent);
+  }
+
+  .schedule-row.schedule-first {
+    color: var(--text-color);
+  }
+
+  .schedule-dest {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+  }
+
+  .schedule-dest.no-data {
+    color: var(--gray);
+    font-style: italic;
+  }
+
+  .schedule-time {
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .schedule-time.urgent {
+    color: var(--green);
+    font-weight: bold;
+  }
+
+  /* Last updated */
+  .last-updated {
+    margin-top: 2rem;
+    color: var(--gray);
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 600px) {
+    .line-badge {
+      min-width: 1.75rem;
+      height: 1.75rem;
+      font-size: 0.8rem;
+    }
+  }
+</style>
