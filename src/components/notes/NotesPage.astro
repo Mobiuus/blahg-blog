@@ -1,6 +1,7 @@
 ---
 import type { CategoryInfo, Note, NoteSort } from "@/lib/notes";
 import { formatDisplayDate, slugify } from "@/lib/notes";
+import { colors } from "./utils/colors";
 
 interface Props {
   notes: Note[];
@@ -17,7 +18,13 @@ const sortOptions: { label: string; value: NoteSort }[] = [
   { label: "Alphabetical", value: "alphabetical" },
 ];
 
-const totalNotes = categories.reduce((sum, category) => sum + category.count, 0);
+const totalNotes = categories.reduce((sum, cat) => sum + cat.count, 0);
+
+// Map category slug -> color index (categories already sorted by count desc)
+const categoryColorMap: Record<string, number> = {};
+categories.forEach((cat, index) => {
+  categoryColorMap[cat.slug] = index;
+});
 
 const buildCategoryHref = (categorySlug?: string) => {
   if (!categorySlug) {
@@ -27,7 +34,45 @@ const buildCategoryHref = (categorySlug?: string) => {
     ? `/notes/${categorySlug}`
     : `/notes/${categorySlug}/sort/${selectedSort}`;
 };
+
+interface CardStyle {
+  bgColor: string;
+  transform: string;
+  descTransform: string;
+  alignment: string;
+  shadowDir: "right" | "left";
+}
+
+const cardStyles: CardStyle[] = notes.map((note) => {
+  const colorIndex = categoryColorMap[slugify(note.thema)] ?? 0;
+  const bgColor = colors[colorIndex % colors.length];
+  const rotation = Math.floor(Math.random() * 5) - 2; // -2 to +2
+  const ty = Math.floor(Math.random() * 8);
+  const tx = Math.floor(Math.random() * 8);
+  const dr = Math.floor(Math.random() * 5) - 2;
+  const dty = Math.floor(Math.random() * 13) - 6;
+  const dtx = Math.floor(Math.random() * 13) - 6;
+  const alignOptions = ["self-start", "self-center", "self-end"] as const;
+  const alignment = alignOptions[Math.floor(Math.random() * 3)];
+  return {
+    bgColor,
+    transform: `translateY(${ty}px) translateX(${tx}px) rotate(${rotation}deg)`,
+    descTransform: `translateY(${dty}px) translateX(${dtx}px) rotate(${dr}deg)`,
+    alignment,
+    shadowDir: rotation >= 0 ? "right" : "left",
+  };
+});
 ---
+
+<!-- SVG distortion filter (hidden) -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden;" aria-hidden="true">
+  <defs>
+    <filter id="notes-distort">
+      <feTurbulence baseFrequency="0.5 0.5" numOctaves="1"></feTurbulence>
+      <feDisplacementMap in="SourceGraphic" scale="2"></feDisplacementMap>
+    </filter>
+  </defs>
+</svg>
 
 <section class="notes-hero">
   <h1>Notes</h1>
@@ -39,64 +84,89 @@ const buildCategoryHref = (categorySlug?: string) => {
 
 <section class="notes-controls">
   <div>
-    <h2>Topics</h2>
+    <div class="topics-label">Topics</div>
     <div class="chip-list">
-      <a
-        href={buildCategoryHref()}
-        class:list={["chip", !selectedCategory && "active"]}
-      >
-        All <span>{totalNotes}</span>
+      <a href={buildCategoryHref()} class:list={["chip", !selectedCategory && "active"]}>
+        <span class="chip-dot" style="background-color: var(--text-color);"></span>
+        All <span class="chip-count">{totalNotes}</span>
       </a>
-      {
-        categories.map((category) => (
-          <a
-            href={buildCategoryHref(category.slug)}
-            class:list={["chip", selectedCategory === category.slug && "active"]}
-          >
-            {category.name} <span>{category.count}</span>
-          </a>
-        ))
-      }
+      {categories.map((cat, i) => (
+        <a
+          href={buildCategoryHref(cat.slug)}
+          class:list={["chip", selectedCategory === cat.slug && "active"]}
+        >
+          <span class="chip-dot" style={`background-color: ${colors[i % colors.length]};`}></span>
+          {cat.name} <span class="chip-count">{cat.count}</span>
+        </a>
+      ))}
     </div>
   </div>
   <div class="sort-box">
     <label for="sort">Sort</label>
     <select id="sort" name="sort" data-current-category={selectedCategory || ""}>
-      {
-        sortOptions.map((option) => (
-          <option value={option.value} selected={selectedSort === option.value}>
-            {option.label}
-          </option>
-        ))
-      }
+      {sortOptions.map((opt) => (
+        <option value={opt.value} selected={selectedSort === opt.value}>{opt.label}</option>
+      ))}
     </select>
   </div>
 </section>
 
-{
-  notes.length > 0 ? (
-    <section class="notes-grid">
-      {notes.map((note) => (
-        <article class="note-card">
-          <a href={`/notes/${slugify(note.thema)}/${note.slug}`}>
-            <div class="topic">{note.thema}</div>
-            <h3>{note.title}</h3>
-            {note.description && <p>{note.description}</p>}
-            <div class="dates">
-              <span>Created: {formatDisplayDate(note.created)}</span>
-              {note.edited && <span>Edited: {formatDisplayDate(note.edited)}</span>}
+{notes.length > 0 ? (
+  <div class="notes-grid-outer">
+    <div class="notes-grid">
+      {notes.map((note, i) => {
+        const s = cardStyles[i];
+        return (
+          <div
+            class="card-wrapper"
+            style={`align-self: ${s.alignment}; transform: ${s.transform};`}
+          >
+            <div class:list={["card-shadow", s.shadowDir === "right" ? "shadow-r" : "shadow-l"]}>
+              <a
+                href={`/notes/${slugify(note.thema)}/${note.slug}`}
+                class="card"
+                style={`background-color: ${s.bgColor};`}
+              >
+                <div class="card-texture"></div>
+                <div class="card-inner">
+                  <div>
+                    <span class="topic-pill">{note.thema}</span>
+                    <h3 class="card-title">{note.title}</h3>
+                  </div>
+                  {note.description && (
+                    <>
+                      <div class="card-divider"></div>
+                      <div style="filter: url(#notes-distort);">
+                        <p
+                          class="card-desc"
+                          style={`transform: ${s.descTransform}; opacity: 0.9;`}
+                        >
+                          {note.description}
+                        </p>
+                      </div>
+                    </>
+                  )}
+                  <div class="card-divider"></div>
+                  <div class="card-dates">
+                    <p><span class="date-label">created:</span> {formatDisplayDate(note.created)}</p>
+                    {note.edited && formatDisplayDate(note.edited) !== formatDisplayDate(note.created) && (
+                      <p><span class="date-label">edited:</span> {formatDisplayDate(note.edited)}</p>
+                    )}
+                  </div>
+                </div>
+              </a>
             </div>
-          </a>
-        </article>
-      ))}
-    </section>
-  ) : (
-    <section class="empty-state">
-      <h3>No notes found</h3>
-      <p>Add markdown files in <code>src/notes</code> to populate this page.</p>
-    </section>
-  )
-}
+          </div>
+        );
+      })}
+    </div>
+  </div>
+) : (
+  <section class="empty-state">
+    <h3>No notes found</h3>
+    <p>Add markdown files in <code>src/notes</code> to populate this page.</p>
+  </section>
+)}
 
 <script>
   const sortSelect = document.querySelector("#sort");
@@ -119,6 +189,7 @@ const buildCategoryHref = (categorySlug?: string) => {
 <style>
   .notes-hero p {
     color: var(--gray);
+    margin-top: 0.4rem;
   }
 
   .notes-controls {
@@ -126,8 +197,13 @@ const buildCategoryHref = (categorySlug?: string) => {
     flex-wrap: wrap;
     gap: 1rem;
     justify-content: space-between;
-    align-items: end;
-    margin-bottom: 1.5rem;
+    align-items: flex-end;
+    margin-bottom: 2.5rem;
+  }
+
+  .topics-label {
+    font-weight: 700;
+    margin-bottom: 0.75rem;
   }
 
   .chip-list {
@@ -138,22 +214,39 @@ const buildCategoryHref = (categorySlug?: string) => {
 
   .chip {
     display: inline-flex;
-    gap: 0.5rem;
     align-items: center;
-    text-decoration: none;
+    gap: 0.4rem;
+    text-decoration: none !important;
     border: 1px solid var(--gray);
-    padding: 0.2rem 0.6rem;
+    padding: 0.2rem 0.65rem;
     border-radius: 999px;
+    font-size: 0.875rem;
+    color: var(--text-color);
+    transition: border-color 0.15s;
   }
 
-  .chip span {
-    font-size: 0.8rem;
-    color: var(--gray);
+  .chip:hover {
+    border-color: var(--text-color);
+    text-decoration: none !important;
+    text-decoration-thickness: unset;
   }
 
   .chip.active {
     border-color: var(--text-color);
     font-weight: 700;
+  }
+
+  .chip-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  .chip-count {
+    font-size: 0.78rem;
+    color: var(--gray);
   }
 
   .sort-box {
@@ -162,56 +255,176 @@ const buildCategoryHref = (categorySlug?: string) => {
     gap: 0.4rem;
   }
 
+  .sort-box label {
+    font-weight: 700;
+  }
+
   .sort-box select {
     border: 1px solid var(--gray);
     background: var(--background-color);
     color: var(--text-color);
     padding: 0.35rem 0.5rem;
+    cursor: pointer;
+  }
+
+  /* Full-bleed grid escape from 70ch body constraint */
+  .notes-grid-outer {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 0 1.25rem;
+    box-sizing: border-box;
   }
 
   .notes-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem 1rem;
+    align-items: start;
+    max-width: 1200px;
+    margin: 0 auto;
   }
 
-  .note-card {
-    border: 1px solid var(--gray);
-    padding: 0.8rem;
+  @media (min-width: 560px) {
+    .notes-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
   }
 
-  .note-card a {
-    text-decoration: none;
+  @media (min-width: 900px) {
+    .notes-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2.5rem 1rem;
+    }
+  }
+
+  /* Card wrapper for transform/alignment */
+  .card-wrapper {
     display: block;
   }
 
-  .note-card .topic {
-    display: inline-block;
-    font-size: 0.8rem;
-    border: 1px solid var(--gray);
-    border-radius: 999px;
-    padding: 0.1rem 0.5rem;
+  /* Corner shadow effect */
+  .card-shadow {
+    position: relative;
   }
 
-  .note-card h3 {
-    margin: 0.8rem 0 0.5rem;
-    text-align: left;
-    color: var(--text-color);
+  .card-shadow.shadow-r::after {
+    z-index: -1;
+    position: absolute;
+    content: "";
+    width: 50%;
+    top: 80%;
+    box-shadow: 0 1em 0.5em rgba(0, 0, 0, 0.13);
+    transform: rotate(3deg);
+    bottom: 16px;
+    right: 0.5em;
   }
 
-  .note-card p {
-    margin: 0;
-    color: var(--gray);
-    font-size: 0.95rem;
+  .card-shadow.shadow-l::before {
+    z-index: -1;
+    position: absolute;
+    content: "";
+    width: 50%;
+    top: 80%;
+    box-shadow: 0 1em 0.5em rgba(0, 0, 0, 0.13);
+    transform: rotate(-3deg);
+    bottom: 16px;
+    left: 0.5em;
   }
 
-  .dates {
-    margin-top: 0.9rem;
+  /* Card link */
+  .card {
+    position: relative;
+    display: block;
+    padding: 8px;
+    text-decoration: none !important;
+    min-height: 280px;
+    transition: filter 0.2s;
+  }
+
+  .card:hover {
+    filter: brightness(0.94);
+    text-decoration: none !important;
+  }
+
+  /* Noise texture overlay */
+  .card-texture {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.5;
+    mix-blend-mode: soft-light;
+    pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 369 369' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  /* Inner card content */
+  .card-inner {
+    height: 100%;
+    min-height: 264px;
     display: flex;
     flex-direction: column;
-    gap: 0.2rem;
-    font-size: 0.8rem;
-    color: var(--gray);
+    justify-content: space-between;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    padding: 0.75rem;
+    color: #000;
+    font-family: "iA Writer Mono", monospace;
+  }
+
+  .topic-pill {
+    display: inline-block;
+    font-size: 11px;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    border-radius: 999px;
+    padding: 2px 8px;
+    margin-bottom: 0.5rem;
+    color: #000;
+  }
+
+  .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #000 !important;
+    text-align: left;
+    margin: 0.2rem 0 0;
+    line-height: 1.3;
+    text-decoration: none;
+  }
+
+  .card-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.2);
+    border: none;
+    margin: 0.65rem 0;
+  }
+
+  .card-desc {
+    font-style: italic;
+    font-size: 0.9rem;
+    line-height: 1.15;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+    color: rgba(0, 0, 0, 0.85);
+  }
+
+  .card-dates {
+    font-size: 11px;
+  }
+
+  .card-dates p {
+    margin: 0 0 2px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+
+  .date-label {
+    display: inline-block;
+    min-width: 56px;
   }
 
   .empty-state {
