@@ -19,7 +19,15 @@ if (!NOTE_SORT_VALUES.includes(selectedSort)) {
   return Astro.redirect("/notes");
 }
 
-const rawNotes = await Astro.glob("../../../notes/*.md");
+const loadRawNotes = async () => {
+  try {
+    return await Astro.glob("../../../notes/*.md");
+  } catch {
+    return [];
+  }
+};
+
+const rawNotes = await loadRawNotes();
 const notes = rawNotes.map(normalizeNote);
 const categories = getCategories(notes);
 const sortedNotes = sortNotes(notes, selectedSort);

@@ -3,7 +3,15 @@ import Layout from "@/components/Layout.astro";
 import NotesPage from "@/components/notes/NotesPage.astro";
 import { getCategories, normalizeNote, sortNotes, type NoteSort } from "@/lib/notes";
 
-const rawNotes = await Astro.glob("../notes/*.md");
+const loadRawNotes = async () => {
+  try {
+    return await Astro.glob("../notes/*.md");
+  } catch {
+    return [];
+  }
+};
+
+const rawNotes = await loadRawNotes();
 const notes = rawNotes.map(normalizeNote);
 const categories = getCategories(notes);
 const selectedSort: NoteSort = "newest";

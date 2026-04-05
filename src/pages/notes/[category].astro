@@ -12,7 +12,13 @@ import {
 } from "@/lib/notes";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const rawNotes = await Astro.glob("../../notes/*.md");
+  const rawNotes = await (async () => {
+    try {
+      return await Astro.glob("../../notes/*.md");
+    } catch {
+      return [];
+    }
+  })();
   const notes = rawNotes.map(normalizeNote);
   const categories = getCategories(notes);
   return categories.map((category) => ({
@@ -23,7 +29,13 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const categorySlug = Astro.params.category || "";
 const selectedSort: NoteSort = "newest";
 
-const rawNotes = await Astro.glob("../../notes/*.md");
+const rawNotes = await (async () => {
+  try {
+    return await Astro.glob("../../notes/*.md");
+  } catch {
+    return [];
+  }
+})();
 const notes = rawNotes.map(normalizeNote);
 const categories = getCategories(notes);
 const categoryName = findCategoryNameBySlug(categories, categorySlug);

@@ -17,8 +17,13 @@ interface Props {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const rawNotes: MarkdownInstance<NoteFrontmatter>[] =
-    await Astro.glob("../../../notes/*.md");
+  const rawNotes: MarkdownInstance<NoteFrontmatter>[] = await (async () => {
+    try {
+      return await Astro.glob("../../../notes/*.md");
+    } catch {
+      return [];
+    }
+  })();
   const normalizedNotes = rawNotes.map(normalizeNote);
 
   return rawNotes.map((rawNote) => {

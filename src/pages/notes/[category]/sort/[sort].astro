@@ -13,7 +13,13 @@ import {
 } from "@/lib/notes";
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const rawNotes = await Astro.glob("../../../../notes/*.md");
+  const rawNotes = await (async () => {
+    try {
+      return await Astro.glob("../../../../notes/*.md");
+    } catch {
+      return [];
+    }
+  })();
   const notes = rawNotes.map(normalizeNote);
   const categories = getCategories(notes);
 
@@ -31,7 +37,13 @@ if (!NOTE_SORT_VALUES.includes(selectedSort)) {
   return Astro.redirect("/notes");
 }
 
-const rawNotes = await Astro.glob("../../../../notes/*.md");
+const rawNotes = await (async () => {
+  try {
+    return await Astro.glob("../../../../notes/*.md");
+  } catch {
+    return [];
+  }
+})();
 const notes = rawNotes.map(normalizeNote);
 const categories = getCategories(notes);
 const categoryName = findCategoryNameBySlug(categories, categorySlug);
