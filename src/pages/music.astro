@@ -12,17 +12,30 @@ interface AlbumDetails {
   playCount: number;
 }
 
-async function fetchTopAlbums(period: string, limit: number = 5): Promise<AlbumDetails[]> {
-  const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${LASTFM_USER}&api_key=${LASTFM_API_KEY}&period=${period}&limit=${limit}&format=json`;
+// Last.fm placeholder returned when an album has no real artwork
+const LASTFM_PLACEHOLDER = "2a96cbd8b46e442fc41c2b86b821562f";
+
+function hasValidCover(url: string): boolean {
+  return url.length > 0 && !url.includes(LASTFM_PLACEHOLDER);
+}
+
+async function fetchTopAlbums(period: string, want: number = 5): Promise<AlbumDetails[]> {
+  // Fetch 3× more than needed so we have enough after filtering missing covers
+  const fetch_limit = want * 3;
+  const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettopalbums&user=${LASTFM_USER}&api_key=${LASTFM_API_KEY}&period=${period}&limit=${fetch_limit}&format=json`;
   const res = await fetch(url);
   if (!res.ok) throw new Error(`Last.fm error: ${res.status}`);
   const data = await res.json();
-  return (data.topalbums?.album ?? []).map((a: any) => ({
+
+  const all: AlbumDetails[] = (data.topalbums?.album ?? []).map((a: any) => ({
     title: a.name,
     artist: a.artist.name,
     cover: a.image?.find((img: any) => img.size === "extralarge")?.["#text"] ?? "",
     playCount: parseInt(a.playcount, 10) || 0,
   }));
+
+  // Keep only albums with a real cover, then take the first `want`
+  return all.filter((a) => hasValidCover(a.cover)).slice(0, want);
 }
 
 async function fetchRegistrationYear(): Promise<number> {
