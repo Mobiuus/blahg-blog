@@ -1,6 +1,12 @@
 import type { MarkdownInstance } from "astro";
 
-export type NoteSort = "newest" | "last-edited" | "alphabetical";
+export const NOTE_SORT_VALUES = [
+  "newest",
+  "last-edited",
+  "alphabetical",
+] as const;
+
+export type NoteSort = (typeof NOTE_SORT_VALUES)[number];
 
 export interface NoteFrontmatter {
   slug?: string;

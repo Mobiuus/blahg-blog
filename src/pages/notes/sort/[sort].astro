@@ -2,16 +2,20 @@
 import type { GetStaticPaths } from "astro";
 import Layout from "@/components/Layout.astro";
 import NotesPage from "@/components/notes/NotesPage.astro";
-import { getCategories, normalizeNote, sortNotes, type NoteSort } from "@/lib/notes";
-
-const sortValues: NoteSort[] = ["newest", "last-edited", "alphabetical"];
+import {
+  NOTE_SORT_VALUES,
+  getCategories,
+  normalizeNote,
+  sortNotes,
+  type NoteSort,
+} from "@/lib/notes";
 
 export const getStaticPaths: GetStaticPaths = async () =>
-  sortValues.map((sort) => ({ params: { sort } }));
+  NOTE_SORT_VALUES.map((sort) => ({ params: { sort } }));
 
 const selectedSort = Astro.params.sort as NoteSort;
 
-if (!sortValues.includes(selectedSort)) {
+if (!NOTE_SORT_VALUES.includes(selectedSort)) {
   return Astro.redirect("/notes");
 }
 

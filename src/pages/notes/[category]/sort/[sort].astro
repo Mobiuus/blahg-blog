@@ -3,6 +3,7 @@ import type { GetStaticPaths } from "astro";
 import Layout from "@/components/Layout.astro";
 import NotesPage from "@/components/notes/NotesPage.astro";
 import {
+  NOTE_SORT_VALUES,
   findCategoryNameBySlug,
   getCategories,
   normalizeNote,
@@ -11,15 +12,13 @@ import {
   type NoteSort,
 } from "@/lib/notes";
 
-const sortValues: NoteSort[] = ["newest", "last-edited", "alphabetical"];
-
 export const getStaticPaths: GetStaticPaths = async () => {
   const rawNotes = await Astro.glob("../../../../notes/*.md");
   const notes = rawNotes.map(normalizeNote);
   const categories = getCategories(notes);
 
   return categories.flatMap((category) =>
-    sortValues.map((sort) => ({
+    NOTE_SORT_VALUES.map((sort) => ({
       params: { category: category.slug, sort },
     })),
   );
@@ -28,7 +27,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 const categorySlug = Astro.params.category || "";
 const selectedSort = Astro.params.sort as NoteSort;
 
-if (!sortValues.includes(selectedSort)) {
+if (!NOTE_SORT_VALUES.includes(selectedSort)) {
   return Astro.redirect("/notes");
 }
 
