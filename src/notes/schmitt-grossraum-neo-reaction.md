@@ -1,7 +1,7 @@
 ---
 slug: carl-schmitt
 title: Carl Schmitt
-description: Notes sur Schmitt, le Grossraum, le Lebensraum et leur reactivation dans certains courants contemporains.
+description: Schmitt et sa réactivation dans certains courants contemporains.
 thema: Lumières Sombres
 created: 2026-04-05
 edited: 2026-04-05

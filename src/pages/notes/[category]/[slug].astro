@@ -181,12 +181,13 @@ const showEdited =
 </style>
 
 <style>
-  /* Full-bleed escape from 70ch body constraint */
+  /* Escape 70ch body constraint, constrained to 960px so color stays in card */
   .note-page-outer {
-    width: 100vw;
+    width: min(calc(100vw - 2rem), 960px);
     position: relative;
     left: 50%;
     transform: translateX(-50%);
+    padding-bottom: 2rem;
   }
 
   .back-row {
@@ -219,24 +220,21 @@ const showEdited =
     background: url("data:image/svg+xml,%3Csvg viewBox='0 0 369 369' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
   }
 
-  /* Centered inner wrapper */
+  /* Inner passthrough (no max-width — outer handles it) */
   .note-inner {
     position: relative;
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 0 1rem;
   }
 
   /* Content area with full border */
   .content-box {
     border: 1px solid rgba(0, 0, 0, 0.45);
-    padding: 1.5rem 1.5rem 4rem;
-    margin-top: 8px;
+    padding: 2rem 2rem 4rem;
+    margin: 8px 8px 0;
   }
 
   @media (min-width: 640px) {
     .content-box {
-      padding: 2rem 2.5rem 5rem;
+      padding: 2.5rem 3.5rem 5rem;
     }
   }
 
@@ -314,12 +312,12 @@ const showEdited =
     border-color: rgba(0, 0, 0, 0.25);
   }
 
-  /* Footer: left/right/bottom border (top from content-box) */
+  /* Footer: left/right/bottom border (top shared with content-box) */
   .note-footer {
     border-left: 1px solid rgba(0, 0, 0, 0.45);
     border-right: 1px solid rgba(0, 0, 0, 0.45);
     border-bottom: 1px solid rgba(0, 0, 0, 0.45);
-    margin-bottom: 8px;
+    margin: 0 8px 8px;
   }
 
   .meta-row {
