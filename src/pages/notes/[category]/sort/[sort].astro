@@ -1,0 +1,55 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from "@/components/Layout.astro";
+import NotesPage from "@/components/notes/NotesPage.astro";
+import {
+  findCategoryNameBySlug,
+  getCategories,
+  normalizeNote,
+  slugify,
+  sortNotes,
+  type NoteSort,
+} from "@/lib/notes";
+
+const sortValues: NoteSort[] = ["newest", "last-edited", "alphabetical"];
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const rawNotes = await Astro.glob("../../../../notes/*.md");
+  const notes = rawNotes.map(normalizeNote);
+  const categories = getCategories(notes);
+
+  return categories.flatMap((category) =>
+    sortValues.map((sort) => ({
+      params: { category: category.slug, sort },
+    })),
+  );
+};
+
+const categorySlug = Astro.params.category || "";
+const selectedSort = Astro.params.sort as NoteSort;
+
+if (!sortValues.includes(selectedSort)) {
+  return Astro.redirect("/notes");
+}
+
+const rawNotes = await Astro.glob("../../../../notes/*.md");
+const notes = rawNotes.map(normalizeNote);
+const categories = getCategories(notes);
+const categoryName = findCategoryNameBySlug(categories, categorySlug);
+
+if (!categoryName) {
+  return Astro.redirect("/notes");
+}
+
+const filteredNotes = notes.filter((note) => slugify(note.thema) === categorySlug);
+const sortedNotes = sortNotes(filteredNotes, selectedSort);
+---
+
+<Layout title={`Notes: ${categoryName}`} description="Living notes and ideas in progress">
+  <NotesPage
+    notes={sortedNotes}
+    categories={categories}
+    selectedCategory={categorySlug}
+    selectedSort={selectedSort}
+  />
+</Layout>

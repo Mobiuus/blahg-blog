@@ -1,0 +1,19 @@
+---
+import Layout from "@/components/Layout.astro";
+import NotesPage from "@/components/notes/NotesPage.astro";
+import { getCategories, normalizeNote, sortNotes, type NoteSort } from "@/lib/notes";
+
+const rawNotes = await Astro.glob("../notes/*.md");
+const notes = rawNotes.map(normalizeNote);
+const categories = getCategories(notes);
+const selectedSort: NoteSort = "newest";
+const sortedNotes = sortNotes(notes, selectedSort);
+---
+
+<Layout title="Notes" description="Living notes and ideas in progress">
+  <NotesPage
+    notes={sortedNotes}
+    categories={categories}
+    selectedSort={selectedSort}
+  />
+</Layout>

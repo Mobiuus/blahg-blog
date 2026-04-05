@@ -1,0 +1,131 @@
+---
+import type { GetStaticPaths, MarkdownInstance } from "astro";
+import Layout from "@/components/Layout.astro";
+import {
+  formatDisplayDate,
+  normalizeNote,
+  slugify,
+  sortNotes,
+  type NoteFrontmatter,
+} from "@/lib/notes";
+
+interface Props {
+  note: ReturnType<typeof normalizeNote>;
+  previousNote: ReturnType<typeof normalizeNote> | null;
+  nextNote: ReturnType<typeof normalizeNote> | null;
+  Content: MarkdownInstance<NoteFrontmatter>["Content"];
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const rawNotes: MarkdownInstance<NoteFrontmatter>[] =
+    await Astro.glob("../../../notes/*.md");
+  const normalizedNotes = rawNotes.map(normalizeNote);
+
+  return rawNotes.map((rawNote) => {
+    const currentNote = normalizeNote(rawNote);
+    const categoryNotes = sortNotes(
+      normalizedNotes.filter(
+        (note) => slugify(note.thema) === slugify(currentNote.thema),
+      ),
+      "newest",
+    );
+    const currentIndex = categoryNotes.findIndex(
+      (note) => note.slug === currentNote.slug,
+    );
+
+    return {
+      params: {
+        category: slugify(currentNote.thema),
+        slug: currentNote.slug,
+      },
+      props: {
+        note: currentNote,
+        previousNote: currentIndex > 0 ? categoryNotes[currentIndex - 1] : null,
+        nextNote:
+          currentIndex < categoryNotes.length - 1
+            ? categoryNotes[currentIndex + 1]
+            : null,
+        Content: rawNote.Content,
+      },
+    };
+  });
+};
+
+const { note, previousNote, nextNote, Content } = Astro.props as Props;
+---
+
+<Layout title={note.title} description={note.description}>
+  <article class="note-page">
+    <a href="/notes" class="back-link">Back to notes</a>
+    <h1>{note.title}</h1>
+
+    <div class="meta">
+      <span class="topic">{note.thema}</span>
+      <span>Created: {formatDisplayDate(note.created)}</span>
+      {note.edited && <span>Edited: {formatDisplayDate(note.edited)}</span>}
+    </div>
+
+    <hr />
+
+    <div class="note-content">
+      <Content />
+    </div>
+
+    {(previousNote || nextNote) && (
+      <>
+        <hr />
+        <nav class="pager">
+          {previousNote ? (
+            <a href={`/notes/${slugify(note.thema)}/${previousNote.slug}`}>
+              Previous note
+            </a>
+          ) : (
+            <span />
+          )}
+          {nextNote && (
+            <a href={`/notes/${slugify(note.thema)}/${nextNote.slug}`}>
+              Next note
+            </a>
+          )}
+        </nav>
+      </>
+    )}
+  </article>
+</Layout>
+
+<style>
+  .note-page {
+    max-width: 65ch;
+    margin: 0 auto;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    font-size: 0.9rem;
+    color: var(--gray);
+  }
+
+  .meta .topic {
+    border: 1px solid var(--gray);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .note-content :global(h2),
+  .note-content :global(h3) {
+    color: var(--text-color);
+  }
+
+  .pager {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+</style>

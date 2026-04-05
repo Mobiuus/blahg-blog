@@ -1,0 +1,221 @@
+---
+import type { CategoryInfo, Note, NoteSort } from "@/lib/notes";
+import { formatDisplayDate, slugify } from "@/lib/notes";
+
+interface Props {
+  notes: Note[];
+  categories: CategoryInfo[];
+  selectedCategory?: string;
+  selectedSort: NoteSort;
+}
+
+const { notes, categories, selectedCategory, selectedSort } = Astro.props;
+
+const sortOptions: { label: string; value: NoteSort }[] = [
+  { label: "Newest", value: "newest" },
+  { label: "Last edited", value: "last-edited" },
+  { label: "Alphabetical", value: "alphabetical" },
+];
+
+const totalNotes = categories.reduce((sum, category) => sum + category.count, 0);
+
+const buildCategoryHref = (categorySlug?: string) => {
+  if (!categorySlug) {
+    return selectedSort === "newest" ? "/notes" : `/notes/sort/${selectedSort}`;
+  }
+  return selectedSort === "newest"
+    ? `/notes/${categorySlug}`
+    : `/notes/${categorySlug}/sort/${selectedSort}`;
+};
+---
+
+<section class="notes-hero">
+  <h1>Notes</h1>
+  <p>
+    A living space for ideas in progress. Short thoughts, references, and drafts
+    that keep evolving over time.
+  </p>
+</section>
+
+<section class="notes-controls">
+  <div>
+    <h2>Topics</h2>
+    <div class="chip-list">
+      <a
+        href={buildCategoryHref()}
+        class:list={["chip", !selectedCategory && "active"]}
+      >
+        All <span>{totalNotes}</span>
+      </a>
+      {
+        categories.map((category) => (
+          <a
+            href={buildCategoryHref(category.slug)}
+            class:list={["chip", selectedCategory === category.slug && "active"]}
+          >
+            {category.name} <span>{category.count}</span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+  <div class="sort-box">
+    <label for="sort">Sort</label>
+    <select id="sort" name="sort" data-current-category={selectedCategory || ""}>
+      {
+        sortOptions.map((option) => (
+          <option value={option.value} selected={selectedSort === option.value}>
+            {option.label}
+          </option>
+        ))
+      }
+    </select>
+  </div>
+</section>
+
+{
+  notes.length > 0 ? (
+    <section class="notes-grid">
+      {notes.map((note) => (
+        <article class="note-card">
+          <a href={`/notes/${slugify(note.thema)}/${note.slug}`}>
+            <div class="topic">{note.thema}</div>
+            <h3>{note.title}</h3>
+            {note.description && <p>{note.description}</p>}
+            <div class="dates">
+              <span>Created: {formatDisplayDate(note.created)}</span>
+              {note.edited && <span>Edited: {formatDisplayDate(note.edited)}</span>}
+            </div>
+          </a>
+        </article>
+      ))}
+    </section>
+  ) : (
+    <section class="empty-state">
+      <h3>No notes found</h3>
+      <p>Add markdown files in <code>src/notes</code> to populate this page.</p>
+    </section>
+  )
+}
+
+<script>
+  const sortSelect = document.querySelector("#sort");
+  if (sortSelect instanceof HTMLSelectElement) {
+    sortSelect.addEventListener("change", () => {
+      const selected = sortSelect.value;
+      const category = sortSelect.dataset.currentCategory;
+      if (category) {
+        window.location.href =
+          selected === "newest"
+            ? `/notes/${category}`
+            : `/notes/${category}/sort/${selected}`;
+        return;
+      }
+      window.location.href = selected === "newest" ? "/notes" : `/notes/sort/${selected}`;
+    });
+  }
+</script>
+
+<style>
+  .notes-hero p {
+    color: var(--gray);
+  }
+
+  .notes-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 1.5rem;
+  }
+
+  .chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .chip {
+    display: inline-flex;
+    gap: 0.5rem;
+    align-items: center;
+    text-decoration: none;
+    border: 1px solid var(--gray);
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+  }
+
+  .chip span {
+    font-size: 0.8rem;
+    color: var(--gray);
+  }
+
+  .chip.active {
+    border-color: var(--text-color);
+    font-weight: 700;
+  }
+
+  .sort-box {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .sort-box select {
+    border: 1px solid var(--gray);
+    background: var(--background-color);
+    color: var(--text-color);
+    padding: 0.35rem 0.5rem;
+  }
+
+  .notes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .note-card {
+    border: 1px solid var(--gray);
+    padding: 0.8rem;
+  }
+
+  .note-card a {
+    text-decoration: none;
+    display: block;
+  }
+
+  .note-card .topic {
+    display: inline-block;
+    font-size: 0.8rem;
+    border: 1px solid var(--gray);
+    border-radius: 999px;
+    padding: 0.1rem 0.5rem;
+  }
+
+  .note-card h3 {
+    margin: 0.8rem 0 0.5rem;
+    text-align: left;
+    color: var(--text-color);
+  }
+
+  .note-card p {
+    margin: 0;
+    color: var(--gray);
+    font-size: 0.95rem;
+  }
+
+  .dates {
+    margin-top: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    font-size: 0.8rem;
+    color: var(--gray);
+  }
+
+  .empty-state {
+    border: 1px dashed var(--gray);
+    padding: 1.2rem;
+  }
+</style>

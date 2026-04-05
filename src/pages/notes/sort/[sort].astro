@@ -1,0 +1,30 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from "@/components/Layout.astro";
+import NotesPage from "@/components/notes/NotesPage.astro";
+import { getCategories, normalizeNote, sortNotes, type NoteSort } from "@/lib/notes";
+
+const sortValues: NoteSort[] = ["newest", "last-edited", "alphabetical"];
+
+export const getStaticPaths: GetStaticPaths = async () =>
+  sortValues.map((sort) => ({ params: { sort } }));
+
+const selectedSort = Astro.params.sort as NoteSort;
+
+if (!sortValues.includes(selectedSort)) {
+  return Astro.redirect("/notes");
+}
+
+const rawNotes = await Astro.glob("../../../notes/*.md");
+const notes = rawNotes.map(normalizeNote);
+const categories = getCategories(notes);
+const sortedNotes = sortNotes(notes, selectedSort);
+---
+
+<Layout title="Notes" description="Living notes and ideas in progress">
+  <NotesPage
+    notes={sortedNotes}
+    categories={categories}
+    selectedSort={selectedSort}
+  />
+</Layout>
