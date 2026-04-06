@@ -39,14 +39,14 @@ const isPresentationPage = slug === 'presentation';
     max-width: 90%;
     margin: 0 auto;
   }
-  
-  /* Special styling for presentation page */
-  .blog-article.presentation-page {
-    max-width: 75%;
+
+  :global(.blog-article.presentation-page) {
+    max-width: 65%;
     margin: 0 auto;
     overflow-x: hidden;
   }
-  
+
+
   .article-title {
     font-size: 2em;
     margin: 0.25em 0;

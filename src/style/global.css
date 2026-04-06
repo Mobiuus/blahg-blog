@@ -242,6 +242,7 @@ h3, .tag-title {
     margin: 0.25em 0;
 }
 
+
 .blog-post {
     font-size: clamp(1rem, 0.96rem + 0.22vw, 1.125rem);
 }
