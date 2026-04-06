@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s https://api.github.com/repos/arnoclr/panam/contents/src)",
+      "Bash(python3 -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(d[''''name''''], d[''''type'''']\\) for d in data]\")",
+      "Bash(jq -r \".[] | \"\"\\\\\\(.name\\) \\\\\\(.type\\)\"\"\")",
+      "WebFetch(domain:api-ratp.pierre-grimaud.fr)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(curl -s https://api.github.com/repos/arnoclr/panam/contents/src/components/disruptions)",
+      "Bash(curl -s https://raw.githubusercontent.com/arnoclr/panam/main/src/components/WaitingTime.vue)",
+      "Bash(curl -s https://api.github.com/repos/arnoclr/panam/contents/public)",
+      "Bash(curl -s https://raw.githubusercontent.com/arnoclr/panam/main/src/components/Header.vue)",
+      "Bash(curl -s https://raw.githubusercontent.com/arnoclr/panam/main/src/components/CurrentTime.vue)",
+      "Bash(curl -s https://raw.githubusercontent.com/arnoclr/panam/main/src/components/disruptions/Slider.vue)",
+      "Bash(curl -s https://raw.githubusercontent.com/arnoclr/panam/main/src/components/disruptions/LineIndicator.vue)",
+      "Bash(curl -s https://raw.githubusercontent.com/arnoclr/panam/main/src/services/Wagon.ts)",
+      "Bash(curl -s https://api.github.com/repos/arnoclr/panam/contents/public/templates)",
+      "WebFetch(domain:data.iledefrance-mobilites.fr)",
+      "WebFetch(domain:prim.iledefrance-mobilites.fr)",
+      "Bash(curl -s \"https://data.iledefrance-mobilites.fr/api/explore/v2.1/catalog/datasets/arrets-lignes/records?where=id%3D%22IDFM%3AC01373%22%20AND%20stop_name%20like%20%22Opera%22&limit=20\")",
+      "Bash(curl -s \"https://data.iledefrance-mobilites.fr/api/explore/v2.1/catalog/datasets/arrets-lignes/records?where=id%3D%22IDFM%3AC01373%22%20AND%20stop_name%20like%20%22Op%C3%A9ra%22&limit=20\")",
+      "Bash(curl -s \"https://data.iledefrance-mobilites.fr/api/explore/v2.1/catalog/datasets/arrets-lignes/records?where=id%3D%22IDFM%3AC01379%22%20AND%20stop_name%20like%20%22Havre%22&limit=20\")",
+      "Bash(curl -s \"https://data.iledefrance-mobilites.fr/api/explore/v2.1/catalog/datasets/arrets-lignes/records?where=id%3D%22IDFM%3AC01379%22%20AND%20stop_name%20like%20%22Chauss%C3%A9e%22&limit=20\")",
+      "Bash(curl -s \"https://data.iledefrance-mobilites.fr/api/explore/v2.1/catalog/datasets/arrets-lignes/records?where=id%3D%22IDFM%3AC01742%22%20AND%20stop_name%20like%20%22Auber%22&limit=20\")",
+      "Bash(curl -s -i \"https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=IDFM:22194\")",
+      "Bash(curl -s -i \"https://prim.iledefrance-mobilites.fr/marketplace/stop-monitoring?MonitoringRef=STIF:StopPoint:Q:22194:\")",
+      "Bash(npm run:*)",
+      "Bash(xargs grep:*)",
+      "WebFetch(domain:doc.transport.data.gouv.fr)",
+      "WebFetch(domain:eu.ftp.opendatasoft.com)",
+      "WebFetch(domain:api.github.com)",
+      "WebFetch(domain:gist.github.com)",
+      "WebSearch",
+      "WebFetch(domain:idfm-api.readthedocs.io)",
+      "WebFetch(domain:glama.ai)",
+      "WebFetch(domain:forum.magicmirror.builders)"
+    ]
+  }
+}
