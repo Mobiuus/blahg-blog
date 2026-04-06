@@ -29,11 +29,6 @@ added: 2025-03-07
     height: 100%;
   }
   
-  @media (max-width: 480px) {
-    :global(.blog-article.presentation-page) {
-      padding: 0 1rem;
-    }
-  }
 </style>
 
 <script>
