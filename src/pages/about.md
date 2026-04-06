@@ -1,7 +1,5 @@
 <p class="my-text">
-    MiM & MSc Finance student at Skema BS
-    Democratizing sustainable finance with <a href="https://www.reboot-asso.com/">re.boot</a>
-    Interested in environemental problems, finance & tech related topics
+    Climate, Finance, Tech, Geopolitics and everything in between
 </p>
 
 <style>
