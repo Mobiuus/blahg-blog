@@ -36,11 +36,13 @@ const isPresentationPage = slug === 'presentation';
 
 <style>
   .blog-article {
-    max-width: 90%;
+    max-width: 100%;
     margin: 0 auto;
   }
 
-
+  :global(body:has(.blog-article)) {
+    max-width: 900px;
+  }
 
   .article-title {
     font-size: 2em;
