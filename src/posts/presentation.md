@@ -17,8 +17,7 @@ added: 2025-03-07
     position: relative;
     padding-top: 56.25%; /* 16:9 Aspect Ratio */
     overflow: hidden;
-    margin-left: -50%; /* Much wider margin */
-    width: 200%; /* Double the width to fill most of the screen */
+    width: 100%;
   }
   .presentation-container iframe {
     position: absolute;
@@ -30,11 +29,9 @@ added: 2025-03-07
     height: 100%;
   }
   
-  /* This ensures the wider container doesn't create horizontal scrolling on small screens */
-  @media (max-width: 900px) {
-    .presentation-container {
-      margin-left: 0;
-      width: 100%;
+  @media (max-width: 480px) {
+    :global(.blog-article.presentation-page) {
+      padding: 0 1rem;
     }
   }
 </style>

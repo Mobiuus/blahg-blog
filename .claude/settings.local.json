@@ -35,7 +35,13 @@
       "WebSearch",
       "WebFetch(domain:idfm-api.readthedocs.io)",
       "WebFetch(domain:glama.ai)",
-      "WebFetch(domain:forum.magicmirror.builders)"
+      "WebFetch(domain:forum.magicmirror.builders)",
+      "Bash(ls -d /c/Users/ValentinCOURTAUD/OneDrive*)",
+      "Bash(python -m markitdown \"C:\\\\Users\\\\ValentinCOURTAUD\\\\OneDrive - Colombus Consulting\\\\CV_Valentin_Courtaud_2025-09.pptx\")",
+      "Bash(python scripts/office/unpack.py \"C:\\\\Users\\\\ValentinCOURTAUD\\\\OneDrive - Colombus Consulting\\\\CV_Valentin_Courtaud_2025-09.pptx\" unpacked_cv/)",
+      "Bash(where python3:*)",
+      "Bash(where py:*)",
+      "Bash(py --version)"
     ]
   }
 }
