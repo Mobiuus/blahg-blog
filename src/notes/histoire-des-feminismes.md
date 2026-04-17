@@ -3,8 +3,8 @@ slug: histoire-des-feminismes
 title: Histoire des féminismes
 description: Chronologie des mouvements féministes du XVIIIème siècle à nos jours.
 thema: Histoire
-created: 2026-04-17
-edited: 2026-04-17
+created: 2022-06-01
+edited: 2022-06-01
 ---
 
 ## Chronologie simplifiée

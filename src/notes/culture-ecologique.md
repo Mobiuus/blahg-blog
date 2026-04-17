@@ -2,9 +2,9 @@
 slug: culture-ecologique
 title: Culture écologique
 description: Notes sur Culture écologique de Pierre Charbonnier — modernité, métabolisme industriel, éco-paternalisme et tensions du Sud Global.
-thema: Politique
-created: 2026-04-17
-edited: 2026-04-17
+thema: IPCC
+created: 2024-11-01
+edited: 2024-11-01
 ---
 
 Notes de lecture de *Culture écologique* — Pierre Charbonnier.

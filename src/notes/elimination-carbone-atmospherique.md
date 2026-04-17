@@ -2,9 +2,9 @@
 slug: elimination-carbone-atmospherique
 title: Élimination du carbone atmosphérique
 description: CDR (Carbon Dioxide Removal) — définition, rôles complémentaires, méthodes d'extraction et de séquestration, distinctions CCS/CCU.
-thema: Politique
-created: 2026-04-17
-edited: 2026-04-17
+thema: IPCC
+created: 2022-11-14
+edited: 2022-11-14
 ---
 
 L'**élimination du carbone** (*Carbon Dioxide Removal*, CDR) désigne un ensemble d'activités humaines visant à retirer du CO₂ de l'atmosphère et à le stocker durablement dans des réservoirs géologiques, terrestres ou océaniques, ou dans des produits. Ces pratiques permettent de générer des **émissions négatives**.

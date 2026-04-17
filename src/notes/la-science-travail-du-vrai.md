@@ -3,8 +3,8 @@ slug: la-science-travail-du-vrai
 title: La science ou le travail du vrai
 description: Notes de philosophie des sciences — inductivisme, méthode expérimentale, falsifiabilité, vérité approchée. D'après Bachelard, Popper, Kant, Claude Bernard.
 thema: Philosophie
-created: 2026-04-17
-edited: 2026-04-17
+created: 2021-02-11
+edited: 2021-02-11
 ---
 
 ## I — Théorie et expérience

@@ -2,9 +2,9 @@
 slug: biodiversite
 title: Biodiversité
 description: Définitions — biodiversité, écosystème, services écosystémiques — et les 5 causes de la crise d'extinction.
-thema: Politique
-created: 2026-04-17
-edited: 2026-04-17
+thema: IPCC
+created: 2023-07-25
+edited: 2023-07-25
 ---
 
 > Nous sommes dans la « sixième crise d'extinction, mille fois plus rapide que les crises précédentes ».

@@ -2,9 +2,9 @@
 slug: decroissance
 title: Décroissance
 description: Notes sur l'ouvrage collectif Décroissances — historique, données clés, les 8R de Latouche, et la question de la décroissance comme écologie punitive.
-thema: Politique
-created: 2026-04-17
-edited: 2026-04-17
+thema: Décroissance
+created: 2023-12-07
+edited: 2023-12-07
 ---
 
 Née dans les années 1970 en France au sein de l'écologie politique, la décroissance suggère qu'il est nécessaire d'avoir une contraction des économies (production et consommation) sans faire diminuer le bien-être du plus grand nombre.

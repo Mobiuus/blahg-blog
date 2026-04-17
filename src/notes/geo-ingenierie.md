@@ -2,9 +2,9 @@
 slug: geo-ingenierie
 title: Géo-ingénierie
 description: Définition GIEC et panorama des techniques de géo-ingénierie — retrait de carbone, gestion du rayonnement solaire, contrôle des précipitations.
-thema: Politique
-created: 2026-04-17
-edited: 2026-04-17
+thema: IPCC
+created: 2023-07-25
+edited: 2023-07-25
 ---
 
 > Un vaste ensemble de méthodes et de techniques fonctionnant à grande échelle et qui visent délibérément le système climatique pour lutter contre les effets du changement climatique.

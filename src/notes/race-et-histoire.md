@@ -2,9 +2,9 @@
 slug: race-et-histoire
 title: Race et histoire
 description: Notes sur Race et histoire de Claude Lévi-Strauss — ethnocentrisme, progrès discontinu, histoire cumulative vs stationnaire.
-thema: Philosophie
-created: 2026-04-17
-edited: 2026-04-17
+thema: Anthropologie
+created: 2020-10-10
+edited: 2020-10-10
 ---
 
 Notes de lecture de *Race et histoire* — Claude Lévi-Strauss.

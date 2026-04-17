@@ -3,8 +3,8 @@ slug: de-la-laicite-en-france
 title: De la laïcité en France
 description: Notes sur la loi de 1905, ses principes fondateurs et ses évolutions contemporaines — d'après Patrick Weil.
 thema: Histoire
-created: 2026-04-17
-edited: 2026-04-17
+created: 2022-05-31
+edited: 2022-05-31
 ---
 
 Défendue par *Aristide Briand*, la **loi de 1905** affirme :
