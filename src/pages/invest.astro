@@ -1,0 +1,268 @@
+---
+import Layout from "../components/Layout.astro";
+import { SITE_TITLE } from "../config";
+
+interface Invest {
+  developer: string;
+  platform: string;
+  location: string;
+  type: string;
+  year: number;
+  date: string;
+  duration: string;
+  capacity: string;
+}
+
+const invests: Invest[] = [
+  { developer: "Urba 308", platform: "Lendopolis", location: "Rolampont, Haute-Marne (52)", type: "Solaire PV au sol", year: 2025, date: "04/04/2025", duration: "48 mois", capacity: "5,0 MWc" },
+  { developer: "GDSOL 98", platform: "Lendopolis", location: "Doulaincourt-Saucourt, Haute-Marne (52)", type: "Solaire PV au sol", year: 2025, date: "04/04/2025", duration: "42 mois", capacity: "5,7 MWc" },
+  { developer: "TSE Développement", platform: "Enerfip", location: "Multi-régions, France", type: "Solaire PV au sol (portefeuille)", year: 2025, date: "09/05/2025", duration: "42 mois", capacity: "199,8 MWc" },
+  { developer: "Enkyn", platform: "Enkyn", location: "—", type: "—", year: 2025, date: "15/05/2025", duration: "—", capacity: "n.a." },
+  { developer: "Montbéliard Énergies", platform: "Enerfip", location: "Montbéliard, Doubs (25)", type: "Réseau de chaleur (bois-énergie)", year: 2025, date: "21/05/2025", duration: "36 mois", capacity: "N/A" },
+  { developer: "Solskin 10 (Barconnière)", platform: "Enerfip", location: "Multi-dépts (16, 86, 87, 33, 79)", type: "Solaire PV toiture / hangars agricoles", year: 2025, date: "27/10/2025", duration: "24 mois", capacity: "2,6 MWc" },
+  { developer: "Eco Chaleur du Mantois", platform: "Lendosphère", location: "Mantes-la-Jolie, Yvelines (78)", type: "Réseau de chaleur (extension)", year: 2025, date: "25/11/2025", duration: "36 mois", capacity: "N/A" },
+  { developer: "Centrale PV de Cosne-sur-Loire", platform: "Lendosphère", location: "Cosne-sur-Loire, Nièvre (58)", type: "Solaire PV au sol", year: 2025, date: "25/11/2025", duration: "42 mois", capacity: "N/A (2 centrales)" },
+  { developer: "Agri Italia Power (Energreen)", platform: "Enerfip", location: "Vallermosa & Samassi, Sardaigne (IT)", type: "Agrivoltaïque", year: 2026, date: "03/01/2026", duration: "24 mois", capacity: "3,0 MWc" },
+  { developer: "Combes de la Romaine (Neoen)", platform: "Lendosphère", location: "Haute-Saône (70)", type: "Éolien terrestre (développement)", year: 2026, date: "22/02/2026", duration: "24 mois", capacity: "N/A" },
+  { developer: "LORIS ENR CEE T2", platform: "Enerfip", location: "France (national)", type: "CEE / BFR (non-production)", year: 2026, date: "03/03/2026", duration: "36 mois", capacity: "N/A" },
+  { developer: "Campania Solar T2 (SIG)", platform: "Enerfip", location: "Campanie, Italie", type: "Solaire PV au sol (portefeuille)", year: 2026, date: "07/03/2026", duration: "24 mois", capacity: "137,9 MWc" },
+  { developer: "Solar Reserve T2 (NRG Plus Italia)", platform: "Enerfip", location: "Lombardie, Émilie-Romagne, Pouilles (IT)", type: "PV agrivoltaïque + BESS stockage", year: 2026, date: "07/03/2026", duration: "36 mois", capacity: "~472 MWc" },
+  { developer: "Torrente Solar (Kenergy)", platform: "Lendosphère", location: "Communauté Valencienne, Espagne", type: "Solaire PV au sol (4 centrales)", year: 2026, date: "15/03/2026", duration: "36 mois", capacity: "~205 MWc" },
+  { developer: "Mâcon La Grisière (SMEG)", platform: "Lendosphère", location: "Mâcon, Saône-et-Loire (71)", type: "Solaire PV au sol", year: 2026, date: "18/04/2026", duration: "36 mois", capacity: "5,93 MWc" },
+];
+
+// Most recent first
+const sorted = [...invests].sort((a, b) => {
+  const [da, ma, ya] = a.date.split("/").map(Number);
+  const [db, mb, yb] = b.date.split("/").map(Number);
+  return new Date(yb, mb - 1, db).getTime() - new Date(ya, ma - 1, da).getTime();
+});
+
+// Totals (only numeric MWc)
+const totalMWc = invests.reduce((acc, i) => {
+  const m = i.capacity.match(/([\d.,]+)\s*MWc/);
+  if (!m) return acc;
+  return acc + parseFloat(m[1].replace(",", "."));
+}, 0);
+
+function iconFor(type: string): string {
+  const t = type.toLowerCase();
+  if (t.includes("éolien")) return "🌬️";
+  if (t.includes("chaleur")) return "🔥";
+  if (t.includes("bess") || t.includes("stockage")) return "🔋";
+  if (t.includes("agrivolt")) return "🌾";
+  if (t.includes("cee") || t.includes("bfr")) return "📄";
+  if (t.includes("solaire") || t.includes("pv")) return "☀️";
+  return "⚡";
+}
+---
+
+<Layout title={`Invest | ${SITE_TITLE}`} description="Mes investissements dans les énergies renouvelables">
+  <div class="invest-page">
+    <p class="intro">
+      Mes investissements en crowdfunding ENR (énergies renouvelables) :
+      solaire, éolien, réseaux de chaleur, stockage.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-value">{invests.length}</span>
+        <span class="stat-label">projets</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">{totalMWc.toFixed(1).replace(".", ",")}</span>
+        <span class="stat-label">MWc cumulés*</span>
+      </div>
+    </div>
+
+    <div class="cards">
+      {sorted.map((p) => (
+        <article class="card">
+          <header class="card-head">
+            <span class="card-icon" aria-hidden="true">{iconFor(p.type)}</span>
+            <div class="card-head-text">
+              <h2 class="card-title">{p.developer}</h2>
+              <span class="card-platform">{p.platform}</span>
+            </div>
+            <span class="card-year">{p.year}</span>
+          </header>
+
+          <dl class="card-body">
+            <div class="row">
+              <dt>Lieu</dt>
+              <dd>{p.location}</dd>
+            </div>
+            <div class="row">
+              <dt>Type</dt>
+              <dd>{p.type}</dd>
+            </div>
+            <div class="row">
+              <dt>Capacité</dt>
+              <dd>{p.capacity}</dd>
+            </div>
+            <div class="row">
+              <dt>Durée</dt>
+              <dd>{p.duration}</dd>
+            </div>
+          </dl>
+        </article>
+      ))}
+    </div>
+
+    <p class="footnote">* Somme des capacités exprimées en MWc uniquement (hors projets sans données chiffrées ou non-production).</p>
+  </div>
+</Layout>
+
+<style>
+  .invest-page {
+    padding: 1rem 0 3rem;
+  }
+
+  .intro {
+    color: var(--gray);
+    font-size: 0.9rem;
+    margin: 0 0 1.5rem;
+  }
+
+  .stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .stat {
+    flex: 1;
+    min-width: 120px;
+    background: var(--moretransblack);
+    border-radius: 8px;
+    padding: 0.8rem 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: baseline;
+  }
+  .stat-value {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-color);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label {
+    color: var(--gray);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1rem;
+  }
+
+  .card {
+    border: 1px solid var(--gray);
+    border-radius: 10px;
+    padding: 1rem 1.1rem;
+    background: var(--moretranswhite);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  }
+
+  .card-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+  .card-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .card-head-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .card-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color);
+    line-height: 1.25;
+  }
+  .card-platform {
+    display: inline-block;
+    font-size: 0.7rem;
+    color: var(--gray);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .card-year {
+    font-size: 0.75rem;
+    color: var(--gray);
+    background: var(--moretransblack);
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+
+  .card-body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr;
+    gap: 0.5rem;
+    font-size: 0.82rem;
+    line-height: 1.35;
+  }
+  .row dt {
+    color: var(--gray);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    align-self: center;
+  }
+  .row dd {
+    margin: 0;
+    color: var(--text-color);
+    word-break: break-word;
+  }
+
+  .footnote {
+    margin-top: 2rem;
+    color: var(--gray);
+    font-size: 0.72rem;
+    font-style: italic;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .card {
+      background: var(--moretranswhite);
+    }
+    .stat {
+      background: var(--moretranswhite);
+    }
+    .card-year {
+      background: var(--moretranswhite);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+    .row {
+      grid-template-columns: 5rem 1fr;
+    }
+  }
+</style>

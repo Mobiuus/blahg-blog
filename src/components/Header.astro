@@ -1,5 +1,7 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
+const pathname = Astro.url.pathname;
+const isProjetActive = pathname === "/invest" || pathname === "/trafic";
 ---
 <header>
     <div class="header-section">
@@ -14,12 +16,103 @@ import HeaderLink from "./HeaderLink.astro";
     <HeaderLink href="/bookshelf">books</HeaderLink>
     <HeaderLink href="https://valentin.vc/musee-imaginaire/">musée imaginaire</HeaderLink>
     <HeaderLink href="/music">music</HeaderLink>
-    <HeaderLink href="/trafic">trafic</HeaderLink>
+    <div class="dropdown">
+        <button
+            type="button"
+            class:list={["dropdown-toggle", { active: isProjetActive }]}
+            aria-haspopup="true"
+            aria-expanded="false"
+        >
+            projet <span class="caret" aria-hidden="true">▾</span>
+        </button>
+        <div class="dropdown-menu" role="menu">
+            <HeaderLink href="/invest">invest</HeaderLink>
+            <HeaderLink href="/trafic">trafic</HeaderLink>
+        </div>
+    </div>
 </nav>
+
+<script>
+    // Dropdown toggle (click for mobile/touch, hover via CSS on desktop)
+    const toggles = document.querySelectorAll<HTMLButtonElement>(".dropdown-toggle");
+    toggles.forEach((btn) => {
+        const dropdown = btn.parentElement;
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const open = dropdown?.classList.toggle("open") ?? false;
+            btn.setAttribute("aria-expanded", String(open));
+        });
+    });
+    document.addEventListener("click", () => {
+        document.querySelectorAll(".dropdown.open").forEach((d) => {
+            d.classList.remove("open");
+            d.querySelector(".dropdown-toggle")?.setAttribute("aria-expanded", "false");
+        });
+    });
+</script>
 
 <style>
     h2 {
         margin: 0.5em 0;
+    }
+
+    /* Dropdown menu */
+    .dropdown {
+        display: inline-block;
+        position: relative;
+        margin: 25px 0;
+    }
+
+    .dropdown-toggle {
+        background: none;
+        border: none;
+        padding: 0;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    .dropdown-toggle:hover,
+    .dropdown-toggle:focus,
+    .dropdown.open .dropdown-toggle {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 4px;
+    }
+    .dropdown-toggle.active {
+        text-decoration: underline;
+        text-decoration-thickness: 3px;
+        text-underline-offset: 5px;
+    }
+    .caret {
+        font-size: 0.7em;
+        margin-left: 2px;
+    }
+
+    .dropdown-menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--background-color);
+        border: 1px solid var(--gray);
+        border-radius: 6px;
+        padding: 8px 14px;
+        z-index: 10;
+        white-space: nowrap;
+        text-align: left;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .dropdown-menu :global(a) {
+        display: block;
+        padding: 4px 0;
+        margin: 0 !important;
+    }
+    .dropdown:hover .dropdown-menu,
+    .dropdown:focus-within .dropdown-menu,
+    .dropdown.open .dropdown-menu {
+        display: block;
     }
     
     /* Typing effect styles */
