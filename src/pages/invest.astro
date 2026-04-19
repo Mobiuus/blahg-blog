@@ -13,27 +13,28 @@ interface Invest {
   date: string;
   duration: string;
   capacity: string;
+  mwc: number | null;
   categories: Category[];
+  coords: [number, number]; // [lat, lng]
 }
 
 const invests: Invest[] = [
-  { developer: "Urba 308", platform: "Lendopolis", location: "Rolampont, Haute-Marne (52)", type: "Solaire PV au sol", year: 2025, date: "04/04/2025", duration: "48 mois", capacity: "5,0 MWc", categories: ["solaire"] },
-  { developer: "GDSOL 98", platform: "Lendopolis", location: "Doulaincourt-Saucourt, Haute-Marne (52)", type: "Solaire PV au sol", year: 2025, date: "04/04/2025", duration: "42 mois", capacity: "5,7 MWc", categories: ["solaire"] },
-  { developer: "TSE Développement", platform: "Enerfip", location: "Multi-régions, France", type: "Solaire PV au sol (portefeuille)", year: 2025, date: "09/05/2025", duration: "42 mois", capacity: "199,8 MWc", categories: ["solaire"] },
-  { developer: "Montbéliard Énergies", platform: "Enerfip", location: "Montbéliard, Doubs (25)", type: "Réseau de chaleur (bois-énergie)", year: 2025, date: "21/05/2025", duration: "36 mois", capacity: "N/A", categories: ["chaleur"] },
-  { developer: "Solskin 10 (Barconnière)", platform: "Enerfip", location: "Multi-dépts (16, 86, 87, 33, 79)", type: "Solaire PV toiture / hangars agricoles", year: 2025, date: "27/10/2025", duration: "24 mois", capacity: "2,6 MWc", categories: ["solaire"] },
-  { developer: "Eco Chaleur du Mantois", platform: "Lendosphère", location: "Mantes-la-Jolie, Yvelines (78)", type: "Réseau de chaleur (extension)", year: 2025, date: "25/11/2025", duration: "36 mois", capacity: "N/A", categories: ["chaleur"] },
-  { developer: "Centrale PV de Cosne-sur-Loire", platform: "Lendosphère", location: "Cosne-sur-Loire, Nièvre (58)", type: "Solaire PV au sol", year: 2025, date: "25/11/2025", duration: "42 mois", capacity: "N/A (2 centrales)", categories: ["solaire"] },
-  { developer: "Agri Italia Power (Energreen)", platform: "Enerfip", location: "Vallermosa & Samassi, Sardaigne (IT)", type: "Agrivoltaïque", year: 2026, date: "03/01/2026", duration: "24 mois", capacity: "3,0 MWc", categories: ["agrivoltaique", "solaire"] },
-  { developer: "Combes de la Romaine (Neoen)", platform: "Lendosphère", location: "Haute-Saône (70)", type: "Éolien terrestre (développement)", year: 2026, date: "22/02/2026", duration: "24 mois", capacity: "N/A", categories: ["eolien"] },
-  { developer: "LORIS ENR CEE T2", platform: "Enerfip", location: "France (national)", type: "CEE / BFR (non-production)", year: 2026, date: "03/03/2026", duration: "36 mois", capacity: "N/A", categories: ["autres"] },
-  { developer: "Campania Solar T2 (SIG)", platform: "Enerfip", location: "Campanie, Italie", type: "Solaire PV au sol (portefeuille)", year: 2026, date: "07/03/2026", duration: "24 mois", capacity: "137,9 MWc", categories: ["solaire"] },
-  { developer: "Solar Reserve T2 (NRG Plus Italia)", platform: "Enerfip", location: "Lombardie, Émilie-Romagne, Pouilles (IT)", type: "PV agrivoltaïque + BESS stockage", year: 2026, date: "07/03/2026", duration: "36 mois", capacity: "~472 MWc", categories: ["agrivoltaique", "solaire", "stockage"] },
-  { developer: "Torrente Solar (Kenergy)", platform: "Lendosphère", location: "Communauté Valencienne, Espagne", type: "Solaire PV au sol (4 centrales)", year: 2026, date: "15/03/2026", duration: "36 mois", capacity: "~205 MWc", categories: ["solaire"] },
-  { developer: "Mâcon La Grisière (SMEG)", platform: "Lendosphère", location: "Mâcon, Saône-et-Loire (71)", type: "Solaire PV au sol", year: 2026, date: "18/04/2026", duration: "36 mois", capacity: "5,93 MWc", categories: ["solaire"] },
+  { developer: "Urba 308", platform: "Lendopolis", location: "Rolampont, Haute-Marne (52)", type: "Solaire PV au sol", year: 2025, date: "04/04/2025", duration: "48 mois", capacity: "5,0 MWc", mwc: 5.0, categories: ["solaire"], coords: [47.87, 5.23] },
+  { developer: "GDSOL 98", platform: "Lendopolis", location: "Doulaincourt-Saucourt, Haute-Marne (52)", type: "Solaire PV au sol", year: 2025, date: "04/04/2025", duration: "42 mois", capacity: "5,7 MWc", mwc: 5.7, categories: ["solaire"], coords: [48.33, 5.23] },
+  { developer: "TSE Développement", platform: "Enerfip", location: "Multi-régions, France", type: "Solaire PV au sol (portefeuille)", year: 2025, date: "09/05/2025", duration: "42 mois", capacity: "199,8 MWc", mwc: 199.8, categories: ["solaire"], coords: [46.60, 2.50] },
+  { developer: "Montbéliard Énergies", platform: "Enerfip", location: "Montbéliard, Doubs (25)", type: "Réseau de chaleur (bois-énergie)", year: 2025, date: "21/05/2025", duration: "36 mois", capacity: "N/A", mwc: null, categories: ["chaleur"], coords: [47.51, 6.80] },
+  { developer: "Solskin 10 (Barconnière)", platform: "Enerfip", location: "Multi-dépts (16, 86, 87, 33, 79)", type: "Solaire PV toiture / hangars agricoles", year: 2025, date: "27/10/2025", duration: "24 mois", capacity: "2,6 MWc", mwc: 2.6, categories: ["solaire"], coords: [45.70, 0.80] },
+  { developer: "Eco Chaleur du Mantois", platform: "Lendosphère", location: "Mantes-la-Jolie, Yvelines (78)", type: "Réseau de chaleur (extension)", year: 2025, date: "25/11/2025", duration: "36 mois", capacity: "N/A", mwc: null, categories: ["chaleur"], coords: [48.99, 1.72] },
+  { developer: "Centrale PV de Cosne-sur-Loire", platform: "Lendosphère", location: "Cosne-sur-Loire, Nièvre (58)", type: "Solaire PV au sol", year: 2025, date: "25/11/2025", duration: "42 mois", capacity: "N/A (2 centrales)", mwc: null, categories: ["solaire"], coords: [47.41, 2.92] },
+  { developer: "Agri Italia Power (Energreen)", platform: "Enerfip", location: "Vallermosa & Samassi, Sardaigne (IT)", type: "Agrivoltaïque", year: 2026, date: "03/01/2026", duration: "24 mois", capacity: "3,0 MWc", mwc: 3.0, categories: ["agrivoltaique", "solaire"], coords: [39.46, 8.85] },
+  { developer: "Combes de la Romaine (Neoen)", platform: "Lendosphère", location: "Haute-Saône (70)", type: "Éolien terrestre (développement)", year: 2026, date: "22/02/2026", duration: "24 mois", capacity: "N/A", mwc: null, categories: ["eolien"], coords: [47.62, 6.15] },
+  { developer: "LORIS ENR CEE T2", platform: "Enerfip", location: "France (national)", type: "CEE / BFR (non-production)", year: 2026, date: "03/03/2026", duration: "36 mois", capacity: "N/A", mwc: null, categories: ["autres"], coords: [46.60, 2.50] },
+  { developer: "Campania Solar T2 (SIG)", platform: "Enerfip", location: "Campanie, Italie", type: "Solaire PV au sol (portefeuille)", year: 2026, date: "07/03/2026", duration: "24 mois", capacity: "137,9 MWc", mwc: 137.9, categories: ["solaire"], coords: [40.84, 14.25] },
+  { developer: "Solar Reserve T2 (NRG Plus Italia)", platform: "Enerfip", location: "Lombardie, Émilie-Romagne, Pouilles (IT)", type: "PV agrivoltaïque + BESS stockage", year: 2026, date: "07/03/2026", duration: "36 mois", capacity: "~472 MWc", mwc: 472, categories: ["agrivoltaique", "solaire", "stockage"], coords: [43.00, 12.50] },
+  { developer: "Torrente Solar (Kenergy)", platform: "Lendosphère", location: "Communauté Valencienne, Espagne", type: "Solaire PV au sol (4 centrales)", year: 2026, date: "15/03/2026", duration: "36 mois", capacity: "~205 MWc", mwc: 205, categories: ["solaire"], coords: [39.47, -0.38] },
+  { developer: "Mâcon La Grisière (SMEG)", platform: "Lendosphère", location: "Mâcon, Saône-et-Loire (71)", type: "Solaire PV au sol", year: 2026, date: "18/04/2026", duration: "36 mois", capacity: "5,93 MWc", mwc: 5.93, categories: ["solaire"], coords: [46.31, 4.83] },
 ];
 
-// Most recent first
 const sorted = [...invests].sort((a, b) => {
   const [da, ma, ya] = a.date.split("/").map(Number);
   const [db, mb, yb] = b.date.split("/").map(Number);
@@ -43,22 +44,30 @@ const sorted = [...invests].sort((a, b) => {
 interface Cat {
   key: "all" | Category;
   label: string;
-  icon: string;
+  color: string;
 }
 
 const categories: Cat[] = [
-  { key: "all",           label: "Tous les projets", icon: "📊" },
-  { key: "solaire",       label: "Solaire",          icon: "☀️" },
-  { key: "agrivoltaique", label: "Agrivoltaïque",    icon: "🌾" },
-  { key: "eolien",        label: "Éolien",           icon: "🌬️" },
-  { key: "chaleur",       label: "Réseau de chaleur",icon: "🔥" },
-  { key: "stockage",      label: "Stockage (BESS)",  icon: "🔋" },
-  { key: "autres",        label: "Autres",           icon: "📄" },
+  { key: "all",           label: "Total",             color: "#6b6b6b" },
+  { key: "solaire",       label: "Solaire",           color: "#e9bc3f" },
+  { key: "agrivoltaique", label: "Agrivoltaïque",     color: "#24d05a" },
+  { key: "eolien",        label: "Éolien",            color: "#10a2f5" },
+  { key: "chaleur",       label: "Réseau de chaleur", color: "#e48500" },
+  { key: "stockage",      label: "Stockage (BESS)",   color: "#eb4888" },
+  { key: "autres",        label: "Autres",            color: "#a4a4a4" },
 ];
 
-function countFor(key: Cat["key"]): number {
-  if (key === "all") return invests.length;
-  return invests.filter((i) => i.categories.includes(key as Category)).length;
+function statsFor(key: Cat["key"]): { count: number; mwc: number } {
+  const filtered = key === "all"
+    ? invests
+    : invests.filter((i) => i.categories.includes(key as Category));
+  const mwc = filtered.reduce((acc, i) => acc + (i.mwc ?? 0), 0);
+  return { count: filtered.length, mwc };
+}
+
+function fmtMwc(v: number): string {
+  if (v === 0) return "—";
+  return v.toFixed(1).replace(".", ",") + " MWc";
 }
 
 function iconFor(type: string): string {
@@ -71,26 +80,48 @@ function iconFor(type: string): string {
   if (t.includes("solaire") || t.includes("pv")) return "☀️";
   return "⚡";
 }
+
+const rows = categories.filter((c) => statsFor(c.key).count > 0);
 ---
 
 <Layout title={`Invest | ${SITE_TITLE}`} description="Mes investissements dans les énergies renouvelables">
   <div class="invest-page">
-    <div class="cat-grid" role="tablist" aria-label="Filtrer par catégorie">
-      {categories.filter((c) => countFor(c.key) > 0).map((c) => (
-        <button
-          type="button"
-          class="cat-card"
-          data-cat={c.key}
-          role="tab"
-          aria-selected="false"
-        >
-          <span class="cat-icon" aria-hidden="true">{c.icon}</span>
-          <span class="cat-label">{c.label}</span>
-          <span class="cat-count">{countFor(c.key)}</span>
-        </button>
-      ))}
-    </div>
+    <!-- ── Carte géographique ── -->
+    <div id="map" class="map" aria-label="Carte des projets"></div>
 
+    <!-- ── Tableau récap ── -->
+    <table class="recap">
+      <thead>
+        <tr>
+          <th scope="col">Catégorie</th>
+          <th scope="col" class="num">Projets</th>
+          <th scope="col" class="num">Capacité</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((c) => {
+          const s = statsFor(c.key);
+          return (
+            <tr
+              class:list={["recap-row", { "recap-total": c.key === "all" }]}
+              data-cat={c.key}
+              tabindex="0"
+              role="button"
+              aria-label={`Filtrer: ${c.label}`}
+            >
+              <td>
+                <span class="dot" style={`background:${c.color}`} aria-hidden="true"></span>
+                {c.label}
+              </td>
+              <td class="num">{s.count}</td>
+              <td class="num">{fmtMwc(s.mwc)}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+
+    <!-- ── Liste filtrée (cachée par défaut) ── -->
     <div class="cards-wrapper" id="cards-wrapper" hidden>
       <div class="cards-head">
         <h2 class="cards-title" id="cards-title">Projets</h2>
@@ -98,10 +129,7 @@ function iconFor(type: string): string {
       </div>
       <div class="cards" id="cards">
         {sorted.map((p) => (
-          <article
-            class="card"
-            data-cats={p.categories.join(",")}
-          >
+          <article class="card" data-cats={p.categories.join(",")}>
             <header class="card-head">
               <span class="card-icon" aria-hidden="true">{iconFor(p.type)}</span>
               <div class="card-head-text">
@@ -110,24 +138,11 @@ function iconFor(type: string): string {
               </div>
               <span class="card-year">{p.year}</span>
             </header>
-
             <dl class="card-body">
-              <div class="row">
-                <dt>Lieu</dt>
-                <dd>{p.location}</dd>
-              </div>
-              <div class="row">
-                <dt>Type</dt>
-                <dd>{p.type}</dd>
-              </div>
-              <div class="row">
-                <dt>Capacité</dt>
-                <dd>{p.capacity}</dd>
-              </div>
-              <div class="row">
-                <dt>Durée</dt>
-                <dd>{p.duration}</dd>
-              </div>
+              <div class="row"><dt>Lieu</dt><dd>{p.location}</dd></div>
+              <div class="row"><dt>Type</dt><dd>{p.type}</dd></div>
+              <div class="row"><dt>Capacité</dt><dd>{p.capacity}</dd></div>
+              <div class="row"><dt>Durée</dt><dd>{p.duration}</dd></div>
             </dl>
           </article>
         ))}
@@ -136,12 +151,100 @@ function iconFor(type: string): string {
   </div>
 </Layout>
 
+<!-- ── Leaflet (OpenStreetMap) via CDN ── -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
 <script>
-  const catButtons = document.querySelectorAll<HTMLButtonElement>(".cat-card");
+  // @ts-nocheck
+  const CAT_COLORS: Record<string, string> = {
+    solaire: "#e9bc3f",
+    agrivoltaique: "#24d05a",
+    eolien: "#10a2f5",
+    chaleur: "#e48500",
+    stockage: "#eb4888",
+    autres: "#a4a4a4",
+  };
+
+  interface ProjectMeta {
+    developer: string;
+    location: string;
+    type: string;
+    capacity: string;
+    year: number;
+    categories: string[];
+    coords: [number, number];
+  }
+
+  const projects: ProjectMeta[] = JSON.parse(
+    document.getElementById("projects-data")?.textContent ?? "[]"
+  );
+
+  const rows = document.querySelectorAll<HTMLTableRowElement>(".recap-row");
   const wrapper = document.getElementById("cards-wrapper") as HTMLElement | null;
   const title = document.getElementById("cards-title") as HTMLElement | null;
   const closeBtn = document.getElementById("cards-close") as HTMLButtonElement | null;
   const cards = document.querySelectorAll<HTMLElement>(".card");
+
+  let map: any = null;
+  let markers: any[] = [];
+
+  async function initMap() {
+    // Dynamic import of Leaflet JS
+    await new Promise<void>((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      s.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
+      s.crossOrigin = "";
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error("leaflet load failed"));
+      document.head.appendChild(s);
+    });
+
+    const L = (window as any).L;
+    const el = document.getElementById("map");
+    if (!el || !L) return;
+
+    map = L.map(el, { scrollWheelZoom: false }).setView([45.5, 5.0], 4);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "© OpenStreetMap",
+      maxZoom: 18,
+    }).addTo(map);
+
+    projects.forEach((p) => {
+      const primary = p.categories[0] ?? "autres";
+      const color = CAT_COLORS[primary] ?? "#6b6b6b";
+      const m = L.circleMarker(p.coords, {
+        radius: 8,
+        color: "#fff",
+        weight: 2,
+        fillColor: color,
+        fillOpacity: 0.9,
+      })
+        .bindPopup(
+          `<strong>${p.developer}</strong><br>
+           <small>${p.location}</small><br>
+           ${p.type}<br>
+           <em>${p.capacity} · ${p.year}</em>`
+        )
+        .addTo(map);
+      (m as any)._cats = p.categories;
+      markers.push(m);
+    });
+
+    // Fix sizing after mount
+    setTimeout(() => map.invalidateSize(), 50);
+  }
+
+  function filterMarkers(cat: string) {
+    if (!map) return;
+    const L = (window as any).L;
+    markers.forEach((m) => {
+      const cats: string[] = (m as any)._cats ?? [];
+      const show = cat === "all" || cats.includes(cat);
+      if (show) m.addTo(map);
+      else map.removeLayer(m);
+    });
+  }
 
   function applyFilter(cat: string, label: string) {
     if (!wrapper || !title) return;
@@ -151,90 +254,112 @@ function iconFor(type: string): string {
     cards.forEach((card) => {
       const cats = (card.dataset.cats ?? "").split(",");
       const show = cat === "all" || cats.includes(cat);
-      card.style.display = show ? "" : "none";
+      (card as HTMLElement).style.display = show ? "" : "none";
     });
 
-    catButtons.forEach((b) => {
-      const active = b.dataset.cat === cat;
-      b.classList.toggle("active", active);
-      b.setAttribute("aria-selected", String(active));
+    rows.forEach((r) => {
+      const active = r.dataset.cat === cat;
+      r.classList.toggle("active", active);
     });
 
-    wrapper.scrollIntoView({ behavior: "smooth", block: "start" });
+    filterMarkers(cat);
   }
 
-  catButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const cat = btn.dataset.cat ?? "all";
-      const label = btn.querySelector(".cat-label")?.textContent ?? "Projets";
+  rows.forEach((row) => {
+    const trigger = () => {
+      const cat = row.dataset.cat ?? "all";
+      const label = row.querySelector("td")?.textContent?.trim() ?? "Projets";
       applyFilter(cat, label);
+    };
+    row.addEventListener("click", trigger);
+    row.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        trigger();
+      }
     });
   });
 
   closeBtn?.addEventListener("click", () => {
     if (!wrapper) return;
     wrapper.hidden = true;
-    catButtons.forEach((b) => {
-      b.classList.remove("active");
-      b.setAttribute("aria-selected", "false");
-    });
+    rows.forEach((r) => r.classList.remove("active"));
+    filterMarkers("all");
   });
+
+  initMap();
 </script>
+
+<!-- Project data for client-side script -->
+<script type="application/json" id="projects-data" set:html={JSON.stringify(
+  invests.map(({ developer, location, type, capacity, year, categories, coords }) => ({
+    developer, location, type, capacity, year, categories, coords,
+  }))
+)}></script>
 
 <style>
   .invest-page {
     padding: 1rem 0 3rem;
   }
 
-  /* ── Category cards ── */
-  .cat-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 0.75rem;
-    margin-bottom: 2rem;
+  /* ── Map ── */
+  .map {
+    width: 100%;
+    height: 380px;
+    border-radius: 10px;
+    border: 1px solid var(--gray);
+    margin-bottom: 1.5rem;
+    z-index: 0;
   }
 
-  .cat-card {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.3rem;
-    padding: 0.9rem 1rem;
-    border: 1px solid var(--gray);
-    border-radius: 10px;
-    background: var(--moretransblack);
-    color: var(--text-color);
-    cursor: pointer;
-    font: inherit;
+  /* ── Table ── */
+  .recap {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-bottom: 2rem;
+  }
+  .recap th,
+  .recap td {
+    padding: 0.6rem 0.8rem;
     text-align: left;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+    border-bottom: 1px solid var(--gray);
   }
-  .cat-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    border-color: var(--text-color);
-  }
-  .cat-card.active {
-    border-color: var(--text-color);
-    border-width: 2px;
-    padding: calc(0.9rem - 1px) calc(1rem - 1px);
-    background: var(--moretranswhite);
-  }
-  .cat-icon {
-    font-size: 1.4rem;
-    line-height: 1;
-  }
-  .cat-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text-color);
-  }
-  .cat-count {
-    font-size: 0.72rem;
+  .recap th {
     color: var(--gray);
-    letter-spacing: 0.04em;
+    font-weight: 500;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
+  }
+  .recap td.num,
+  .recap th.num {
+    text-align: right;
     font-variant-numeric: tabular-nums;
+  }
+  .recap-row {
+    cursor: pointer;
+    transition: background 0.12s ease;
+  }
+  .recap-row:hover {
+    background: var(--moretransblack);
+  }
+  .recap-row.active {
+    background: var(--moretransblack);
+    font-weight: 600;
+  }
+  .recap-row.recap-total td {
+    font-weight: 700;
+    color: var(--text-color);
+    border-bottom: 2px solid var(--text-color);
+  }
+  .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 0.6rem;
+    vertical-align: middle;
   }
 
   /* ── Cards wrapper ── */
@@ -284,7 +409,6 @@ function iconFor(type: string): string {
     transform: translateY(-2px);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   }
-
   .card-head {
     display: flex;
     align-items: flex-start;
@@ -325,7 +449,6 @@ function iconFor(type: string): string {
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
   }
-
   .card-body {
     margin: 0;
     display: flex;
@@ -353,25 +476,32 @@ function iconFor(type: string): string {
   }
 
   @media (prefers-color-scheme: dark) {
-    .cat-card,
     .card,
     .card-year {
       background: var(--moretranswhite);
     }
-    .cat-card.active {
-      background: var(--moretransblack);
+    .recap-row:hover,
+    .recap-row.active {
+      background: var(--moretranswhite);
     }
   }
 
   @media (max-width: 600px) {
-    .cat-grid {
-      grid-template-columns: repeat(2, 1fr);
+    .map {
+      height: 300px;
     }
     .cards {
       grid-template-columns: 1fr;
     }
     .row {
       grid-template-columns: 5rem 1fr;
+    }
+    .recap {
+      font-size: 0.85rem;
+    }
+    .recap th,
+    .recap td {
+      padding: 0.5rem 0.4rem;
     }
   }
 </style>
