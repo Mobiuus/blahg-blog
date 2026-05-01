@@ -1,0 +1,31 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import ColorScript from "../components/ColorScript.astro";
+import BlaBlaCarInvest from "../components/BlaBlaCarInvest.jsx";
+---
+
+<html lang="fr">
+  <head>
+    <BaseHead title="BlaBlaCar — valorisation" description="Suivi de ma participation indirecte dans BlaBlaCar via SPV Caption Market" />
+    <link rel="stylesheet" href="/style/fonts.css" />
+    <link rel="stylesheet" href="/style/global.css" />
+  </head>
+  <body>
+    <Header />
+    <main>
+      <BlaBlaCarInvest client:load />
+    </main>
+    <Footer />
+    <ColorScript />
+  </body>
+</html>
+
+<style>
+  main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1rem 0 3rem;
+  }
+</style>
