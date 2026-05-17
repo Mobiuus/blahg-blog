@@ -377,5 +377,302 @@ import Layout from "../components/Layout.astro";
 
       buildDeck("tous");
     </script>
+
+    <style is:global>
+      #fc-conj * { box-sizing: border-box; }
+      #fc-conj { padding: 2rem 0 1rem; font-family: system-ui, sans-serif; border-top: 0.5px solid #e0e0de; margin-top: 2.5rem; }
+      .cj-title { font-size: 18px; font-weight: 500; margin-bottom: 4px; }
+      .cj-sub { font-size: 13px; color: #888; margin-bottom: 1.25rem; }
+      .cj-filter-row { margin-bottom: .75rem; }
+      .cj-filter-label { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+      .cj-pills { display: flex; gap: 5px; flex-wrap: wrap; }
+      .cj-pill { padding: 4px 11px; font-size: 12px; border-radius: 20px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; white-space: nowrap; transition: all .12s; }
+      .cj-pill.active { font-weight: 500; }
+      .cj-pill.all { color: #555; }
+      .cj-pill.all.active { background: #f0f0ee; border-color: #999; }
+      .cj-pill.oral { color: #3B6D11; border-color: #97C459; }
+      .cj-pill.oral.active { background: #EAF3DE; border-color: #639922; }
+      .cj-pill.ecrit { color: #854F0B; border-color: #EF9F27; }
+      .cj-pill.ecrit.active { background: #FAEEDA; border-color: #BA7517; }
+      .cj-pill.both { color: #185FA5; border-color: #85B7EB; }
+      .cj-pill.both.active { background: #E6F1FB; border-color: #378ADD; }
+      .cj-pill.irreg { color: #993C1D; border-color: #F0997B; }
+      .cj-pill.irreg.active { background: #FAECE7; border-color: #D85A30; }
+      .cj-pill.reg { color: #0F6E56; border-color: #5DCAA5; }
+      .cj-pill.reg.active { background: #E1F5EE; border-color: #1D9E75; }
+      .cj-info-box { border-radius: 8px; padding: 9px 14px; margin-bottom: 1rem; font-size: 12px; line-height: 1.7; }
+      .cj-info-box.oral { background: #EAF3DE; color: #27500A; }
+      .cj-info-box.ecrit { background: #FAEEDA; color: #633806; }
+      .cj-info-box.both { background: #E6F1FB; color: #0C447C; }
+      .cj-info-box.mixed { background: #f5f5f3; color: #444; }
+      .cj-info-strong { font-weight: 500; }
+      .cj-stats { display: flex; gap: 8px; margin-bottom: 1rem; }
+      .cj-stat { flex: 1; background: #f5f5f3; border-radius: 8px; padding: 8px 4px; text-align: center; }
+      .cj-stat-v { font-size: 18px; font-weight: 500; }
+      .cj-stat-l { font-size: 11px; color: #888; }
+      .cj-pb-bg { background: #e5e5e3; border-radius: 4px; height: 4px; margin-bottom: 1rem; }
+      .cj-pb-fill { height: 4px; border-radius: 4px; background: #1D9E75; transition: width .3s; }
+      .cj-card-num { font-size: 12px; color: #aaa; text-align: center; margin-bottom: 6px; }
+      .cj-scene { perspective: 1000px; width: 100%; height: 278px; cursor: pointer; margin-bottom: 1rem; }
+      .cj-3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform .45s cubic-bezier(.4,0,.2,1); }
+      .cj-3d.flipped { transform: rotateY(180deg); }
+      .cj-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; border: 0.5px solid #ddd; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.25rem; }
+      .cj-face.back { transform: rotateY(180deg); background: #f9f9f7; justify-content: flex-start; align-items: flex-start; padding: 1.1rem 1.4rem; }
+      .cj-verb-big { font-size: 30px; font-weight: 500; margin-bottom: 3px; }
+      .cj-verb-type { font-size: 11px; color: #aaa; margin-bottom: 10px; }
+      .cj-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 500; margin-bottom: 7px; }
+      .cj-badge.oral { background: #EAF3DE; color: #3B6D11; }
+      .cj-badge.ecrit { background: #FAEEDA; color: #854F0B; }
+      .cj-badge.both { background: #E6F1FB; color: #185FA5; }
+      .cj-tense-big { font-size: 15px; font-weight: 500; margin-bottom: 3px; text-align: center; }
+      .cj-tense-note { font-size: 12px; color: #999; text-align: center; max-width: 320px; }
+      .cj-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; }
+      .cj-table td { padding: 2.5px 5px; font-size: 13px; }
+      .cj-pron { color: #999; font-size: 12px; width: 88px; }
+      .cj-form { font-weight: 500; color: #111; }
+      .cj-example { font-size: 12px; color: #777; font-style: italic; line-height: 1.5; }
+      .cj-vosotros-note { font-size: 10px; color: #bbb; margin-top: 5px; }
+      .cj-nav, .cj-rates { display: flex; gap: 8px; justify-content: center; margin-bottom: 1rem; }
+      .cj-btn { padding: 7px 16px; font-size: 13px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; }
+      .cj-btn:hover { background: #f5f5f3; }
+      .cj-btn:disabled { opacity: .4; cursor: default; }
+      .cj-easy { padding: 7px 16px; font-size: 13px; border-radius: 8px; cursor: pointer; font-weight: 500; background: #EAF3DE; color: #3B6D11; border: 0.5px solid #C0DD97; }
+      .cj-hard { padding: 7px 16px; font-size: 13px; border-radius: 8px; cursor: pointer; font-weight: 500; background: #FAECE7; color: #993C1D; border: 0.5px solid #F5C4B3; }
+      .cj-skip { padding: 7px 16px; font-size: 13px; border-radius: 8px; cursor: pointer; background: #f5f5f3; color: #666; border: 0.5px solid #ccc; }
+      .cj-done { text-align: center; padding: 2rem 1rem; }
+      .cj-done h3 { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
+      .cj-done p { color: #666; font-size: 13px; margin-bottom: 1rem; }
+      @media (prefers-color-scheme: dark) {
+        #fc-conj { border-top-color: #333; }
+        .cj-stat, .cj-skip { background: #2a2a28; }
+        .cj-face { background: #1e1e1c; border-color: #333; color: #eee; }
+        .cj-face.back { background: #252523; }
+        .cj-form { color: #eee; }
+        .cj-pron { color: #666; }
+        .cj-btn { background: #1e1e1c; color: #eee; border-color: #444; }
+        .cj-btn:hover { background: #2a2a28; }
+        .cj-pill { background: #1e1e1c; color: #ccc; border-color: #444; }
+        .cj-pill.all.active { background: #2a2a28; }
+        .cj-pb-bg { background: #333; }
+        .cj-example { color: #888; }
+        .cj-info-box.mixed { background: #252523; color: #ccc; }
+        .cj-vosotros-note { color: #555; }
+      }
+    </style>
+
+    <div id="fc-conj">
+      <div class="cj-title">Conjugaison essentielle</div>
+      <div class="cj-sub">7 temps · 10 verbes clés · uniquement ce qu'il faut pour parler et écrire</div>
+      <div id="cj-app"></div>
+    </div>
+
+    <script is:inline>
+    (function() {
+      const PRONOUNS = ["yo","tú","él · ella","nosotros","vosotros*","ellos · ellas"];
+
+      const TENSES = [
+        {id:"pres",   label:"Presente",              fr:"Présent",                     usage:"both",  note:"Action présente, habitude ou vérité générale — le temps de base."},
+        {id:"indef",  label:"Pretérito indefinido",  fr:"Passé (oral LatAm / récit)",  usage:"oral",  note:"Action passée et terminée. Oral principal en Amérique latine. Récit littéraire en Espagne."},
+        {id:"imperf", label:"Pretérito imperfecto",  fr:"Imparfait",                   usage:"both",  note:"Description ou habitude dans le passé. Sert à planter le décor ou l'ambiance d'un récit."},
+        {id:"perf",   label:"Pretérito perfecto",    fr:"Passé composé (oral Espagne)", usage:"oral", note:"Passé récent lié au présent. Très utilisé à l'oral en Espagne. En Amérique latine → indéfini."},
+        {id:"periph", label:"Futuro perifrástico",   fr:"Futur proche (ir a + inf.)",  usage:"oral",  note:"Futur proche ou planifié. Le futur le plus fréquent à l'oral. Équivalent de aller + infinitif."},
+        {id:"fut",    label:"Futuro simple",         fr:"Futur simple (formel)",       usage:"ecrit", note:"Futur ou supposition. Plus formel. Souvent remplacé par le futur périphrastique à l'oral."},
+        {id:"cond",   label:"Condicional",           fr:"Conditionnel",                usage:"both",  note:"Politesse, hypothèse ou conseil. Équivalent exact du conditionnel français. Incontournable."},
+      ];
+
+      const VD = {
+        hablar:{type:"régulier -ar",
+          pres:["hablo","hablas","habla","hablamos","habláis","hablan"],
+          indef:["hablé","hablaste","habló","hablamos","hablasteis","hablaron"],
+          imperf:["hablaba","hablabas","hablaba","hablábamos","hablabais","hablaban"],
+          perf:["he hablado","has hablado","ha hablado","hemos hablado","habéis hablado","han hablado"],
+          periph:["voy a hablar","vas a hablar","va a hablar","vamos a hablar","vais a hablar","van a hablar"],
+          fut:["hablaré","hablarás","hablará","hablaremos","hablaréis","hablarán"],
+          cond:["hablaría","hablarías","hablaría","hablaríamos","hablaríais","hablarían"],
+          ex:{pres:"Hablo español todos los días.",indef:"Hablé con ella ayer.",imperf:"De niño hablaba mucho.",perf:"Hoy he hablado con mi jefe.",periph:"Voy a hablar con él mañana.",fut:"Te hablaré esta tarde.",cond:"Hablaría, pero estoy ocupado."}},
+        comer:{type:"régulier -er",
+          pres:["como","comes","come","comemos","coméis","comen"],
+          indef:["comí","comiste","comió","comimos","comisteis","comieron"],
+          imperf:["comía","comías","comía","comíamos","comíais","comían"],
+          perf:["he comido","has comido","ha comido","hemos comido","habéis comido","han comido"],
+          periph:["voy a comer","vas a comer","va a comer","vamos a comer","vais a comer","van a comer"],
+          fut:["comeré","comerás","comerá","comeremos","comeréis","comerán"],
+          cond:["comería","comerías","comería","comeríamos","comeríais","comerían"],
+          ex:{pres:"Como a las dos.",indef:"Comí paella en Valencia.",imperf:"Antes comía más carne.",perf:"Ya he comido, gracias.",periph:"Vamos a comer algo.",fut:"Comeré contigo mañana.",cond:"Comería más si tuviera hambre."}},
+        vivir:{type:"régulier -ir",
+          pres:["vivo","vives","vive","vivimos","vivís","viven"],
+          indef:["viví","viviste","vivió","vivimos","vivisteis","vivieron"],
+          imperf:["vivía","vivías","vivía","vivíamos","vivíais","vivían"],
+          perf:["he vivido","has vivido","ha vivido","hemos vivido","habéis vivido","han vivido"],
+          periph:["voy a vivir","vas a vivir","va a vivir","vamos a vivir","vais a vivir","van a vivir"],
+          fut:["viviré","vivirás","vivirá","viviremos","viviréis","vivirán"],
+          cond:["viviría","vivirías","viviría","viviríamos","viviríais","vivirían"],
+          ex:{pres:"Vivo en París.",indef:"Viví en Madrid dos años.",imperf:"Vivía cerca del mar.",perf:"He vivido aquí diez años.",periph:"Voy a vivir en España.",fut:"Viviré en el extranjero.",cond:"Viviría en el campo si pudiera."}},
+        ser:{type:"irrégulier ⚠ même indef. que ir",
+          pres:["soy","eres","es","somos","sois","son"],
+          indef:["fui","fuiste","fue","fuimos","fuisteis","fueron"],
+          imperf:["era","eras","era","éramos","erais","eran"],
+          perf:["he sido","has sido","ha sido","hemos sido","habéis sido","han sido"],
+          periph:["voy a ser","vas a ser","va a ser","vamos a ser","vais a ser","van a ser"],
+          fut:["seré","serás","será","seremos","seréis","serán"],
+          cond:["sería","serías","sería","seríamos","seríais","serían"],
+          ex:{pres:"Soy francés, soy consultor.",indef:"Fue un gran viaje. (= ir aussi !)",imperf:"Era muy joven entonces.",perf:"Ha sido un placer conocerte.",periph:"Va a ser difícil.",fut:"Será interesante verlo.",cond:"Sería perfecto para mí."}},
+        estar:{type:"irrégulier",
+          pres:["estoy","estás","está","estamos","estáis","están"],
+          indef:["estuve","estuviste","estuvo","estuvimos","estuvisteis","estuvieron"],
+          imperf:["estaba","estabas","estaba","estábamos","estabais","estaban"],
+          perf:["he estado","has estado","ha estado","hemos estado","habéis estado","han estado"],
+          periph:["voy a estar","vas a estar","va a estar","vamos a estar","vais a estar","van a estar"],
+          fut:["estaré","estarás","estará","estaremos","estaréis","estarán"],
+          cond:["estaría","estarías","estaría","estaríamos","estaríais","estarían"],
+          ex:{pres:"Estoy muy bien, gracias.",indef:"Estuve en Barcelona el verano pasado.",imperf:"Estaba muy cansado.",perf:"He estado aquí antes.",periph:"Voy a estar en casa toda la tarde.",fut:"Estaré listo a las ocho.",cond:"Estaría mejor con más tiempo."}},
+        tener:{type:"irrégulier",
+          pres:["tengo","tienes","tiene","tenemos","tenéis","tienen"],
+          indef:["tuve","tuviste","tuvo","tuvimos","tuvisteis","tuvieron"],
+          imperf:["tenía","tenías","tenía","teníamos","teníais","tenían"],
+          perf:["he tenido","has tenido","ha tenido","hemos tenido","habéis tenido","han tenido"],
+          periph:["voy a tener","vas a tener","va a tener","vamos a tener","vais a tener","van a tener"],
+          fut:["tendré","tendrás","tendrá","tendremos","tendréis","tendrán"],
+          cond:["tendría","tendrías","tendría","tendríamos","tendréis","tendrían"],
+          ex:{pres:"Tengo hambre y tengo sed.",indef:"Tuve un problema con el vuelo.",imperf:"Tenía mucho trabajo ese año.",perf:"He tenido mucha suerte.",periph:"Voy a tener que salir pronto.",fut:"Tendré más tiempo la semana que viene.",cond:"Tendría más si pudiera."}},
+        ir:{type:"irrégulier ⚠ même indef. que ser",
+          pres:["voy","vas","va","vamos","vais","van"],
+          indef:["fui","fuiste","fue","fuimos","fuisteis","fueron"],
+          imperf:["iba","ibas","iba","íbamos","ibais","iban"],
+          perf:["he ido","has ido","ha ido","hemos ido","habéis ido","han ido"],
+          periph:["voy a ir","vas a ir","va a ir","vamos a ir","vais a ir","van a ir"],
+          fut:["iré","irás","irá","iremos","iréis","irán"],
+          cond:["iría","irías","iría","iríamos","iríais","irían"],
+          ex:{pres:"Voy al trabajo en metro.",indef:"Fui al cine. (= ser aussi !)",imperf:"Iba todos los días al gimnasio.",perf:"He ido tres veces a México.",periph:"Voy a ir a Madrid este fin de semana.",fut:"Iré si puedo.",cond:"Iría, pero estoy ocupado."}},
+        hacer:{type:"irrégulier",
+          pres:["hago","haces","hace","hacemos","hacéis","hacen"],
+          indef:["hice","hiciste","hizo","hicimos","hicisteis","hicieron"],
+          imperf:["hacía","hacías","hacía","hacíamos","hacíais","hacían"],
+          perf:["he hecho","has hecho","ha hecho","hemos hecho","habéis hecho","han hecho"],
+          periph:["voy a hacer","vas a hacer","va a hacer","vamos a hacer","vais a hacer","van a hacer"],
+          fut:["haré","harás","hará","haremos","haréis","harán"],
+          cond:["haría","harías","haría","haríamos","haríais","harían"],
+          ex:{pres:"¿Qué haces este fin de semana?",indef:"Hice todo lo posible.",imperf:"Hacía frío en diciembre.",perf:"He hecho los deberes.",periph:"Voy a hacer la compra.",fut:"Haré lo que pueda.",cond:"Haría lo mismo en tu lugar."}},
+        poder:{type:"irrégulier",
+          pres:["puedo","puedes","puede","podemos","podéis","pueden"],
+          indef:["pude","pudiste","pudo","pudimos","pudisteis","pudieron"],
+          imperf:["podía","podías","podía","podíamos","podíais","podían"],
+          perf:["he podido","has podido","ha podido","hemos podido","habéis podido","han podido"],
+          periph:["voy a poder","vas a poder","va a poder","vamos a poder","vais a poder","van a poder"],
+          fut:["podré","podrás","podrá","podremos","podréis","podrán"],
+          cond:["podría","podrías","podría","podríamos","podríais","podrían"],
+          ex:{pres:"¿Puedes ayudarme, por favor?",indef:"No pude ir a la reunión.",imperf:"Podía hacerlo solo antes.",perf:"He podido terminar a tiempo.",periph:"Voy a poder venir el jueves.",fut:"Podré hacerlo mañana.",cond:"¿Podrías repetir más despacio?"}},
+        querer:{type:"irrégulier",
+          pres:["quiero","quieres","quiere","queremos","queréis","quieren"],
+          indef:["quise","quisiste","quiso","quisimos","quisisteis","quisieron"],
+          imperf:["quería","querías","quería","queríamos","queríais","querían"],
+          perf:["he querido","has querido","ha querido","hemos querido","habéis querido","han querido"],
+          periph:["voy a querer","vas a querer","va a querer","vamos a querer","vais a querer","van a querer"],
+          fut:["querré","querrás","querrá","querremos","querréis","querrán"],
+          cond:["querría","querrías","querría","querríamos","querríais","querrían"],
+          ex:{pres:"Quiero un café con leche.",indef:"Quise decírtelo antes.",imperf:"De pequeño quería ser piloto.",perf:"Siempre he querido ir a Japón.",periph:"Voy a querer más información.",fut:"¿Querrás venir a la fiesta?",cond:"Querría reservar una mesa para dos."}},
+      };
+
+      const VERB_NAMES = Object.keys(VD);
+      let cjDeck=[], cIdx=0, cFlipped=false, cScores={easy:0,hard:0,skip:0};
+      let currentTense="tous", currentVerb="tous";
+
+      function cjShuffle(arr){const a=[...arr];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+      function buildCjDeck(){
+        cjDeck=[];
+        for(const vName of VERB_NAMES){
+          const vd=VD[vName];
+          if(currentVerb==="reg" && vd.type.startsWith("irrég")) continue;
+          if(currentVerb==="irreg" && !vd.type.startsWith("irrég")) continue;
+          for(const t of TENSES){
+            if(currentTense!=="tous" && currentTense!==t.id) continue;
+            cjDeck.push({verb:vName,type:vd.type,tId:t.id,tLabel:t.label,tFr:t.fr,tUsage:t.usage,tNote:t.note,forms:vd[t.id],ex:vd.ex[t.id]});
+          }
+        }
+        cjDeck=cjShuffle(cjDeck); cIdx=0; cFlipped=false; cScores={easy:0,hard:0,skip:0};
+        renderCj();
+      }
+
+      function renderCj(){
+        const app=document.getElementById('cj-app');
+        if(cIdx>=cjDeck.length){
+          app.innerHTML='<div class="cj-done"><h3>Deck terminé !</h3><p>Facile : '+cScores.easy+' · Difficile : '+cScores.hard+' · Passé : '+cScores.skip+'</p><div style="display:flex;gap:8px;justify-content:center"><button class="cj-btn" onclick="buildCjDeck()">Recommencer</button></div></div>';
+          return;
+        }
+        const card=cjDeck[cIdx];
+        const pct=Math.round(cIdx/cjDeck.length*100);
+        const tInfo=currentTense!=="tous" ? TENSES.find(function(t){return t.id===currentTense;}) : null;
+
+        const tensePills='<div class="cj-filter-row"><div class="cj-filter-label">Temps</div><div class="cj-pills">'
+          +'<span class="cj-pill all '+(currentTense==="tous"?"active":"")+'" onclick="setCjTense(\'tous\')">Tous</span>'
+          +TENSES.map(function(t){return '<span class="cj-pill '+t.usage+' '+(currentTense===t.id?"active":"")+'" onclick="setCjTense(\''+t.id+'\')">'+t.fr+'</span>';}).join('')
+          +'</div></div>';
+
+        const verbPills='<div class="cj-filter-row"><div class="cj-filter-label">Verbes</div><div class="cj-pills">'
+          +'<span class="cj-pill all '+(currentVerb==="tous"?"active":"")+'" onclick="setCjVerb(\'tous\')">Tous</span>'
+          +'<span class="cj-pill reg '+(currentVerb==="reg"?"active":"")+'" onclick="setCjVerb(\'reg\')">Réguliers (-ar/-er/-ir)</span>'
+          +'<span class="cj-pill irreg '+(currentVerb==="irreg"?"active":"")+'" onclick="setCjVerb(\'irreg\')">Irréguliers</span>'
+          +'</div></div>';
+
+        const infoBox=tInfo
+          ?'<div class="cj-info-box '+tInfo.usage+'"><span class="cj-info-strong">'+tInfo.label+'</span> — '+tInfo.note+'</div>'
+          :'<div class="cj-info-box mixed"><span class="cj-info-strong" style="color:#3B6D11">oral</span> = passé LatAm / futur proche / passé composé Espagne &nbsp;·&nbsp; <span class="cj-info-strong" style="color:#854F0B">formel/écrit</span> = futur simple &nbsp;·&nbsp; <span class="cj-info-strong" style="color:#185FA5">les deux</span> = présent, imparfait, conditionnel</div>';
+
+        const tableRows=PRONOUNS.map(function(p,i){return '<tr><td class="cj-pron">'+p+'</td><td class="cj-form">'+card.forms[i]+'</td></tr>';}).join('');
+
+        const navOrRate=cFlipped
+          ?'<div class="cj-rates"><button class="cj-hard" onclick="cjRate(\'hard\')">Difficile</button><button class="cj-skip" onclick="cjRate(\'skip\')">Passer</button><button class="cj-easy" onclick="cjRate(\'easy\')">Facile</button></div>'
+          :'<div class="cj-nav"><button class="cj-btn" onclick="cjPrev()" '+(cIdx===0?"disabled":"")+'>← Préc.</button><button class="cj-btn" onclick="cjFlip()">Voir conjugaison</button><button class="cj-btn" onclick="cjRate(\'skip\')">Suivant →</button></div>';
+
+        app.innerHTML=tensePills+verbPills+infoBox
+          +'<div class="cj-stats">'
+          +'<div class="cj-stat"><div class="cj-stat-v">'+cjDeck.length+'</div><div class="cj-stat-l">cartes</div></div>'
+          +'<div class="cj-stat"><div class="cj-stat-v">'+cIdx+'</div><div class="cj-stat-l">vues</div></div>'
+          +'<div class="cj-stat"><div class="cj-stat-v" style="color:#3B6D11">'+cScores.easy+'</div><div class="cj-stat-l">faciles</div></div>'
+          +'<div class="cj-stat"><div class="cj-stat-v" style="color:#993C1D">'+cScores.hard+'</div><div class="cj-stat-l">difficiles</div></div>'
+          +'</div>'
+          +'<div class="cj-pb-bg"><div class="cj-pb-fill" style="width:'+pct+'%"></div></div>'
+          +'<div class="cj-card-num">'+(cIdx+1)+' / '+cjDeck.length+'</div>'
+          +'<div class="cj-scene" onclick="cjFlip()">'
+          +'<div class="cj-3d '+(cFlipped?"flipped":"")+'">'
+          +'<div class="cj-face front">'
+          +'<div class="cj-verb-big">'+card.verb+'</div>'
+          +'<div class="cj-verb-type">'+card.type+'</div>'
+          +'<span class="cj-badge '+card.tUsage+'">'+card.tFr+'</span>'
+          +'<div class="cj-tense-big">'+card.tLabel+'</div>'
+          +'<div class="cj-tense-note">'+card.tNote.split(".")[0]+'.</div>'
+          +'<div style="font-size:11px;color:#bbb;margin-top:14px">Cliquer pour voir la conjugaison</div>'
+          +'</div>'
+          +'<div class="cj-face back">'
+          +'<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap">'
+          +'<span style="font-size:16px;font-weight:500">'+card.verb+'</span>'
+          +'<span class="cj-badge '+card.tUsage+'" style="margin-bottom:0">'+card.tFr+'</span>'
+          +'</div>'
+          +'<table class="cj-table">'+tableRows+'</table>'
+          +'<div class="cj-example">ex. '+card.ex+'</div>'
+          +'<div class="cj-vosotros-note">* vosotros = Espagne uniquement — Amérique latine → ustedes</div>'
+          +'</div>'
+          +'</div>'
+          +'</div>'
+          +navOrRate;
+      }
+
+      function cjFlip(){cFlipped=!cFlipped;renderCj();}
+      function setCjTense(t){currentTense=t;buildCjDeck();}
+      function setCjVerb(v){currentVerb=v;buildCjDeck();}
+      function cjPrev(){if(cIdx>0){cIdx--;cFlipped=false;renderCj();}}
+      function cjRate(r){cScores[r]++;cIdx++;cFlipped=false;renderCj();}
+
+      window.buildCjDeck=buildCjDeck;
+      window.cjFlip=cjFlip;
+      window.setCjTense=setCjTense;
+      window.setCjVerb=setCjVerb;
+      window.cjPrev=cjPrev;
+      window.cjRate=cjRate;
+
+      buildCjDeck();
+    })();
+    </script>
   </main>
 </Layout>
