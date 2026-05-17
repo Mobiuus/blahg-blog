@@ -1,7 +1,7 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
 const pathname = Astro.url.pathname;
-const isProjetActive = pathname === "/invest" || pathname === "/trafic";
+const isProjetActive = pathname === "/invest" || pathname === "/trafic" || pathname === "/spanish";
 ---
 <header>
     <div class="header-section">
@@ -28,6 +28,7 @@ const isProjetActive = pathname === "/invest" || pathname === "/trafic";
         <div class="dropdown-menu" role="menu">
             <HeaderLink href="/invest">invest</HeaderLink>
             <HeaderLink href="/trafic">trafic</HeaderLink>
+            <HeaderLink href="/spanish">spanish</HeaderLink>
         </div>
     </div>
 </nav>

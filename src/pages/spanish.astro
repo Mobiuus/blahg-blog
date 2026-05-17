@@ -1,0 +1,384 @@
+---
+import Layout from "../components/Layout.astro";
+---
+
+<Layout title="Flashcards Espagnol" description="200+ mots espagnols les plus courants en mode flashcards interactives — style Anki">
+  <main>
+    <h2>Flashcards Espagnol</h2>
+    <p>200+ mots espagnols les plus courants, organisés par catégorie.</p>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+
+    <style>
+      .fc-wrap * { box-sizing: border-box; }
+      .fc-wrap { padding: 1rem 0; font-family: system-ui, sans-serif; }
+      .stats-row { display: flex; gap: 8px; margin-bottom: 1rem; }
+      .stat { background: #f5f5f3; border-radius: 8px; padding: 10px 16px; flex: 1; text-align: center; }
+      .stat-val { font-size: 20px; font-weight: 500; }
+      .stat-lbl { font-size: 12px; color: #888; margin-top: 2px; }
+      .controls-row { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+      .cat-select, .mode-btn, .shuffle-btn { padding: 6px 12px; font-size: 13px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; }
+      .mode-btn.active { background: #f0f0ee; font-weight: 500; border-color: #999; }
+      .progress-bar-bg { background: #e5e5e5; border-radius: 4px; height: 4px; margin-bottom: 1.25rem; }
+      .progress-bar-fill { height: 4px; border-radius: 4px; background: #1D9E75; transition: width .3s; }
+      .card-scene { perspective: 1000px; width: 100%; height: 220px; cursor: pointer; margin-bottom: 1rem; }
+      .card-3d { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform .45s cubic-bezier(.4,0,.2,1); }
+      .card-3d.flipped { transform: rotateY(180deg); }
+      .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; border: 0.5px solid #ddd; background: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1.5rem; }
+      .card-face.back { transform: rotateY(180deg); background: #f9f9f7; }
+      .card-cat { font-size: 11px; color: #aaa; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+      .card-word { font-size: 36px; font-weight: 500; margin-bottom: 6px; }
+      .card-phonetic { font-size: 13px; color: #888; font-style: italic; }
+      .card-translation { font-size: 28px; font-weight: 500; margin-bottom: 8px; }
+      .card-example { font-size: 13px; color: #666; text-align: center; line-height: 1.5; }
+      .card-num { font-size: 12px; color: #aaa; text-align: center; margin-bottom: 6px; }
+      .nav-row, .rate-row { display: flex; gap: 8px; justify-content: center; margin-bottom: 1rem; }
+      .nav-btn { padding: 8px 20px; font-size: 14px; border-radius: 8px; border: 0.5px solid #ccc; background: #fff; cursor: pointer; }
+      .nav-btn:hover { background: #f5f5f3; }
+      .rate-btn { padding: 8px 18px; font-size: 13px; border-radius: 8px; border: 0.5px solid #ccc; cursor: pointer; font-weight: 500; }
+      .rate-easy { background: #EAF3DE; color: #3B6D11; border-color: #C0DD97; }
+      .rate-hard { background: #FAECE7; color: #993C1D; border-color: #F5C4B3; }
+      .rate-skip { background: #f5f5f3; color: #666; }
+      .done-panel { text-align: center; padding: 2rem; }
+      .done-panel h3 { font-size: 20px; font-weight: 500; margin-bottom: .5rem; }
+      .done-panel p { color: #666; font-size: 14px; margin-bottom: 1rem; }
+      @media (prefers-color-scheme: dark) {
+        .stat, .mode-btn.active, .rate-skip, .nav-btn:hover { background: #2a2a28; }
+        .card-face { background: #1e1e1c; border-color: #333; }
+        .card-face.back { background: #252523; }
+        .cat-select, .mode-btn, .shuffle-btn, .nav-btn { background: #1e1e1c; color: #eee; border-color: #444; }
+        .progress-bar-bg { background: #333; }
+      }
+    </style>
+
+    <div class="fc-wrap" id="fc-app"></div>
+
+    <script>
+      const ALL_CARDS = [
+        // ESSENTIELS
+        {cat:"essentiels",es:"sí",fr:"oui",ph:"si",ex:"Sí, claro — Oui, bien sûr"},
+        {cat:"essentiels",es:"no",fr:"non",ph:"no",ex:"No, gracias — Non, merci"},
+        {cat:"essentiels",es:"y",fr:"et",ph:"i",ex:"Tú y yo — Toi et moi"},
+        {cat:"essentiels",es:"o",fr:"ou",ph:"o",ex:"Café o té — Café ou thé"},
+        {cat:"essentiels",es:"pero",fr:"mais",ph:"péro",ex:"Quiero, pero no puedo — Je veux, mais je ne peux pas"},
+        {cat:"essentiels",es:"porque",fr:"parce que",ph:"porké",ex:"No vine porque estaba cansado"},
+        {cat:"essentiels",es:"que",fr:"que / qui",ph:"ké",ex:"Creo que sí — Je crois que oui"},
+        {cat:"essentiels",es:"con",fr:"avec",ph:"kon",ex:"Café con leche — Café au lait"},
+        {cat:"essentiels",es:"sin",fr:"sans",ph:"sin",ex:"Sin azúcar — Sans sucre"},
+        {cat:"essentiels",es:"para",fr:"pour",ph:"para",ex:"Esto es para ti — C'est pour toi"},
+        {cat:"essentiels",es:"por",fr:"par / pour",ph:"por",ex:"Gracias por todo — Merci pour tout"},
+        {cat:"essentiels",es:"como",fr:"comme / comment",ph:"komo",ex:"Como tú — Comme toi"},
+        {cat:"essentiels",es:"muy",fr:"très",ph:"moui",ex:"Es muy bueno — C'est très bon"},
+        {cat:"essentiels",es:"más",fr:"plus",ph:"mas",ex:"Quiero más — J'en veux plus"},
+        {cat:"essentiels",es:"menos",fr:"moins",ph:"ménos",ex:"Un poco menos — Un peu moins"},
+        {cat:"essentiels",es:"también",fr:"aussi",ph:"tambièn",ex:"Yo también — Moi aussi"},
+        {cat:"essentiels",es:"ya",fr:"déjà / maintenant",ph:"ya",ex:"Ya llegué — Je suis déjà arrivé"},
+        {cat:"essentiels",es:"todavía",fr:"encore / toujours",ph:"todavia",ex:"Todavía no — Pas encore"},
+        {cat:"essentiels",es:"solo",fr:"seulement / seul",ph:"solo",ex:"Solo un momento — Juste un instant"},
+        {cat:"essentiels",es:"aquí",fr:"ici",ph:"aki",ex:"Estoy aquí — Je suis ici"},
+        {cat:"essentiels",es:"allí",fr:"là-bas",ph:"ayi",ex:"Está allí — C'est là-bas"},
+        {cat:"essentiels",es:"ahora",fr:"maintenant",ph:"aora",ex:"Ven ahora — Viens maintenant"},
+        {cat:"essentiels",es:"hoy",fr:"aujourd'hui",ph:"oy",ex:"Hoy es lunes — Aujourd'hui c'est lundi"},
+        {cat:"essentiels",es:"mañana",fr:"demain / matin",ph:"mañana",ex:"Hasta mañana — À demain"},
+        {cat:"essentiels",es:"siempre",fr:"toujours",ph:"siempré",ex:"Siempre tarde — Toujours en retard"},
+        {cat:"essentiels",es:"nunca",fr:"jamais",ph:"nounka",ex:"Nunca lo haré — Je ne le ferai jamais"},
+        {cat:"essentiels",es:"mucho",fr:"beaucoup",ph:"mutcho",ex:"Muchas gracias — Merci beaucoup"},
+        {cat:"essentiels",es:"poco",fr:"peu",ph:"poko",ex:"Un poco — Un peu"},
+        {cat:"essentiels",es:"bien",fr:"bien",ph:"bièn",ex:"Todo está bien — Tout va bien"},
+        {cat:"essentiels",es:"mal",fr:"mal",ph:"mal",ex:"Me siento mal — Je me sens mal"},
+        // PRONOMS
+        {cat:"pronoms",es:"yo",fr:"je / moi",ph:"yo",ex:"Yo soy francés — Je suis français"},
+        {cat:"pronoms",es:"tú",fr:"tu / toi",ph:"tou",ex:"¿Tú hablas español? — Tu parles espagnol ?"},
+        {cat:"pronoms",es:"él",fr:"il / lui",ph:"él",ex:"Él trabaja aquí — Il travaille ici"},
+        {cat:"pronoms",es:"ella",fr:"elle",ph:"éya",ex:"Ella es mi amiga — C'est mon amie"},
+        {cat:"pronoms",es:"nosotros",fr:"nous",ph:"nosotros",ex:"Nosotros vamos — Nous y allons"},
+        {cat:"pronoms",es:"ellos",fr:"ils / eux",ph:"éyos",ex:"Ellos llegaron — Ils sont arrivés"},
+        {cat:"pronoms",es:"usted",fr:"vous (formel)",ph:"ousted",ex:"¿Usted habla inglés?"},
+        {cat:"pronoms",es:"me",fr:"me / moi",ph:"mé",ex:"Me llamo Valentín — Je m'appelle Valentín"},
+        {cat:"pronoms",es:"te",fr:"te / toi",ph:"té",ex:"Te quiero — Je t'aime"},
+        {cat:"pronoms",es:"se",fr:"se / soi",ph:"sé",ex:"Se llama Ana — Elle s'appelle Ana"},
+        {cat:"pronoms",es:"lo",fr:"le / lui",ph:"lo",ex:"No lo sé — Je ne sais pas"},
+        {cat:"pronoms",es:"la",fr:"la / elle",ph:"la",ex:"La veo mañana — Je la vois demain"},
+        {cat:"pronoms",es:"este / esta",fr:"ce / cette",ph:"ésté/ésta",ex:"Este libro — Ce livre"},
+        {cat:"pronoms",es:"ese / esa",fr:"ce / cette (éloigné)",ph:"ésé/ésa",ex:"Esa casa — Cette maison-là"},
+        // VERBES
+        {cat:"verbes",es:"ser",fr:"être (permanent)",ph:"sèr",ex:"Soy español — Je suis espagnol"},
+        {cat:"verbes",es:"estar",fr:"être (temporaire)",ph:"estar",ex:"Estoy bien — Je vais bien"},
+        {cat:"verbes",es:"tener",fr:"avoir",ph:"ténèr",ex:"Tengo hambre — J'ai faim"},
+        {cat:"verbes",es:"hacer",fr:"faire",ph:"asèr",ex:"¿Qué haces? — Qu'est-ce que tu fais ?"},
+        {cat:"verbes",es:"decir",fr:"dire",ph:"désir",ex:"No sé qué decir — Je ne sais pas quoi dire"},
+        {cat:"verbes",es:"ir",fr:"aller",ph:"ir",ex:"Voy al trabajo — Je vais au travail"},
+        {cat:"verbes",es:"ver",fr:"voir",ph:"vèr",ex:"¿Ves eso? — Tu vois ça ?"},
+        {cat:"verbes",es:"dar",fr:"donner",ph:"dar",ex:"Dame un momento — Donne-moi un instant"},
+        {cat:"verbes",es:"saber",fr:"savoir",ph:"sabèr",ex:"No lo sé — Je ne sais pas"},
+        {cat:"verbes",es:"querer",fr:"vouloir / aimer",ph:"kérèr",ex:"Quiero un café — Je veux un café"},
+        {cat:"verbes",es:"poder",fr:"pouvoir",ph:"podèr",ex:"¿Puedes ayudarme? — Tu peux m'aider ?"},
+        {cat:"verbes",es:"llegar",fr:"arriver",ph:"yégar",ex:"Llegué tarde — Je suis arrivé tard"},
+        {cat:"verbes",es:"pasar",fr:"passer / se passer",ph:"pasar",ex:"¿Qué pasa? — Qu'est-ce qui se passe ?"},
+        {cat:"verbes",es:"hablar",fr:"parler",ph:"ablar",ex:"Habla más despacio — Parle plus lentement"},
+        {cat:"verbes",es:"creer",fr:"croire / penser",ph:"kréèr",ex:"Creo que sí — Je pense que oui"},
+        {cat:"verbes",es:"poner",fr:"mettre / poser",ph:"ponèr",ex:"Pon la mesa — Mets la table"},
+        {cat:"verbes",es:"venir",fr:"venir",ph:"vénir",ex:"¿Vienes? — Tu viens ?"},
+        {cat:"verbes",es:"salir",fr:"sortir",ph:"salir",ex:"Salgo a las ocho — Je sors à huit heures"},
+        {cat:"verbes",es:"llevar",fr:"porter / emmener",ph:"yévar",ex:"Lleva el paraguas — Prends le parapluie"},
+        {cat:"verbes",es:"dejar",fr:"laisser / arrêter",ph:"déhar",ex:"Déjame en paz — Laisse-moi tranquille"},
+        {cat:"verbes",es:"seguir",fr:"suivre / continuer",ph:"ségir",ex:"Sigue recto — Continue tout droit"},
+        {cat:"verbes",es:"encontrar",fr:"trouver / rencontrer",ph:"enkontrar",ex:"¿Encontraste las llaves?"},
+        {cat:"verbes",es:"llamar",fr:"appeler",ph:"yamar",ex:"Te llamo luego — Je t'appelle plus tard"},
+        {cat:"verbes",es:"comer",fr:"manger",ph:"komèr",ex:"Vamos a comer — On va manger"},
+        {cat:"verbes",es:"beber",fr:"boire",ph:"bébèr",ex:"¿Quieres beber algo?"},
+        {cat:"verbes",es:"dormir",fr:"dormir",ph:"dormir",ex:"Necesito dormir — J'ai besoin de dormir"},
+        {cat:"verbes",es:"vivir",fr:"vivre / habiter",ph:"vivir",ex:"Vivo en París — J'habite à Paris"},
+        {cat:"verbes",es:"trabajar",fr:"travailler",ph:"trabahar",ex:"Trabajo en una empresa"},
+        {cat:"verbes",es:"comprar",fr:"acheter",ph:"komprar",ex:"Voy a comprar pan — Je vais acheter du pain"},
+        {cat:"verbes",es:"necesitar",fr:"avoir besoin de",ph:"nésésitar",ex:"Necesito ayuda — J'ai besoin d'aide"},
+        {cat:"verbes",es:"esperar",fr:"attendre / espérer",ph:"éspérar",ex:"Espera un momento — Attends un instant"},
+        {cat:"verbes",es:"pensar",fr:"penser",ph:"pénsar",ex:"¿Qué piensas? — Qu'est-ce que tu penses ?"},
+        {cat:"verbes",es:"empezar",fr:"commencer",ph:"émpésar",ex:"¿Cuándo empieza? — Ça commence quand ?"},
+        {cat:"verbes",es:"conocer",fr:"connaître",ph:"konosèr",ex:"¿Conoces Madrid? — Tu connais Madrid ?"},
+        {cat:"verbes",es:"entender",fr:"comprendre",ph:"éntendèr",ex:"No entiendo — Je ne comprends pas"},
+        {cat:"verbes",es:"recordar",fr:"se souvenir",ph:"rékordàr",ex:"No recuerdo — Je ne me souviens pas"},
+        {cat:"verbes",es:"olvidar",fr:"oublier",ph:"olvidar",ex:"Se me olvidó — Je l'ai oublié"},
+        {cat:"verbes",es:"ayudar",fr:"aider",ph:"ayoudar",ex:"¿Me puedes ayudar? — Tu peux m'aider ?"},
+        {cat:"verbes",es:"pagar",fr:"payer",ph:"pagar",ex:"¿Quién paga? — Qui paie ?"},
+        {cat:"verbes",es:"abrir",fr:"ouvrir",ph:"abrir",ex:"Abre la puerta — Ouvre la porte"},
+        {cat:"verbes",es:"volver",fr:"revenir / rentrer",ph:"volvèr",ex:"¿Cuándo vuelves? — Tu rentres quand ?"},
+        // NOMS COURANTS
+        {cat:"noms courants",es:"el tiempo",fr:"le temps (météo/durée)",ph:"tiémpo",ex:"¿Qué tiempo hace? — Quel temps fait-il ?"},
+        {cat:"noms courants",es:"la vida",fr:"la vie",ph:"vida",ex:"Así es la vida — C'est la vie"},
+        {cat:"noms courants",es:"la gente",fr:"les gens",ph:"hénté",ex:"Hay mucha gente — Il y a beaucoup de monde"},
+        {cat:"noms courants",es:"el día",fr:"le jour",ph:"dia",ex:"Buen día — Bonne journée"},
+        {cat:"noms courants",es:"la noche",fr:"la nuit",ph:"notché",ex:"Buenas noches — Bonne nuit"},
+        {cat:"noms courants",es:"el año",fr:"l'année",ph:"año",ex:"El año pasado — L'année dernière"},
+        {cat:"noms courants",es:"la cosa",fr:"la chose",ph:"kosa",ex:"Esa cosa — Cette chose-là"},
+        {cat:"noms courants",es:"el lugar",fr:"l'endroit",ph:"lougar",ex:"¿Cuál es el lugar? — C'est quel endroit ?"},
+        {cat:"noms courants",es:"la vez",fr:"la fois",ph:"vés",ex:"Otra vez — Encore une fois"},
+        {cat:"noms courants",es:"el mundo",fr:"le monde",ph:"moundo",ex:"Todo el mundo — Tout le monde"},
+        {cat:"noms courants",es:"el trabajo",fr:"le travail",ph:"trabaHo",ex:"Voy al trabajo — Je vais au travail"},
+        {cat:"noms courants",es:"la casa",fr:"la maison",ph:"kasa",ex:"En casa — À la maison"},
+        {cat:"noms courants",es:"el amigo",fr:"l'ami",ph:"amigo",ex:"Mi mejor amigo — Mon meilleur ami"},
+        {cat:"noms courants",es:"la mujer",fr:"la femme",ph:"mouHèr",ex:"Una mujer joven — Une jeune femme"},
+        {cat:"noms courants",es:"el hombre",fr:"l'homme",ph:"ombré",ex:"Un hombre mayor — Un homme âgé"},
+        {cat:"noms courants",es:"el niño",fr:"l'enfant",ph:"niño",ex:"El niño juega — L'enfant joue"},
+        {cat:"noms courants",es:"la ciudad",fr:"la ville",ph:"sioudad",ex:"La ciudad de Madrid — La ville de Madrid"},
+        {cat:"noms courants",es:"la calle",fr:"la rue",ph:"kayé",ex:"En la calle — Dans la rue"},
+        {cat:"noms courants",es:"el agua",fr:"l'eau",ph:"agwa",ex:"Un vaso de agua — Un verre d'eau"},
+        {cat:"noms courants",es:"la comida",fr:"la nourriture / le repas",ph:"komida",ex:"La comida está lista — Le repas est prêt"},
+        {cat:"noms courants",es:"el dinero",fr:"l'argent",ph:"dinéro",ex:"No tengo dinero — Je n'ai pas d'argent"},
+        {cat:"noms courants",es:"el problema",fr:"le problème",ph:"probléma",ex:"No hay problema — Pas de problème"},
+        {cat:"noms courants",es:"la idea",fr:"l'idée",ph:"idéa",ex:"Buena idea — Bonne idée"},
+        {cat:"noms courants",es:"el momento",fr:"le moment",ph:"moménto",ex:"En este momento — En ce moment"},
+        {cat:"noms courants",es:"la semana",fr:"la semaine",ph:"sémana",ex:"Esta semana — Cette semaine"},
+        {cat:"noms courants",es:"el mes",fr:"le mois",ph:"més",ex:"El mes pasado — Le mois dernier"},
+        // ADJECTIFS
+        {cat:"adjectifs",es:"bueno/a",fr:"bon / bonne",ph:"bouéno",ex:"Muy buena idea — Très bonne idée"},
+        {cat:"adjectifs",es:"malo/a",fr:"mauvais / mauvaise",ph:"malo",ex:"Es una mala señal — C'est un mauvais signe"},
+        {cat:"adjectifs",es:"grande",fr:"grand / grande",ph:"grandé",ex:"Una ciudad grande — Une grande ville"},
+        {cat:"adjectifs",es:"pequeño/a",fr:"petit / petite",ph:"pékéño",ex:"Un apartamento pequeño — Un petit appartement"},
+        {cat:"adjectifs",es:"nuevo/a",fr:"nouveau / nouvelle",ph:"nouévo",ex:"Un coche nuevo — Une nouvelle voiture"},
+        {cat:"adjectifs",es:"viejo/a",fr:"vieux / vieille",ph:"viéHo",ex:"Un libro viejo — Un vieux livre"},
+        {cat:"adjectifs",es:"mismo/a",fr:"même",ph:"mismo",ex:"La misma cosa — La même chose"},
+        {cat:"adjectifs",es:"otro/a",fr:"autre",ph:"otro",ex:"Otro día — Un autre jour"},
+        {cat:"adjectifs",es:"todo/a",fr:"tout / toute",ph:"todo",ex:"Todo el día — Toute la journée"},
+        {cat:"adjectifs",es:"primero/a",fr:"premier / première",ph:"priméro",ex:"La primera vez — La première fois"},
+        {cat:"adjectifs",es:"último/a",fr:"dernier / dernière",ph:"oultimo",ex:"El último tren — Le dernier train"},
+        {cat:"adjectifs",es:"diferente",fr:"différent",ph:"diférenté",ex:"Es diferente — C'est différent"},
+        {cat:"adjectifs",es:"importante",fr:"important",ph:"importanté",ex:"Muy importante — Très important"},
+        {cat:"adjectifs",es:"posible",fr:"possible",ph:"posiblé",ex:"¿Es posible? — C'est possible ?"},
+        {cat:"adjectifs",es:"seguro/a",fr:"sûr / certain",ph:"séguro",ex:"¿Estás seguro? — Tu es sûr ?"},
+        {cat:"adjectifs",es:"fácil",fr:"facile",ph:"fasil",ex:"Es muy fácil — C'est très facile"},
+        {cat:"adjectifs",es:"bonito/a",fr:"joli / beau",ph:"bonito",ex:"¡Qué bonito! — Que c'est joli !"},
+        {cat:"adjectifs",es:"rápido/a",fr:"rapide",ph:"rapido",ex:"Es muy rápido — C'est très rapide"},
+        {cat:"adjectifs",es:"barato/a",fr:"pas cher / bon marché",ph:"barato",ex:"Es barato — Ce n'est pas cher"},
+        {cat:"adjectifs",es:"caro/a",fr:"cher / coûteux",ph:"karo",ex:"Es demasiado caro — C'est trop cher"},
+        // INTERROGATIFS
+        {cat:"interrogatifs",es:"¿qué?",fr:"quoi / que / quel",ph:"ké",ex:"¿Qué quieres? — Qu'est-ce que tu veux ?"},
+        {cat:"interrogatifs",es:"¿quién?",fr:"qui",ph:"kièn",ex:"¿Quién es? — Qui est-ce ?"},
+        {cat:"interrogatifs",es:"¿cómo?",fr:"comment",ph:"komo",ex:"¿Cómo estás? — Comment vas-tu ?"},
+        {cat:"interrogatifs",es:"¿cuándo?",fr:"quand",ph:"kouando",ex:"¿Cuándo llega? — Quand arrive-t-il ?"},
+        {cat:"interrogatifs",es:"¿dónde?",fr:"où",ph:"dondé",ex:"¿Dónde estás? — Où es-tu ?"},
+        {cat:"interrogatifs",es:"¿por qué?",fr:"pourquoi",ph:"por ké",ex:"¿Por qué no? — Pourquoi pas ?"},
+        {cat:"interrogatifs",es:"¿cuánto?",fr:"combien",ph:"kouanto",ex:"¿Cuánto cuesta? — Combien ça coûte ?"},
+        {cat:"interrogatifs",es:"¿cuál?",fr:"lequel / quel",ph:"koual",ex:"¿Cuál prefieres? — Lequel tu préfères ?"},
+        // SOCIAL
+        {cat:"social",es:"hola",fr:"bonjour / salut",ph:"ola",ex:"¡Hola! ¿Qué tal? — Salut ! Comment ça va ?"},
+        {cat:"social",es:"adiós",fr:"au revoir",ph:"adios",ex:"¡Hasta luego! — À bientôt !"},
+        {cat:"social",es:"gracias",fr:"merci",ph:"grasias",ex:"Muchas gracias — Merci beaucoup"},
+        {cat:"social",es:"por favor",fr:"s'il vous plaît",ph:"por favor",ex:"¿Me ayudas, por favor?"},
+        {cat:"social",es:"de nada",fr:"de rien",ph:"dé nada",ex:"— Gracias. — De nada."},
+        {cat:"social",es:"lo siento",fr:"je suis désolé",ph:"lo siénto",ex:"Lo siento mucho — Je suis vraiment désolé"},
+        {cat:"social",es:"perdón",fr:"pardon / excuse-moi",ph:"pèrdon",ex:"Perdón, ¿puedes repetir?"},
+        {cat:"social",es:"no entiendo",fr:"je ne comprends pas",ph:"no éntiéndo",ex:"No entiendo, ¿puedes repetir?"},
+        {cat:"social",es:"¿qué tal?",fr:"comment ça va ?",ph:"ké tal",ex:"¿Qué tal el trabajo? — Comment va le travail ?"},
+        {cat:"social",es:"claro",fr:"bien sûr / évidemment",ph:"klaro",ex:"Claro que sí — Bien sûr que oui"},
+        {cat:"social",es:"vale",fr:"d'accord (Espagne)",ph:"balé",ex:"Vale, nos vemos — D'accord, on se voit"},
+        {cat:"social",es:"¡venga!",fr:"allez ! / vas-y !",ph:"bénga",ex:"¡Venga, vamos! — Allez, on y va !"},
+        // NOMBRES & TEMPS
+        {cat:"nombres & temps",es:"uno",fr:"un",ph:"ouno",ex:"Número uno — Numéro un"},
+        {cat:"nombres & temps",es:"dos",fr:"deux",ph:"dos",ex:"Dos cafés, por favor"},
+        {cat:"nombres & temps",es:"tres",fr:"trois",ph:"très",ex:"Tres días — Trois jours"},
+        {cat:"nombres & temps",es:"diez",fr:"dix",ph:"diès",ex:"Diez minutos — Dix minutes"},
+        {cat:"nombres & temps",es:"cien",fr:"cent",ph:"sièn",ex:"Cien euros — Cent euros"},
+        {cat:"nombres & temps",es:"lunes",fr:"lundi",ph:"lounès",ex:"El lunes que viene — Lundi prochain"},
+        {cat:"nombres & temps",es:"viernes",fr:"vendredi",ph:"viérnès",ex:"El viernes por la noche — Vendredi soir"},
+        {cat:"nombres & temps",es:"enero",fr:"janvier",ph:"énéro",ex:"En enero — En janvier"},
+        {cat:"nombres & temps",es:"verano",fr:"été",ph:"bérano",ex:"En verano — En été"},
+        // VIE QUOTIDIENNE
+        {cat:"vie quotidienne",es:"el coche",fr:"la voiture",ph:"kotché",ex:"Mi coche no arranca — Ma voiture ne démarre pas"},
+        {cat:"vie quotidienne",es:"el tren",fr:"le train",ph:"trèn",ex:"El tren sale a las ocho"},
+        {cat:"vie quotidienne",es:"el avión",fr:"l'avion",ph:"avion",ex:"El avión llegó tarde — L'avion est arrivé en retard"},
+        {cat:"vie quotidienne",es:"el hotel",fr:"l'hôtel",ph:"otèl",ex:"¿Tienes una habitación?"},
+        {cat:"vie quotidienne",es:"el restaurante",fr:"le restaurant",ph:"restauranté",ex:"¿Hay un buen restaurante cerca?"},
+        {cat:"vie quotidienne",es:"la cuenta",fr:"l'addition / le compte",ph:"kouénta",ex:"La cuenta, por favor"},
+        {cat:"vie quotidienne",es:"el teléfono",fr:"le téléphone",ph:"téléfono",ex:"Mi teléfono no tiene batería"},
+        {cat:"vie quotidienne",es:"la tienda",fr:"le magasin",ph:"tiénda",ex:"La tienda está cerrada — Le magasin est fermé"},
+        {cat:"vie quotidienne",es:"el banco",fr:"la banque",ph:"banko",ex:"Necesito ir al banco"},
+        {cat:"vie quotidienne",es:"el precio",fr:"le prix",ph:"préssio",ex:"¿Cuál es el precio? — Quel est le prix ?"},
+        {cat:"vie quotidienne",es:"la llave",fr:"la clé",ph:"yavé",ex:"¿Dónde están mis llaves? — Où sont mes clés ?"},
+        {cat:"vie quotidienne",es:"la habitación",fr:"la chambre",ph:"abitasion",ex:"La habitación es grande"},
+        {cat:"vie quotidienne",es:"el baño",fr:"les toilettes / salle de bain",ph:"baño",ex:"¿Dónde está el baño?"},
+        {cat:"vie quotidienne",es:"el supermercado",fr:"le supermarché",ph:"soupermérkado",ex:"Voy al supermercado"},
+        {cat:"vie quotidienne",es:"la tarde",fr:"l'après-midi / le soir",ph:"tardé",ex:"Por la tarde — Dans l'après-midi"},
+        {cat:"vie quotidienne",es:"temprano",fr:"tôt",ph:"témrano",ex:"Llegué temprano — Je suis arrivé tôt"},
+        {cat:"vie quotidienne",es:"tarde",fr:"tard / en retard",ph:"tardé",ex:"Llegar tarde — Arriver en retard"},
+        // ÉMOTIONS
+        {cat:"émotions",es:"feliz",fr:"heureux / heureuse",ph:"féliss",ex:"Estoy muy feliz — Je suis très heureux"},
+        {cat:"émotions",es:"triste",fr:"triste",ph:"tristé",ex:"Me siento triste — Je me sens triste"},
+        {cat:"émotions",es:"cansado/a",fr:"fatigué / fatiguée",ph:"kansado",ex:"Estoy muy cansado — Je suis très fatigué"},
+        {cat:"émotions",es:"nervioso/a",fr:"nerveux / nerveuse",ph:"nérvioso",ex:"Estoy nervioso — Je suis nerveux"},
+        {cat:"émotions",es:"enfadado/a",fr:"en colère / fâché",ph:"énfadado",ex:"Está enfadado — Il est en colère"},
+        {cat:"émotions",es:"tranquilo/a",fr:"calme / tranquille",ph:"trankilo",ex:"Estoy tranquilo — Je suis calme"},
+        {cat:"émotions",es:"preocupado/a",fr:"inquiet / préoccupé",ph:"préokoupado",ex:"Estoy preocupado — Je suis inquiet"},
+        {cat:"émotions",es:"contento/a",fr:"content / satisfait",ph:"konténto",ex:"Estoy muy contento — Je suis très content"},
+        {cat:"émotions",es:"aburrido/a",fr:"ennuyé / qui s'ennuie",ph:"abourido",ex:"Estoy aburrido — Je m'ennuie"},
+        {cat:"émotions",es:"sorprendido/a",fr:"surpris / étonnée",ph:"sorprèndido",ex:"Estoy sorprendido — Je suis surpris"},
+        // FAMILLE
+        {cat:"famille",es:"la madre",fr:"la mère",ph:"madré",ex:"Mi madre es médica — Ma mère est médecin"},
+        {cat:"famille",es:"el padre",fr:"le père",ph:"padré",ex:"Mi padre trabaja mucho — Mon père travaille beaucoup"},
+        {cat:"famille",es:"el hermano",fr:"le frère",ph:"érmano",ex:"Tengo un hermano — J'ai un frère"},
+        {cat:"famille",es:"la hermana",fr:"la sœur",ph:"érmana",ex:"Mi hermana vive en Lyon — Ma sœur habite à Lyon"},
+        {cat:"famille",es:"el hijo",fr:"le fils",ph:"iHo",ex:"Tiene un hijo — Il a un fils"},
+        {cat:"famille",es:"la hija",fr:"la fille",ph:"iHa",ex:"Su hija tiene cinco años"},
+        {cat:"famille",es:"la pareja",fr:"le/la partenaire / le couple",ph:"paréHa",ex:"Mi pareja y yo — Mon/ma partenaire et moi"},
+        {cat:"famille",es:"el abuelo",fr:"le grand-père",ph:"abouélo",ex:"Mi abuelo tiene ochenta años"},
+        // CORPS & SANTÉ
+        {cat:"corps & santé",es:"la cabeza",fr:"la tête",ph:"kabésa",ex:"Me duele la cabeza — J'ai mal à la tête"},
+        {cat:"corps & santé",es:"el ojo",fr:"l'œil",ph:"oHo",ex:"Tengo algo en el ojo — J'ai quelque chose dans l'œil"},
+        {cat:"corps & santé",es:"la mano",fr:"la main",ph:"mano",ex:"Dame la mano — Donne-moi la main"},
+        {cat:"corps & santé",es:"el dolor",fr:"la douleur",ph:"dolor",ex:"Tengo dolor de espalda — J'ai mal au dos"},
+        {cat:"corps & santé",es:"enfermo/a",fr:"malade",ph:"énfermo",ex:"Estoy enfermo — Je suis malade"},
+        {cat:"corps & santé",es:"la farmacia",fr:"la pharmacie",ph:"farmasia",ex:"¿Dónde hay una farmacia? — Où est la pharmacie ?"},
+        {cat:"corps & santé",es:"el hospital",fr:"l'hôpital",ph:"ospital",ex:"Hay que ir al hospital — Il faut aller à l'hôpital"},
+        {cat:"corps & santé",es:"la pastilla",fr:"le comprimé / le cachet",ph:"pastiya",ex:"Toma dos pastillas — Prends deux comprimés"},
+        // NOURRITURE
+        {cat:"nourriture",es:"el pan",fr:"le pain",ph:"pan",ex:"¿Tienes pan? — Tu as du pain ?"},
+        {cat:"nourriture",es:"la carne",fr:"la viande",ph:"karné",ex:"No como carne — Je ne mange pas de viande"},
+        {cat:"nourriture",es:"el pescado",fr:"le poisson",ph:"péskado",ex:"El pescado está fresco — Le poisson est frais"},
+        {cat:"nourriture",es:"la fruta",fr:"le fruit",ph:"frouta",ex:"¿Quieres fruta? — Tu veux des fruits ?"},
+        {cat:"nourriture",es:"la verdura",fr:"le légume",ph:"vèrdoura",ex:"Hay que comer verduras"},
+        {cat:"nourriture",es:"el vino",fr:"le vin",ph:"vino",ex:"Una copa de vino — Un verre de vin"},
+        {cat:"nourriture",es:"la cerveza",fr:"la bière",ph:"sèrvésa",ex:"Una cerveza fría — Une bière fraîche"},
+        {cat:"nourriture",es:"la leche",fr:"le lait",ph:"létché",ex:"Café con leche — Café au lait"},
+        // DIRECTIONS
+        {cat:"directions",es:"a la derecha",fr:"à droite",ph:"dérécha",ex:"Gira a la derecha — Tourne à droite"},
+        {cat:"directions",es:"a la izquierda",fr:"à gauche",ph:"iskièrda",ex:"Está a la izquierda — C'est à gauche"},
+        {cat:"directions",es:"todo recto",fr:"tout droit",ph:"rékto",ex:"Sigue todo recto — Continue tout droit"},
+        {cat:"directions",es:"cerca",fr:"près / proche",ph:"sèrka",ex:"Está muy cerca — C'est tout près"},
+        {cat:"directions",es:"lejos",fr:"loin",ph:"léHos",ex:"¿Está lejos? — C'est loin ?"},
+        {cat:"directions",es:"arriba",fr:"en haut",ph:"ariba",ex:"Está arriba — C'est en haut"},
+        {cat:"directions",es:"abajo",fr:"en bas",ph:"abaHo",ex:"Está abajo — C'est en bas"},
+        {cat:"directions",es:"enfrente",fr:"en face",ph:"énfrenté",ex:"Está enfrente — C'est en face"},
+        // MÉTÉO
+        {cat:"météo",es:"hace calor",fr:"il fait chaud",ph:"asé kalor",ex:"Hoy hace mucho calor — Il fait très chaud aujourd'hui"},
+        {cat:"météo",es:"hace frío",fr:"il fait froid",ph:"asé frio",ex:"Hace mucho frío — Il fait très froid"},
+        {cat:"météo",es:"llueve",fr:"il pleut",ph:"youévé",ex:"Está lloviendo — Il est en train de pleuvoir"},
+        {cat:"météo",es:"el sol",fr:"le soleil",ph:"sol",ex:"Hace sol — Il y a du soleil"},
+        {cat:"météo",es:"nublado",fr:"nuageux / couvert",ph:"noublado",ex:"Está nublado — C'est couvert"},
+        {cat:"météo",es:"el viento",fr:"le vent",ph:"viénto",ex:"Hace mucho viento — Il y a beaucoup de vent"},
+      ];
+
+      const CATS = ["tous", ...Array.from(new Set(ALL_CARDS.map(c => c.cat)))];
+      let deck = [], idx = 0, flipped = false, mode = "es→fr";
+      let scores = {easy:0, hard:0, skip:0};
+
+      function shuffle(arr) {
+        const a = [...arr];
+        for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+        return a;
+      }
+
+      function buildDeck(cat) {
+        deck = shuffle(cat === "tous" ? ALL_CARDS : ALL_CARDS.filter(c => c.cat === cat));
+        idx = 0; flipped = false; scores = {easy:0,hard:0,skip:0};
+        render();
+      }
+
+      function currentCat() {
+        const s = document.getElementById('catSel');
+        return s ? s.value : "tous";
+      }
+
+      function render() {
+        const app = document.getElementById('fc-app');
+        if (idx >= deck.length) {
+          app.innerHTML = `<div class="done-panel"><h3>Deck terminé !</h3><p>Facile : ${scores.easy} · Difficile : ${scores.hard} · Passé : ${scores.skip}</p><div class="nav-row"><button class="nav-btn" onclick="buildDeck(currentCat())">Recommencer</button></div></div>`;
+          return;
+        }
+        const card = deck[idx];
+        const front = mode === "es→fr" ? card.es : card.fr;
+        const back  = mode === "es→fr" ? card.fr : card.es;
+        const pct = Math.round(idx / deck.length * 100);
+        app.innerHTML = `
+          <div class="stats-row">
+            <div class="stat"><div class="stat-val">${deck.length}</div><div class="stat-lbl">cartes</div></div>
+            <div class="stat"><div class="stat-val">${idx}</div><div class="stat-lbl">vues</div></div>
+            <div class="stat"><div class="stat-val" style="color:#3B6D11">${scores.easy}</div><div class="stat-lbl">faciles</div></div>
+            <div class="stat"><div class="stat-val" style="color:#993C1D">${scores.hard}</div><div class="stat-lbl">difficiles</div></div>
+          </div>
+          <div class="controls-row">
+            <select class="cat-select" id="catSel" onchange="buildDeck(this.value)">
+              ${CATS.map(c=>`<option value="${c}"${c===currentCat()?' selected':''}>${c}</option>`).join('')}
+            </select>
+            <button class="mode-btn${mode==='es→fr'?' active':''}" onclick="setMode('es→fr')">ES → FR</button>
+            <button class="mode-btn${mode==='fr→es'?' active':''}" onclick="setMode('fr→es')">FR → ES</button>
+            <button class="shuffle-btn" onclick="buildDeck(currentCat())">Mélanger</button>
+          </div>
+          <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%"></div></div>
+          <div class="card-num">${idx+1} / ${deck.length}</div>
+          <div class="card-scene" onclick="flipCard()">
+            <div class="card-3d${flipped?' flipped':''}">
+              <div class="card-face front">
+                <div class="card-cat">${card.cat}</div>
+                <div class="card-word">${front}</div>
+                ${mode==='es→fr'&&card.ph?`<div class="card-phonetic">[${card.ph}]</div>`:''}
+                <div style="font-size:12px;color:#aaa;margin-top:12px">Cliquer pour retourner</div>
+              </div>
+              <div class="card-face back">
+                <div class="card-cat">${card.cat}</div>
+                <div class="card-translation">${back}</div>
+                <div class="card-example">${card.ex}</div>
+              </div>
+            </div>
+          </div>
+          ${flipped ? `
+          <div class="rate-row">
+            <button class="rate-btn rate-hard" onclick="rate('hard')">Difficile</button>
+            <button class="rate-btn rate-skip" onclick="rate('skip')">Passer</button>
+            <button class="rate-btn rate-easy" onclick="rate('easy')">Facile</button>
+          </div>` : `
+          <div class="nav-row">
+            <button class="nav-btn" onclick="prevCard()"${idx===0?' disabled':''}>← Préc.</button>
+            <button class="nav-btn" onclick="flipCard()">Retourner</button>
+            <button class="nav-btn" onclick="rate('skip')">Suivant →</button>
+          </div>`}`;
+      }
+
+      function flipCard() { flipped = !flipped; render(); }
+      function setMode(m) { mode = m; buildDeck(currentCat()); }
+      function prevCard() { if(idx>0){idx--;flipped=false;render();} }
+      function rate(r) { scores[r]++; idx++; flipped=false; render(); }
+
+      buildDeck("tous");
+    </script>
+  </main>
+</Layout>
