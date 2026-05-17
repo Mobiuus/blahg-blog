@@ -5,11 +5,8 @@ import Layout from "../components/Layout.astro";
 <Layout title="Flashcards Espagnol" description="200+ mots espagnols les plus courants en mode flashcards interactives — style Anki">
   <main>
     <h2>Flashcards Espagnol</h2>
-    <p>200+ mots espagnols les plus courants, organisés par catégorie.</p>
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-
-    <style>
+    <style is:global>
       .fc-wrap * { box-sizing: border-box; }
       .fc-wrap { padding: 1rem 0; font-family: system-ui, sans-serif; }
       .stats-row { display: flex; gap: 8px; margin-bottom: 1rem; }
@@ -53,7 +50,7 @@ import Layout from "../components/Layout.astro";
 
     <div class="fc-wrap" id="fc-app"></div>
 
-    <script>
+    <script is:inline>
       const ALL_CARDS = [
         // ESSENTIELS
         {cat:"essentiels",es:"sí",fr:"oui",ph:"si",ex:"Sí, claro — Oui, bien sûr"},
