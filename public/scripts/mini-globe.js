@@ -1,9 +1,9 @@
 // Mini-Terre du dossier « invest » dans le menu : contours des continents, rotation lente.
 // Même rendu que le globe de /invest (d3-geo, world-atlas 110m), en miniature.
-import { geoOrthographic, geoPath } from "https://cdn.jsdelivr.net/npm/d3-geo@3/+esm";
-import { feature } from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
+import { geoOrthographic, geoPath } from "https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/+esm";
+import { feature } from "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm";
 
-const LAND_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json";
+const LAND_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json";
 const SVG_NS = "http://www.w3.org/2000/svg";
 const SPEED = 0.25; // degrés par frame
 

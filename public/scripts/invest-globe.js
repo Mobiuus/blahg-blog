@@ -1,9 +1,9 @@
 // Globe 3D stylisé de la page /invest : contours des continents + épingles par projet.
 // Rendu SVG avec d3-geo (projection orthographique), données terrestres world-atlas 110m.
-import { geoOrthographic, geoPath, geoGraticule10, geoDistance } from "https://cdn.jsdelivr.net/npm/d3-geo@3/+esm";
-import { feature } from "https://cdn.jsdelivr.net/npm/topojson-client@3/+esm";
+import { geoOrthographic, geoPath, geoGraticule10, geoDistance } from "https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/+esm";
+import { feature } from "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm";
 
-const LAND_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2/land-110m.json";
+const LAND_URL = "https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/land-110m.json";
 const SVG_NS = "http://www.w3.org/2000/svg";
 const SIZE = 600; // taille du viewBox
 const MIN_ZOOM = 1;

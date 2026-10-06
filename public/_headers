@@ -1,3 +1,15 @@
-# Netlify : désindexation de tout le site (moteurs de recherche et IA)
+# Netlify : en-têtes appliqués à tout le site
+# - X-Robots-Tag : désindexation (moteurs de recherche et IA)
+# - X-Frame-Options / frame-ancestors : pas d'intégration du site dans une page tierce (clickjacking)
+# - X-Content-Type-Options : pas d'interprétation d'un fichier sous un autre type MIME
+# - Referrer-Policy : seule l'origine (pas l'URL complète) est transmise aux sites tiers
+# - Permissions-Policy : capteurs du navigateur désactivés (le site n'en utilise aucun)
+# - Strict-Transport-Security : HTTPS obligatoire pendant 1 an
 /*
   X-Robots-Tag: noindex, nofollow, noarchive, nosnippet, noimageindex, noai, noimageai
+  X-Frame-Options: SAMEORIGIN
+  Content-Security-Policy: frame-ancestors 'self'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()
+  Strict-Transport-Security: max-age=31536000

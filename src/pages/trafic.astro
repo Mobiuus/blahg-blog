@@ -117,6 +117,11 @@ import { SITE_TITLE } from "../config";
     return [...map.entries()];
   }
 
+  // ── Échappe le texte venant de l'API avant de l'insérer en HTML ──
+  function escapeHtml(value: unknown): string {
+    return String(value).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c] as string);
+  }
+
   // ── Format time display ──
   function fmtTime(min: number): string {
     if (min === 0) return "à quai";
@@ -143,7 +148,7 @@ import { SITE_TITLE } from "../config";
                 .map(
                   ([dest, deps]) => `
               <div class="dep-row">
-                <span class="dep-dest">${dest}</span>
+                <span class="dep-dest">${escapeHtml(dest)}</span>
                 <span class="dep-times">
                   ${deps
                     .map(
@@ -204,7 +209,7 @@ import { SITE_TITLE } from "../config";
         footer.textContent = `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
       }
     } catch (e) {
-      board.innerHTML = `<div class="board-msg"><p>erreur de chargement</p><p class="board-hint">${e}</p></div>`;
+      board.innerHTML = `<div class="board-msg"><p>erreur de chargement</p><p class="board-hint">${escapeHtml(e)}</p></div>`;
     }
   }
 
