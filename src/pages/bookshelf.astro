@@ -3,10 +3,13 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { getAllBooks } from "../lib/books";
+import { getAllBooks, getToReadBooks } from "../lib/books";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
-const books = getAllBooks();
+const shelves = [
+  { title: "Pile à lire", books: getToReadBooks() },
+  { title: "Lu !", books: getAllBooks() },
+];
 ---
 
 <html lang="en">
@@ -18,6 +21,21 @@ const books = getAllBooks();
         font-size: 1.2em;
         margin-bottom: 20px;
         color: #888;
+      }
+      /* sort de la colonne 70ch du body pour élargir les étagères */
+      .shelves {
+        width: min(1100px, 100vw - 2.5rem);
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .shelf + .shelf {
+        margin-top: 30px;
+      }
+      .shelf-title {
+        text-align: left;
+        margin: 0;
+        padding: 0 40px;
       }
       .bookshelf-container {
         position: relative;
@@ -143,15 +161,14 @@ const books = getAllBooks();
       .scroll-right { right: 0; }
       .book-details {
         display: none;
-        margin-top: 40px;
-        padding: 40px;
-        border-top: 1px solid #333;
+        margin-top: 10px;
+        padding: 0 40px;
         text-align: left;
       }
       .book-details h3 {
         margin: 0;
         font-size: 1.4em;
-        color: #fff;
+        color: var(--text-color);
         font-weight: bold;
         text-align: left;
       }
@@ -182,29 +199,36 @@ const books = getAllBooks();
           </filter>
         </defs>
       </svg>
-      <div class="bookshelf-container">
-        <div class="scroll-arrow scroll-left"><FaChevronLeft /></div>
-        <div class="scroll-arrow scroll-right"><FaChevronRight /></div>
-        <div class="bookshelf" id="bookshelf">
-          {books.map((book) => (
-            <div class="book-container">
-              <div class="book" data-slug={book.slug} data-author={book.author} data-summary={book.summary}>
-                <div 
-                  class="book-spine"
-                  style={`background-color: ${book.spineColor}; color: ${book.textColor};`}
-                >
-                  {book.title}
-                </div>
-                <div 
-                  class="book-cover" 
-                  style={`background-image: url(${book.coverImage});`}
-                ></div>
+      <div class="shelves">
+        {shelves.map((shelf) => (
+          <section class="shelf">
+            <h2 class="bookshelf-title shelf-title">{shelf.title}</h2>
+            <div class="bookshelf-container">
+              <div class="scroll-arrow scroll-left"><FaChevronLeft /></div>
+              <div class="scroll-arrow scroll-right"><FaChevronRight /></div>
+              <div class="bookshelf">
+                {shelf.books.map((book) => (
+                  <div class="book-container">
+                    <div class="book" data-slug={book.slug} data-author={book.author}>
+                      <div
+                        class="book-spine"
+                        style={`background-color: ${book.spineColor}; color: ${book.textColor};`}
+                      >
+                        {book.title}
+                      </div>
+                      <div
+                        class="book-cover"
+                        style={`background-image: url(${book.coverImage});`}
+                      ></div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+            <div class="book-details"></div>
+          </section>
+        ))}
       </div>
-      <div id="book-details" class="book-details"></div>
     </main>
     <Footer />
     <script>
@@ -220,118 +244,116 @@ const books = getAllBooks();
         summary: string;
       }
 
-      const bookshelf = document.getElementById('bookshelf');
-      const books: NodeListOf<Element> = document.querySelectorAll('.book');
-      const scrollLeftArrow = document.querySelector('.scroll-left');
-      const scrollRightArrow = document.querySelector('.scroll-right');
-      const bookDetails = document.getElementById('book-details');
-      let scrollPosition = 0;
-      let scrollInterval: number | null = null;
+      // Chaque étagère a son propre défilement et ses propres détails
+      document.querySelectorAll('.shelf').forEach((shelf) => {
+        const bookshelf = shelf.querySelector('.bookshelf');
+        const books: NodeListOf<Element> = shelf.querySelectorAll('.book');
+        const scrollLeftArrow = shelf.querySelector('.scroll-left');
+        const scrollRightArrow = shelf.querySelector('.scroll-right');
+        const bookDetails = shelf.querySelector<HTMLElement>('.book-details');
+        let scrollPosition = 0;
+        let scrollInterval: number | null = null;
 
-      function scroll(direction: number) {
-        if (!bookshelf) return;
-        const scrollAmount = 3;
-        scrollPosition += direction * scrollAmount;
-        const maxScroll = bookshelf.scrollWidth - bookshelf.clientWidth;
-        scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
-        (bookshelf as HTMLElement).style.transform = `translateX(${-scrollPosition}px)`;
+        function scroll(direction: number) {
+          if (!bookshelf) return;
+          const scrollAmount = 3;
+          scrollPosition += direction * scrollAmount;
+          const maxScroll = bookshelf.scrollWidth - bookshelf.clientWidth;
+          scrollPosition = Math.max(0, Math.min(scrollPosition, maxScroll));
+          (bookshelf as HTMLElement).style.transform = `translateX(${-scrollPosition}px)`;
 
-        if (scrollLeftArrow) (scrollLeftArrow as HTMLElement).style.display = scrollPosition > 0 ? 'block' : 'none';
-        if (scrollRightArrow) (scrollRightArrow as HTMLElement).style.display = scrollPosition < maxScroll ? 'block' : 'none';
-      }
-
-      function startScroll(direction: number) {
-        stopScroll();
-        scrollInterval = window.setInterval(() => scroll(direction), 16);
-      }
-
-      function stopScroll() {
-        if (scrollInterval !== null) {
-          clearInterval(scrollInterval);
+          if (scrollLeftArrow) (scrollLeftArrow as HTMLElement).style.display = scrollPosition > 0 ? 'block' : 'none';
+          if (scrollRightArrow) (scrollRightArrow as HTMLElement).style.display = scrollPosition < maxScroll ? 'block' : 'none';
         }
-      }
 
-      if (scrollLeftArrow) {
-        scrollLeftArrow.addEventListener('mouseenter', () => startScroll(-1));
-        scrollLeftArrow.addEventListener('mouseleave', stopScroll);
-      }
-      if (scrollRightArrow) {
-        scrollRightArrow.addEventListener('mouseenter', () => startScroll(1));
-        scrollRightArrow.addEventListener('mouseleave', stopScroll);
-      }
+        function startScroll(direction: number) {
+          stopScroll();
+          scrollInterval = window.setInterval(() => scroll(direction), 16);
+        }
 
-      books.forEach((book) => {
-        book.addEventListener('click', () => {
-          const container = book.closest('.book-container');
-          if (!container) return;
-          const isOpening = !container.classList.contains('open');
-          
-          books.forEach((b) => {
-            const cont = b.closest('.book-container');
-            if (!cont) return;
-            b.classList.remove('open');
-            cont.classList.remove('open');
-            (cont as HTMLElement).style.width = '41.5px';
-            (cont as HTMLElement).style.marginLeft = '0';
-            (cont as HTMLElement).style.transform = 'translateX(0)';
-          });
-          
-          if (isOpening) {
-            book.classList.add('open');
-            container.classList.add('open');
-            (container as HTMLElement).style.width = '207.5px';
-            (container as HTMLElement).style.marginLeft = '-29px';
-            
-            // Décaler les livres à gauche
-            let prevSibling = container.previousElementSibling;
-            let leftShift = 29;
-            while (prevSibling) {
-              (prevSibling as HTMLElement).style.transform = `translateX(-${leftShift}px)`;
-              prevSibling = prevSibling.previousElementSibling;
-            }
-            
-            // Décaler les livres à droite
-            let nextSibling = container.nextElementSibling;
-            let rightShift = -40;
-            while (nextSibling) {
-              (nextSibling as HTMLElement).style.transform = `translateX(${rightShift}px)`;
-              nextSibling = nextSibling.nextElementSibling;
-            }
-            
-            if (bookshelf) {
-              const bookshelfRect = bookshelf.getBoundingClientRect();
-              const bookRect = container.getBoundingClientRect();
-              const targetScrollLeft = bookRect.left - bookshelfRect.left + (bookRect.width / 2) - (bookshelfRect.width / 2) - 29;
-              (bookshelf as HTMLElement).scrollLeft += targetScrollLeft;
-            }
-
-            // Afficher les détails du livre
-            const slug = book.getAttribute('data-slug');
-            const title = book.querySelector('.book-spine')?.textContent;
-            const author = book.getAttribute('data-author');
-            const summary = book.getAttribute('data-summary');
-
-            if (bookDetails && title && author) {
-              bookDetails.innerHTML = `
-                <div style="border-top: 1px solid #333; padding-top: 20px;">
-                  <h3 style="font-weight: bold; color: white; text-align: left;">${title}</h3>
-                  <p class="author">${author}</p>
-                  <br>
-                  <p>${summary}</p>
-                </div>
-              `;
-              bookDetails.style.display = 'block';
-            }
-          } else {
-            if (bookDetails) bookDetails.style.display = 'none';
+        function stopScroll() {
+          if (scrollInterval !== null) {
+            clearInterval(scrollInterval);
           }
-        });
-      });
+        }
 
-      if (scrollLeftArrow) (scrollLeftArrow as HTMLElement).style.display = 'none';
-      if (scrollRightArrow && bookshelf) {
-        (scrollRightArrow as HTMLElement).style.display = bookshelf.scrollWidth > bookshelf.clientWidth ? 'block' : 'none';
-      }
+        if (scrollLeftArrow) {
+          scrollLeftArrow.addEventListener('mouseenter', () => startScroll(-1));
+          scrollLeftArrow.addEventListener('mouseleave', stopScroll);
+        }
+        if (scrollRightArrow) {
+          scrollRightArrow.addEventListener('mouseenter', () => startScroll(1));
+          scrollRightArrow.addEventListener('mouseleave', stopScroll);
+        }
+
+        books.forEach((book) => {
+          book.addEventListener('click', () => {
+            const container = book.closest('.book-container');
+            if (!container) return;
+            const isOpening = !container.classList.contains('open');
+            
+            books.forEach((b) => {
+              const cont = b.closest('.book-container');
+              if (!cont) return;
+              b.classList.remove('open');
+              cont.classList.remove('open');
+              (cont as HTMLElement).style.width = '41.5px';
+              (cont as HTMLElement).style.marginLeft = '0';
+              (cont as HTMLElement).style.transform = 'translateX(0)';
+            });
+            
+            if (isOpening) {
+              book.classList.add('open');
+              container.classList.add('open');
+              (container as HTMLElement).style.width = '207.5px';
+              (container as HTMLElement).style.marginLeft = '-29px';
+              
+              // Décaler les livres à gauche
+              let prevSibling = container.previousElementSibling;
+              let leftShift = 29;
+              while (prevSibling) {
+                (prevSibling as HTMLElement).style.transform = `translateX(-${leftShift}px)`;
+                prevSibling = prevSibling.previousElementSibling;
+              }
+              
+              // Décaler les livres à droite
+              let nextSibling = container.nextElementSibling;
+              let rightShift = -40;
+              while (nextSibling) {
+                (nextSibling as HTMLElement).style.transform = `translateX(${rightShift}px)`;
+                nextSibling = nextSibling.nextElementSibling;
+              }
+              
+              if (bookshelf) {
+                const bookshelfRect = bookshelf.getBoundingClientRect();
+                const bookRect = container.getBoundingClientRect();
+                const targetScrollLeft = bookRect.left - bookshelfRect.left + (bookRect.width / 2) - (bookshelfRect.width / 2) - 29;
+                (bookshelf as HTMLElement).scrollLeft += targetScrollLeft;
+              }
+
+              // Afficher les détails du livre
+              const slug = book.getAttribute('data-slug');
+              const title = book.querySelector('.book-spine')?.textContent;
+              const author = book.getAttribute('data-author');
+
+              if (bookDetails && title && author) {
+                bookDetails.innerHTML = `
+                  <h3>${title}</h3>
+                  <p class="author">${author}</p>
+                `;
+                bookDetails.style.display = 'block';
+              }
+            } else {
+              if (bookDetails) bookDetails.style.display = 'none';
+            }
+          });
+        });
+
+        if (scrollLeftArrow) (scrollLeftArrow as HTMLElement).style.display = 'none';
+        if (scrollRightArrow && bookshelf) {
+          (scrollRightArrow as HTMLElement).style.display = bookshelf.scrollWidth > bookshelf.clientWidth ? 'block' : 'none';
+        }
+      });
     </script>
   </body>
 </html>

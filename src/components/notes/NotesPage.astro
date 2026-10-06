@@ -77,7 +77,7 @@ const cardStyles: CardStyle[] = notes.map((note) => {
 <p class="notes-subtitle">A living space for ideas in progress</p>
 
 <section class="notes-controls">
-  <div>
+  <div class="topics-box">
     <div class="topics-label">Topics</div>
     <div class="chip-list">
       <a href={buildCategoryHref()} class:list={["chip", !selectedCategory && "active"]}>
@@ -197,6 +197,16 @@ const cardStyles: CardStyle[] = notes.map((note) => {
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 2.5rem;
+    /* sort de la colonne 70ch du body, aligné sur la largeur de .notes-grid */
+    width: min(1200px, 100vw - 2.5rem);
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .topics-box {
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .topics-label {

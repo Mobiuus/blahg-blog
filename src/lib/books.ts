@@ -179,19 +179,379 @@ export const books: Book[] = [
     spineColor: "#E6D8BE",
     textColor: "#000002",
     summary: ""
-  }, 
+  },
   {
-    slug: "Less is More",
-    title: "Less is More",
-    author: "Jason Hickel",
-    date: "August 13, 2020",
-    rating: 5,
-    coverImage: "https://m.media-amazon.com/images/I/71j0zYJm3cL._SL1500_.jpg",
-    spineColor: "#5FB133",
-    textColor: "#000002",
+    slug: "Le Mont Analogue",
+    title: "Le Mont Analogue",
+    author: "René Daumal",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61lT7jd9TEL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#3BA0C8",
     summary: ""
-  },    
+  },
+  {
+    slug: "Pilules roses",
+    title: "Pilules roses",
+    author: "Juliette Ferry-Danini",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61TdG7nu5QL._SL1500_.jpg",
+    spineColor: "#E4528A",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Gérer l'inévitable",
+    title: "Gérer l'inévitable",
+    author: "Clément Jeanneau - Antoine Poincaré",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/51olMa5XAoL._SL1500_.jpg",
+    spineColor: "#D3E0A8",
+    textColor: "#C8102E",
+    summary: ""
+  },
+  {
+    slug: "Les cent onze parfums qu'il faut sentir avant de mourir",
+    title: "Les cent onze parfums qu'il faut sentir avant de mourir",
+    author: "Yohan Cervi - Jeanne Doré - Anne-Sophie Toublanc",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/51dPjzN-MRL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#000",
+    summary: ""
+  },
+  {
+    slug: "Réformer (vraiment) les retraites",
+    title: "Réformer (vraiment) les retraites",
+    author: "Charles Dennery",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61lCf4CrlIL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#2A8FD0",
+    summary: ""
+  },
+  {
+    slug: "Les Lumières sombres",
+    title: "Les Lumières sombres",
+    author: "Arnaud Miranda",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/71Zo0MwmAAL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#111",
+    summary: ""
+  },
+  {
+    slug: "Chasseurs d'États",
+    title: "Chasseurs d'États",
+    author: "Benjamin Lemoine",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61dluFLr37L._SL1500_.jpg",
+    spineColor: "#EAE1D1",
+    textColor: "#3A2A1A",
+    summary: ""
+  },
+  {
+    slug: "Le fil invisible du capital",
+    title: "Le fil invisible du capital",
+    author: "Ulysse Lojkine",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/51kUPAFKb+L._SL1500_.jpg",
+    spineColor: "#EAECEB",
+    textColor: "#2C7DB5",
+    summary: ""
+  },
+  {
+    slug: "Bâtir la civilisation du temps libéré",
+    title: "Bâtir la civilisation du temps libéré",
+    author: "André Gorz",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/41IyiBFaTxL._SL1500_.jpg",
+    spineColor: "#F6F2E6",
+    textColor: "#D6336C",
+    summary: ""
+  },
+  {
+    slug: "La liberté d'être libre",
+    title: "La liberté d'être libre",
+    author: "Hannah Arendt",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/31q0Ei01hOL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#1F8A8A",
+    summary: ""
+  },
+  {
+    slug: "Il n'y a qu'un seul droit de l'homme",
+    title: "Il n'y a qu'un seul droit de l'homme",
+    author: "Hannah Arendt",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61qdobQRLFL._SL1500_.jpg",
+    spineColor: "#1E2160",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Sortir du travail qui ne paie plus",
+    title: "Sortir du travail qui ne paie plus",
+    author: "Antoine Foucher",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61EwjAQlHxL._SL1500_.jpg",
+    spineColor: "#FDF5DE",
+    textColor: "#E2231A",
+    summary: ""
+  },
+  {
+    slug: "Éloge de la philosophie antique",
+    title: "Éloge de la philosophie antique",
+    author: "Pierre Hadot",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/51Xb0MqEvlL._SL1500_.jpg",
+    spineColor: "#FFF7DF",
+    textColor: "#8A6A3A",
+    summary: ""
+  },
+  {
+    slug: "Le temps des salauds",
+    title: "Le temps des salauds",
+    author: "Hugues Jallon",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61k9xydosXL._SL1500_.jpg",
+    spineColor: "#C3DABD",
+    textColor: "#1F3B57",
+    summary: ""
+  },
 ];
+
+// Étagère du haut : « Pile à lire »
+export const toReadBooks: Book[] = [
+  {
+    slug: "Mécomptes publics",
+    title: "Mécomptes publics",
+    author: "François Ecalle",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61zZgmd2uxL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#B5232E",
+    summary: ""
+  },
+  {
+    slug: "Abondance et liberté",
+    title: "Abondance et liberté",
+    author: "Pierre Charbonnier",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61soUlu9tKL._SL1500_.jpg",
+    spineColor: "#C9C5BE",
+    textColor: "#1F7A4D",
+    summary: ""
+  },
+  {
+    slug: "Vers l'écologie de guerre",
+    title: "Vers l'écologie de guerre",
+    author: "Pierre Charbonnier",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61WfOSkkONL._SL1500_.jpg",
+    spineColor: "#A69B8E",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Un empire bon marché",
+    title: "Un empire bon marché",
+    author: "Denis Cogneau",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/51l1jC1+rML._SL1500_.jpg",
+    spineColor: "#F2EEE3",
+    textColor: "#1E3A5F",
+    summary: ""
+  },
+  {
+    slug: "L'implacable ascension de l'East India Company",
+    title: "L'implacable ascension de l'East India Company",
+    author: "William Dalrymple",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/81WwaHtSP6L._SL1500_.jpg",
+    spineColor: "#F3E9D8",
+    textColor: "#B0232A",
+    summary: ""
+  },
+  {
+    slug: "Comment saboter un pipeline",
+    title: "Comment saboter un pipeline",
+    author: "Andreas Malm",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/513Kp6CXCmL._SL1500_.jpg",
+    spineColor: "#908A96",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Co-Intelligence",
+    title: "Co-Intelligence",
+    author: "Ethan Mollick",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/91j2Ga+7Q+L._SL1500_.jpg",
+    spineColor: "#222",
+    textColor: "#F3E9C6",
+    summary: ""
+  },
+  {
+    slug: "Où atterrir ?",
+    title: "Où atterrir ?",
+    author: "Bruno Latour",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/51EIF0o+cvL._SL1500_.jpg",
+    spineColor: "#FFFADD",
+    textColor: "#2C7DB5",
+    summary: ""
+  },
+  {
+    slug: "Apocalypse Nerds",
+    title: "Apocalypse Nerds",
+    author: "Nastasia Hadjadji - Olivier Tesquet",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/81gSlH2j7PL._SL1500_.jpg",
+    spineColor: "#ECEF00",
+    textColor: "#000",
+    summary: ""
+  },
+  {
+    slug: "La science de la post-croissance",
+    title: "La science de la post-croissance",
+    author: "Timothée Parrique",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61RhgnF4t-L._SL1500_.jpg",
+    spineColor: "#F9BED7",
+    textColor: "#D6246E",
+    summary: ""
+  },
+  {
+    slug: "Théorie de l'art moderne",
+    title: "Théorie de l'art moderne",
+    author: "Paul Klee",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/91pMGrMS-SL._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#C8102E",
+    summary: ""
+  },
+  {
+    slug: "La crise du monde moderne",
+    title: "La crise du monde moderne",
+    author: "René Guénon",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/81WFu4cFL2L._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#C8102E",
+    summary: ""
+  },
+  {
+    slug: "La France contre les robots",
+    title: "La France contre les robots",
+    author: "Georges Bernanos",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/51mszrkw93L._SL1500_.jpg",
+    spineColor: "#FFF",
+    textColor: "#1C7DC4",
+    summary: ""
+  },
+  {
+    slug: "Éloge de Socrate",
+    title: "Éloge de Socrate",
+    author: "Pierre Hadot",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/71Je9mRTreL._SL1500_.jpg",
+    spineColor: "#9C6A63",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "De la droite manière de vivre",
+    title: "De la droite manière de vivre",
+    author: "Spinoza",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61IRDwkxY5L._SL1500_.jpg",
+    spineColor: "#C75950",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Méditation sur la technique",
+    title: "Méditation sur la technique",
+    author: "José Ortega y Gasset",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61nAiw9MI2L._SL1500_.jpg",
+    spineColor: "#000F1C",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Anthropologie",
+    title: "Anthropologie",
+    author: "Eric Chauvier",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/61AMIGEgb7L._SL1500_.jpg",
+    spineColor: "#A48661",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Pour une critique de la violence",
+    title: "Pour une critique de la violence",
+    author: "Walter Benjamin",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/81WyjXHUqlL._SL1500_.jpg",
+    spineColor: "#565143",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "A Fabulous Debt",
+    title: "A Fabulous Debt",
+    author: "Robin Wigglesworth",
+    date: "",
+    rating: 0,
+    coverImage: "https://m.media-amazon.com/images/I/81RlrxuzcrL._SL1500_.jpg",
+    spineColor: "#F5F3EE",
+    textColor: "#111",
+    summary: ""
+  },
+];
+
+export function getToReadBooks(): Book[] {
+  return toReadBooks;
+}
 
 export function getAllBooks(): Book[] {
   return books;
