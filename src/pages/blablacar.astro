@@ -15,7 +15,9 @@ import BlaBlaCarInvest from "../components/BlaBlaCarInvest.jsx";
   <body>
     <Header />
     <main>
-      <BlaBlaCarInvest client:only="react" />
+      <div class="wide">
+        <BlaBlaCarInvest client:only="react" />
+      </div>
     </main>
     <Footer />
     <ColorScript />
@@ -24,8 +26,13 @@ import BlaBlaCarInvest from "../components/BlaBlaCarInvest.jsx";
 
 <style>
   main {
-    max-width: 1100px;
-    margin: 0 auto;
     padding: 1rem 0 3rem;
+  }
+  /* sort de la colonne 70ch du body pour élargir le tableau de bord */
+  .wide {
+    width: min(1100px, 100vw - 2.5rem);
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
   }
 </style>

@@ -55,30 +55,43 @@ const TICK_MAP = {
   "Q2 2023":"'23","Q2 2024":"'24","Q2 2025":"'25","Q1 2026":"'26"
 };
 
-const SENS_Q1_2026 = [
-  {sc:"−15%", stake:101.8, co:727,  eur:1160, pct:"-42%", col:"#eb4888"},
-  {sc:"−10%", stake:108.0, co:771,  eur:1231, pct:"-39%", col:"#eb4888"},
-  {sc:" Base", stake:120.4, co:860,  eur:1372, pct:"-32%", col:"#a4a4a4"},
-  {sc:"+10%", stake:132.8, co:948,  eur:1513, pct:"-25%", col:"#24d05a"},
-  {sc:"+15%", stake:139.0, co:993,  eur:1584, pct:"-21%", col:"#24d05a"},
-];
-
-const FONT = '"iA Writer Mono", monospace';
+// Palette claire inspirée des slides (fond crème, texte noir, pastilles)
 const C = {
-  bg:     "#0f172a",
-  panel:  "#1e293b",
-  border: "#334155",
-  text:   "#e2e8f0",
-  muted:  "#94a3b8",
-  dim:    "#475569",
-  orange: "#e48500",
-  green:  "#24d05a",
-  blue:   "#10a2f5",
-  pink:   "#eb4888",
+  bg:     "#faeedf", // crème des slides
+  panel:  "#fffaf3", // cartes claires posées sur le crème
+  border: "#e8d9c4",
+  text:   "#1a1a1a",
+  muted:  "#5f574d",
+  dim:    "#8c8174",
+  ink:    "#111111", // pastilles noires
+  orange: "#d97a00",
+  green:  "#1f9d4c",
+  blue:   "#1a7fd0",
+  pink:   "#d6336f",
   gray:   "#6b6b6b",
 };
 
+const SENS_Q1_2026 = [
+  {sc:"−15%", stake:101.8, co:727,  eur:1160, pct:"-42%", col:C.pink},
+  {sc:"−10%", stake:108.0, co:771,  eur:1231, pct:"-39%", col:C.pink},
+  {sc:" Base", stake:120.4, co:860,  eur:1372, pct:"-32%", col:C.gray},
+  {sc:"+10%", stake:132.8, co:948,  eur:1513, pct:"-25%", col:C.green},
+  {sc:"+15%", stake:139.0, co:993,  eur:1584, pct:"-21%", col:C.green},
+];
+
+const FONT = '"Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif';
+const MONO = '"iA Writer Mono", monospace';
+
 const fmt = v => `€${Math.round(v).toLocaleString("fr-FR")}`;
+
+// Pastille noire façon "Work in progress" des slides
+const Pill = ({ children, color = C.ink }) => (
+  <span style={{
+    display: "inline-block", background: color, color: "#fff",
+    borderRadius: 999, padding: "3px 12px", fontSize: 11, fontWeight: 700,
+    letterSpacing: "0.02em", textTransform: "uppercase"
+  }}>{children}</span>
+);
 
 const CustomTick = ({ x, y, payload }) => {
   const label = TICK_MAP[payload.value];
@@ -87,11 +100,11 @@ const CustomTick = ({ x, y, payload }) => {
   return (
     <g transform={`translate(${x},${y})`}>
       {isEntry && (
-        <rect x={-14} y={4} width={28} height={14} rx={3}
+        <rect x={-15} y={4} width={30} height={16} rx={8}
           fill={C.orange} fillOpacity={0.15} />
       )}
-      <text dy={16} fill={isEntry ? C.orange : C.dim} fontSize={9.5}
-        textAnchor="middle" fontFamily={FONT}>
+      <text dy={16} fill={isEntry ? C.orange : C.dim} fontSize={11}
+        textAnchor="middle" fontFamily={FONT} fontWeight={isEntry ? 700 : 500}>
         {label}
       </text>
     </g>
@@ -101,14 +114,14 @@ const CustomTick = ({ x, y, payload }) => {
 const CustomDot = ({ cx, cy, payload }) => {
   if (payload.isEntry) return (
     <g>
-      <circle cx={cx} cy={cy} r={7} fill={C.orange} fillOpacity={0.2} />
-      <circle cx={cx} cy={cy} r={4} fill={C.orange} stroke={C.bg} strokeWidth={1.5} />
+      <circle cx={cx} cy={cy} r={8} fill={C.orange} fillOpacity={0.2} />
+      <circle cx={cx} cy={cy} r={4.5} fill={C.orange} stroke={C.panel} strokeWidth={1.5} />
     </g>
   );
   if (payload.isPeak) return (
     <g>
-      <circle cx={cx} cy={cy} r={7} fill={C.green} fillOpacity={0.2} />
-      <circle cx={cx} cy={cy} r={4} fill={C.green} stroke={C.bg} strokeWidth={1.5} />
+      <circle cx={cx} cy={cy} r={8} fill={C.green} fillOpacity={0.2} />
+      <circle cx={cx} cy={cy} r={4.5} fill={C.green} stroke={C.panel} strokeWidth={1.5} />
     </g>
   );
   return null;
@@ -123,29 +136,30 @@ const CustomTooltip = ({ active, payload }) => {
   return (
     <div style={{
       background: C.panel, border: `1px solid ${C.border}`,
-      borderRadius: 8, padding: "10px 14px", minWidth: 200, fontFamily: FONT
+      borderRadius: 12, padding: "10px 14px", minWidth: 200, fontFamily: FONT,
+      boxShadow: "0 6px 18px rgba(60, 40, 10, 0.12)"
     }}>
-      <div style={{ color: C.muted, fontSize: 10, marginBottom: 5 }}>
+      <div style={{ color: C.muted, fontSize: 11, marginBottom: 5, fontWeight: 600 }}>
         {d.q} {d.isEntry ? "◀ ENTREE" : ""}{d.isPeak ? "▲ PEAK" : ""}
       </div>
       {isPre && (
-        <div style={{ color: C.dim, fontSize: 9, marginBottom: 4 }}>
+        <div style={{ color: C.dim, fontSize: 10, marginBottom: 4 }}>
           Valeur hypothétique (avant achat)
         </div>
       )}
       {val && (
-        <div style={{ color: d.isPeak ? C.green : d.isEntry ? C.orange : C.text, fontSize: 15, fontWeight: 700 }}>
+        <div style={{ color: d.isPeak ? C.green : d.isEntry ? C.orange : C.text, fontSize: 17, fontWeight: 800 }}>
           {fmt(val)}
         </div>
       )}
       {d.bandBase && (
-        <div style={{ color: C.blue, fontSize: 10, marginTop: 6, lineHeight: 1.6 }}>
+        <div style={{ color: C.blue, fontSize: 11, marginTop: 6, lineHeight: 1.6 }}>
           <span style={{ color: C.pink }}>▼ −15%: {fmt(d.bandBase)}</span><br />
           <span style={{ color: C.green }}>▲ +15%: {fmt(d.bandHigh)}</span>
         </div>
       )}
       {d.isEntry && (
-        <div style={{ color: C.orange, fontSize: 10, marginTop: 5, borderTop: `1px solid ${C.border}`, paddingTop: 5 }}>
+        <div style={{ color: C.orange, fontSize: 11, marginTop: 5, borderTop: `1px solid ${C.border}`, paddingTop: 5 }}>
           Coût payé: €2,017 · Prime: +13.5%
         </div>
       )}
@@ -155,40 +169,48 @@ const CustomTooltip = ({ active, payload }) => {
 
 const KpiCard = ({ label, value, sub, color }) => (
   <div style={{
-    background: C.panel, borderRadius: 8, padding: "14px 16px",
-    borderTop: `2px solid ${color}`
+    background: C.panel, borderRadius: 14, padding: "14px 16px",
+    border: `1px solid ${C.border}`
   }}>
-    <div style={{ color, fontSize: 19, fontWeight: 700, fontFamily: FONT, letterSpacing: "-0.5px" }}>
+    <span style={{ display: "inline-block", width: 10, height: 10, borderRadius: "50%", background: color, marginBottom: 8 }} />
+    <div style={{ color: C.text, fontSize: 20, fontWeight: 800, letterSpacing: "-0.5px", fontVariantNumeric: "tabular-nums" }}>
       {value}
     </div>
-    <div style={{ color: "#cbd5e1", fontSize: 10.5, marginTop: 3 }}>{label}</div>
-    {sub && <div style={{ color: C.dim, fontSize: 9.5, marginTop: 2 }}>{sub}</div>}
+    <div style={{ color: C.text, fontSize: 12, fontWeight: 600, marginTop: 4 }}>{label}</div>
+    {sub && <div style={{ color: C.dim, fontSize: 11, marginTop: 2 }}>{sub}</div>}
   </div>
 );
+
+const panelStyle = {
+  background: C.panel, borderRadius: 16, border: `1px solid ${C.border}`, padding: 22
+};
+
+const rowStyle = { borderBottom: `1px solid ${C.border}` };
 
 export default function BlaBlaCarInvest() {
   const [view, setView] = useState("chart");
 
   return (
     <div style={{
-      background: C.bg, borderRadius: 12, padding: "22px 26px",
+      background: C.bg, borderRadius: 20, padding: "32px 34px",
       fontFamily: FONT, color: C.text
     }}>
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" />
 
       {/* Header */}
-      <div style={{ marginBottom: 18 }}>
-        <div style={{ fontSize: 18, fontWeight: 700, color: C.text, letterSpacing: "-0.3px" }}>
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 26, fontWeight: 800, color: C.text, letterSpacing: "-0.5px", lineHeight: 1.2 }}>
           BlaBlaCar — valorisation de ma participation
         </div>
-        <div style={{ fontSize: 10, color: C.dim, marginTop: 4 }}>
+        <div style={{ fontSize: 12, color: C.muted, marginTop: 8, lineHeight: 1.6 }}>
           SPV Caption Market · 28 Jun 2022 · 254 parts · ownership indirect :{" "}
-          <span style={{ color: C.blue }}>0.0001724%</span>{" "}
+          <span style={{ color: C.blue, fontWeight: 700 }}>0.0001724%</span>{" "}
           · valorisation = FV Vostok ÷ % Vostok · conversion EUR/USD approx. trimestrielle
         </div>
       </div>
 
       {/* KPI Cards */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: 10, marginBottom: 18 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 12, marginBottom: 24 }}>
         <KpiCard label="Coût total payé" value="€2 017" sub="incl. frais Caption" color={C.gray} />
         <KpiCard label="Valeur actuelle" value="€1 373" sub="Q1 2026 (Mar)" color={C.orange} />
         <KpiCard label="P&L unrealized" value="−€644" sub="−31.9% vs coût" color={C.pink} />
@@ -197,35 +219,35 @@ export default function BlaBlaCarInvest() {
       </div>
 
       {/* Tab nav */}
-      <div style={{ display: "flex", gap: 2, marginBottom: 14 }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
         {[["chart","graphique"],["verify","ownership"],["sens","sensitivity Q1 2026"]].map(([k,l]) => (
           <button key={k} onClick={() => setView(k)} style={{
-            background: view === k ? C.blue : C.panel,
-            color: view === k ? "#fff" : C.gray,
-            border: "none", borderRadius: 6, padding: "6px 14px",
-            fontSize: 10, cursor: "pointer", fontFamily: FONT
+            background: view === k ? C.ink : C.panel,
+            color: view === k ? "#fff" : C.text,
+            border: `1px solid ${view === k ? C.ink : C.border}`, borderRadius: 999, padding: "7px 16px",
+            fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT
           }}>{l}</button>
         ))}
       </div>
 
       {/* CHART VIEW */}
       {view === "chart" && (
-        <div style={{ background: C.panel, borderRadius: 12, padding: "18px 14px 10px" }}>
+        <div style={{ ...panelStyle, padding: "20px 16px 12px" }}>
           {/* Legend */}
-          <div style={{ display: "flex", gap: 20, marginBottom: 14, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: "8px 20px", marginBottom: 16, flexWrap: "wrap" }}>
             {[
               { col: C.dim,  dash: true,  label: "Valeur hypothétique (avant achat)" },
               { col: C.blue, dash: false, label: "Ma valorisation (post-achat)" },
-              { col: `rgba(16,162,245,0.2)`, rect: true, label: "Fourchette ±15% revenue" },
+              { col: `rgba(26,127,208,0.18)`, rect: true, label: "Fourchette ±15% revenue" },
               { col: C.pink, dash: true,  label: "Coût d'entrée €2 017" },
               { col: C.orange, dot: true, label: "Point d'entrée Jun 2022" },
               { col: C.green,  dot: true, label: "Peak Q1 2024" },
             ].map(({ col, dash, rect, dot, label }) => (
-              <span key={label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 9.5, color: C.gray }}>
+              <span key={label} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: C.muted }}>
                 {rect ? (
-                  <span style={{ display: "inline-block", width: 18, height: 10, background: col, border: `1px solid ${C.blue}`, borderRadius: 2 }} />
+                  <span style={{ display: "inline-block", width: 18, height: 10, background: col, border: `1px solid ${C.blue}`, borderRadius: 3 }} />
                 ) : dot ? (
-                  <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: col }} />
+                  <span style={{ display: "inline-block", width: 9, height: 9, borderRadius: "50%", background: col }} />
                 ) : (
                   <span style={{
                     display: "inline-block", width: 24, height: 0,
@@ -238,7 +260,7 @@ export default function BlaBlaCarInvest() {
           </div>
 
           {/* Chart */}
-          <div style={{ height: 400 }}>
+          <div style={{ height: 420 }}>
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={DATA} margin={{ top: 10, right: 20, bottom: 0, left: 10 }}>
                 <defs>
@@ -248,31 +270,31 @@ export default function BlaBlaCarInvest() {
                   </linearGradient>
                 </defs>
 
-                <CartesianGrid strokeDasharray="3 3" stroke="#1e3a5f" vertical={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke={C.border} vertical={false} />
                 <XAxis
                   dataKey="q" tick={<CustomTick />} interval={0}
-                  axisLine={{ stroke: "#1e3a5f" }} tickLine={false}
+                  axisLine={{ stroke: C.border }} tickLine={false}
                 />
                 <YAxis
                   tickFormatter={v => `€${(v / 1000).toFixed(1)}k`}
-                  tick={{ fill: C.dim, fontSize: 9, fontFamily: FONT }}
+                  tick={{ fill: C.dim, fontSize: 11, fontFamily: FONT }}
                   axisLine={false} tickLine={false}
-                  domain={[0, 4800]} width={54}
+                  domain={[0, 4800]} width={58}
                   ticks={[0, 1000, 2000, 3000, 4000]}
                 />
-                <Tooltip content={<CustomTooltip />} cursor={{ stroke: C.border, strokeDasharray: "4 2" }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ stroke: C.dim, strokeDasharray: "4 2" }} />
 
                 <Area type="monotone" dataKey="bandBase"
                   stroke="none" fill="transparent" stackId="band" connectNulls={false} legendType="none" />
                 <Area type="monotone" dataKey="bandSpread"
-                  stroke={`rgba(16,162,245,0.35)`} strokeWidth={0.5}
+                  stroke={`rgba(26,127,208,0.35)`} strokeWidth={0.5}
                   fill="url(#bandGrad)" stackId="band" connectNulls={false} legendType="none" />
 
                 <ReferenceLine y={2017} stroke={C.pink} strokeDasharray="5 3" strokeWidth={1}
-                  label={{ value: "€2 017 coût", fill: C.pink, fontSize: 8.5, position: "insideTopRight", fontFamily: FONT }} />
+                  label={{ value: "€2 017 coût", fill: C.pink, fontSize: 10, fontWeight: 600, position: "insideTopRight", fontFamily: FONT }} />
 
                 <ReferenceLine x="Q2 2022" stroke={C.orange} strokeWidth={1.5} strokeDasharray="6 3"
-                  label={{ value: "achat", fill: C.orange, fontSize: 8.5, position: "insideTopLeft", fontFamily: FONT }} />
+                  label={{ value: "achat", fill: C.orange, fontSize: 10, fontWeight: 600, position: "insideTopLeft", fontFamily: FONT }} />
 
                 <Line type="monotone" dataKey="valPre"
                   stroke={C.dim} strokeWidth={1.5} strokeDasharray="5 3"
@@ -280,13 +302,13 @@ export default function BlaBlaCarInvest() {
 
                 <Line type="monotone" dataKey="valPost"
                   stroke={C.blue} strokeWidth={2.5}
-                  dot={<CustomDot />} activeDot={{ r: 4, fill: C.blue, stroke: C.bg, strokeWidth: 2 }}
+                  dot={<CustomDot />} activeDot={{ r: 4, fill: C.blue, stroke: C.panel, strokeWidth: 2 }}
                   connectNulls={false} legendType="none" />
 
               </ComposedChart>
             </ResponsiveContainer>
           </div>
-          <div style={{ fontSize: 8.5, color: C.border, marginTop: 8, textAlign: "right" }}>
+          <div style={{ fontSize: 10, color: C.dim, marginTop: 8, textAlign: "right" }}>
             Source : Vostok New Ventures quarterly reports · FX EUR/USD : taux trimestriels approx.
           </div>
         </div>
@@ -294,62 +316,66 @@ export default function BlaBlaCarInvest() {
 
       {/* OWNERSHIP VERIFICATION */}
       {view === "verify" && (
-        <div style={{ background: C.panel, borderRadius: 12, padding: 20 }}>
-          <div style={{ fontSize: 11, color: C.orange, fontWeight: 600, marginBottom: 14, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-            vérification de l'ownership indirect
+        <div style={panelStyle}>
+          <div style={{ marginBottom: 18 }}>
+            <Pill>vérification de l'ownership indirect</Pill>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24 }}>
             <div>
-              <div style={{ fontSize: 10, color: C.gray, marginBottom: 8 }}>STRUCTURE SPV</div>
-              <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse" }}>
-                {[
-                  ["Plateforme", "Caption Market"],
-                  ["Date d'investissement", "28 Juin 2022"],
-                  ["Parts achetées", "254"],
-                  ["Total parts SPV", "89 112"],
-                  ["Part dans le SPV", "254 / 89 112 = 0.28502%"],
-                  ["Part déclarée", "0.287%  (arrondi légèrement supérieur)"],
-                  ["Prix unitaire", "€7.49"],
-                  ["Investissement brut", "€1 902.46"],
-                  ["Frais", "€114.30"],
-                  ["Total payé", "€2 016.76"],
-                ].map(([k, v]) => (
-                  <tr key={k} style={{ borderBottom: `1px solid ${C.bg}` }}>
-                    <td style={{ color: C.gray, padding: "5px 12px 5px 0" }}>{k}</td>
-                    <td style={{ color: C.text }}>{v}</td>
-                  </tr>
-                ))}
+              <div style={{ fontSize: 12, color: C.text, fontWeight: 800, marginBottom: 8 }}>STRUCTURE SPV</div>
+              <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
+                <tbody>
+                  {[
+                    ["Plateforme", "Caption Market"],
+                    ["Date d'investissement", "28 Juin 2022"],
+                    ["Parts achetées", "254"],
+                    ["Total parts SPV", "89 112"],
+                    ["Part dans le SPV", "254 / 89 112 = 0.28502%"],
+                    ["Part déclarée", "0.287%  (arrondi légèrement supérieur)"],
+                    ["Prix unitaire", "€7.49"],
+                    ["Investissement brut", "€1 902.46"],
+                    ["Frais", "€114.30"],
+                    ["Total payé", "€2 016.76"],
+                  ].map(([k, v]) => (
+                    <tr key={k} style={rowStyle}>
+                      <td style={{ color: C.muted, padding: "7px 12px 7px 0" }}>{k}</td>
+                      <td style={{ color: C.text, fontWeight: 500 }}>{v}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
             <div>
-              <div style={{ fontSize: 10, color: C.gray, marginBottom: 8 }}>CALCUL OWNERSHIP BLABLACAR</div>
-              <table style={{ width: "100%", fontSize: 10.5, borderCollapse: "collapse" }}>
-                {[
-                  ["Levée totale SPV", "€707 549.28"],
-                  ["Valorisation pre-money BlaBlaCar", "€1 170 000 000"],
-                  ["% SPV dans BlaBlaCar", "707 549 ÷ 1 170 000 000 = 0.06047%"],
-                  ["% Valentin dans SPV", "254 ÷ 89 112 = 0.28502%"],
-                  ["% indirect BlaBlaCar", "0.28502% × 0.06047% = 0.0001724%"],
-                  ["Estimation initiale", "0.0001727%  (écart infime, rounding)"],
-                  ["—", "—"],
-                  ["Valeur implicite à l'entrée (Vostok mark)", "€1 778"],
-                  ["Total payé", "€2 017"],
-                  ["Prime payée vs mark Vostok", "+13.5%"],
-                ].map(([k, v]) => (
-                  <tr key={k} style={{ borderBottom: `1px solid ${C.bg}` }}>
-                    <td style={{ color: C.gray, padding: "5px 12px 5px 0" }}>{k}</td>
-                    <td style={{
-                      color: k.includes("indirect") ? C.blue : k.includes("Prime") ? C.orange : C.text,
-                      fontWeight: k.includes("indirect") || k.includes("Prime") ? 600 : 400
-                    }}>{v}</td>
-                  </tr>
-                ))}
+              <div style={{ fontSize: 12, color: C.text, fontWeight: 800, marginBottom: 8 }}>CALCUL OWNERSHIP BLABLACAR</div>
+              <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
+                <tbody>
+                  {[
+                    ["Levée totale SPV", "€707 549.28"],
+                    ["Valorisation pre-money BlaBlaCar", "€1 170 000 000"],
+                    ["% SPV dans BlaBlaCar", "707 549 ÷ 1 170 000 000 = 0.06047%"],
+                    ["% Valentin dans SPV", "254 ÷ 89 112 = 0.28502%"],
+                    ["% indirect BlaBlaCar", "0.28502% × 0.06047% = 0.0001724%"],
+                    ["Estimation initiale", "0.0001727%  (écart infime, rounding)"],
+                    ["—", "—"],
+                    ["Valeur implicite à l'entrée (Vostok mark)", "€1 778"],
+                    ["Total payé", "€2 017"],
+                    ["Prime payée vs mark Vostok", "+13.5%"],
+                  ].map(([k, v]) => (
+                    <tr key={k} style={rowStyle}>
+                      <td style={{ color: C.muted, padding: "7px 12px 7px 0" }}>{k}</td>
+                      <td style={{
+                        color: k.includes("indirect") ? C.blue : k.includes("Prime") ? C.orange : C.text,
+                        fontWeight: k.includes("indirect") || k.includes("Prime") ? 700 : 500
+                      }}>{v}</td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
               <div style={{
-                marginTop: 12, background: C.bg, borderRadius: 8, padding: "10px 14px",
-                borderLeft: `3px solid ${C.green}`, fontSize: 10
+                marginTop: 14, background: C.bg, borderRadius: 12, padding: "12px 14px",
+                borderLeft: `3px solid ${C.green}`, fontSize: 12, lineHeight: 1.6
               }}>
-                <span style={{ color: C.green, fontWeight: 600 }}>ownership confirmé :</span>
+                <span style={{ color: C.green, fontWeight: 700 }}>ownership confirmé :</span>
                 <span style={{ color: C.muted }}> 0.0001724% de BlaBlaCar (indirect via SPV).<br />
                   L'écart avec 0.0001727% vient uniquement de l'arrondi 0.28502% → 0.287%.
                 </span>
@@ -361,39 +387,39 @@ export default function BlaBlaCarInvest() {
 
       {/* SENSITIVITY Q1 2026 */}
       {view === "sens" && (
-        <div style={{ background: C.panel, borderRadius: 12, padding: 20 }}>
-          <div style={{ fontSize: 11, color: C.blue, fontWeight: 600, marginBottom: 4, textTransform: "uppercase", letterSpacing: "0.08em" }}>
-            sensitivity analysis — ma participation · Q1 2026
+        <div style={panelStyle}>
+          <div style={{ marginBottom: 8 }}>
+            <Pill>sensitivity analysis — ma participation · Q1 2026</Pill>
           </div>
-          <div style={{ fontSize: 9.5, color: C.dim, marginBottom: 16 }}>
+          <div style={{ fontSize: 11, color: C.muted, marginBottom: 18, lineHeight: 1.6 }}>
             Basé sur la sensitivity table Vostok (±10% / ±15% sur estimation de revenus) · Ownership Vostok Q1 2026 : 14.0% · FX EUR/USD ≈ 1.08
           </div>
           <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse" }}>
+            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse" }}>
               <thead>
                 <tr>
                   {["Scénario revenue", "Stake Vostok ($M)", "BlaBlaCar total ($M)", "Ma part (€)", "vs Coût payé €2 017", ""].map(h => (
                     <th key={h} style={{
-                      color: C.dim, fontWeight: 500, padding: "6px 12px 10px", textAlign: "left",
-                      fontSize: 9.5, borderBottom: `1px solid ${C.border}`
+                      color: C.text, fontWeight: 700, padding: "6px 12px 10px", textAlign: "left",
+                      fontSize: 11, borderBottom: `2px solid ${C.text}`
                     }}>{h}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
                 {SENS_Q1_2026.map(({ sc, stake, co, eur, pct, col }) => (
-                  <tr key={sc} style={{ borderBottom: `1px solid ${C.bg}` }}>
-                    <td style={{ color: col, padding: "9px 12px", fontWeight: 600 }}>{sc}</td>
-                    <td style={{ color: C.muted, padding: "9px 12px" }}>${stake}M</td>
-                    <td style={{ color: C.muted, padding: "9px 12px" }}>${co}M</td>
-                    <td style={{ color: col, padding: "9px 12px", fontWeight: sc.includes("Base") ? 700 : 500 }}>
+                  <tr key={sc} style={rowStyle}>
+                    <td style={{ color: col, padding: "10px 12px", fontWeight: 700 }}>{sc}</td>
+                    <td style={{ color: C.muted, padding: "10px 12px", fontVariantNumeric: "tabular-nums" }}>${stake}M</td>
+                    <td style={{ color: C.muted, padding: "10px 12px", fontVariantNumeric: "tabular-nums" }}>${co}M</td>
+                    <td style={{ color: col, padding: "10px 12px", fontWeight: sc.includes("Base") ? 800 : 600, fontVariantNumeric: "tabular-nums" }}>
                       {fmt(eur)}
                     </td>
-                    <td style={{ color: col, padding: "9px 12px" }}>{pct}</td>
-                    <td style={{ padding: "9px 12px" }}>
+                    <td style={{ color: col, padding: "10px 12px", fontVariantNumeric: "tabular-nums" }}>{pct}</td>
+                    <td style={{ padding: "10px 12px" }}>
                       <div style={{
                         height: 6, borderRadius: 3, width: `${Math.max(4, (eur / 3416) * 100)}%`,
-                        background: col, opacity: 0.6, minWidth: 8, maxWidth: 120
+                        background: col, opacity: 0.7, minWidth: 8, maxWidth: 120
                       }} />
                     </td>
                   </tr>
@@ -402,21 +428,21 @@ export default function BlaBlaCarInvest() {
             </table>
           </div>
           <div style={{
-            marginTop: 14, display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 10
+            marginTop: 16, display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12
           }}>
             {[
               { label: "Breakeven (coût vs valeur)", value: "~€4 500M BlaBlaCar total", sub: "Très au-dessus de la mark actuelle ($860M)" },
               { label: "IRR implicite depuis Jun 2022", value: "Négatif", sub: "−32% cumulé sur ~3.75 ans" },
               { label: "Option value", value: "Asymétrique", sub: "Liquidation préf. via SPV = protection partielle" },
             ].map(({ label, value, sub }) => (
-              <div key={label} style={{ background: C.bg, borderRadius: 8, padding: "12px 14px" }}>
-                <div style={{ color: C.muted, fontSize: 9.5, marginBottom: 4 }}>{label}</div>
-                <div style={{ color: C.text, fontSize: 12, fontWeight: 600 }}>{value}</div>
-                <div style={{ color: C.dim, fontSize: 9, marginTop: 2 }}>{sub}</div>
+              <div key={label} style={{ background: C.bg, borderRadius: 12, padding: "14px 16px" }}>
+                <div style={{ color: C.muted, fontSize: 11, marginBottom: 4 }}>{label}</div>
+                <div style={{ color: C.text, fontSize: 14, fontWeight: 800 }}>{value}</div>
+                <div style={{ color: C.dim, fontSize: 11, marginTop: 3 }}>{sub}</div>
               </div>
             ))}
           </div>
-          <div style={{ marginTop: 10, fontSize: 8.5, color: C.border }}>
+          <div style={{ marginTop: 12, fontSize: 10, color: C.dim, fontFamily: MONO }}>
             * Breakeven = coût payé / ownership = €2 017 / 0.000001724 ≈ $1.17Mds BlaBlaCar (au taux EUR/USD d'entrée ≈ 1.048).
           </div>
         </div>

@@ -1,6 +1,71 @@
 ---
 import HeaderLink from "./HeaderLink.astro";
+import { getCategories, normalizeNote, sortNotes, slugify } from "../lib/notes";
+import { colors as noteColors } from "./notes/utils/colors";
+import { getAllBooks } from "../lib/books";
+
+const pathname = Astro.url.pathname;
+
+// ── Aperçus des dossiers (calculés au build, mêmes sources que les pages) ──
+let rawNotes: any[] = [];
+try {
+  rawNotes = await Astro.glob("../notes/*.md");
+} catch {
+  rawNotes = [];
+}
+const notes = rawNotes.map(normalizeNote);
+// Même couleur par catégorie que la page Notes (catégories triées par nombre de notes)
+const categoryIndex: Record<string, number> = {};
+getCategories(notes).forEach((cat, i) => (categoryIndex[cat.slug] = i));
+const latestNotes = sortNotes(notes, "newest")
+  .slice(0, 3)
+  .map((n) => ({
+    title: n.title,
+    detail: n.description,
+    category: n.thema,
+    color: noteColors[(categoryIndex[slugify(n.thema)] ?? 0) % noteColors.length],
+  }));
+
+// Les 3 derniers livres ajoutés à l'étagère « Lu ! »
+const latestBooks = getAllBooks().slice(-3).reverse();
+
+const paintings = [
+  { title: "La Gare Saint-Lazare", image: "/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg" },
+  { title: "Pluie, Vapeur et Vitesse", image: "/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg" },
+  { title: "La Pie", image: "/assets/paintings/Claude_Monet_-_La_pie.jpg" },
+];
+
+type Kind = "notes" | "books" | "musee" | "music" | "invest";
+interface Folder {
+  kind: Kind;
+  label: string;
+  href: string;
+  front: string;
+  back: string;
+  count: number; // nombre d'éléments qui sortent du dossier
+}
+
+const folders: Folder[] = [
+  { kind: "notes",  label: "notes",            href: "/notes",     front: "#d4a08f", back: "#bd8676", count: latestNotes.length },
+  { kind: "books",  label: "books",            href: "/bookshelf", front: "#c6a77c", back: "#ad8e64", count: latestBooks.length },
+  { kind: "musee",  label: "musée imaginaire", href: "https://valentin.vc/musee-imaginaire/", front: "#bca2cf", back: "#a68ab9", count: paintings.length },
+  { kind: "music",  label: "music",            href: "/music",     front: "#9bb0d9", back: "#8597c4", count: 1 },
+  { kind: "invest", label: "invest",           href: "/invest",    front: "#a9c6a2", back: "#8fae88", count: 1 },
+];
+
+const isActive = (href: string) => {
+  const path = href.replace("https://valentin.vc", "").replace(/\/$/, "");
+  return path !== "" && pathname.replace(/\/$/, "").startsWith(path);
+};
+
+// Éventail : angle et décalage de chaque élément selon sa position
+const fan = (index: number, count: number) => {
+  const centered = index - (count - 1) / 2;
+  return `--angle: ${centered * 16}deg; --offset: ${centered * 24}%;`;
+};
 ---
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap" />
+
 <header>
     <div class="header-section">
         <div class="header-frame">
@@ -8,18 +73,364 @@ import HeaderLink from "./HeaderLink.astro";
         </div>
     </div>
 </header>
-<nav>
-    <HeaderLink href="/">home</HeaderLink>
-    <HeaderLink href="/notes">notes</HeaderLink>
-    <HeaderLink href="/bookshelf">books</HeaderLink>
-    <HeaderLink href="https://valentin.vc/musee-imaginaire/">musée imaginaire</HeaderLink>
-    <HeaderLink href="/music">music</HeaderLink>
-    <HeaderLink href="/invest">invest</HeaderLink>
+<nav class="folder-nav">
+    <HeaderLink href="/" class="home-link">home</HeaderLink>
+    <ul class="folders" role="list">
+        {folders.map((folder) => (
+            <li>
+                <a
+                    href={folder.href}
+                    class:list={["folder-link", { active: isActive(folder.href) }]}
+                    data-kind={folder.kind}
+                >
+                    <span
+                        class="folder"
+                        data-kind={folder.kind}
+                        aria-hidden="true"
+                        style={`--folder-front: ${folder.front}; --folder-back: ${folder.back};`}
+                    >
+                        <span class="folder-back">
+                            {folder.kind === "notes" && latestNotes.map((note, i) => (
+                                <span class="paper" style={`${fan(i, folder.count)} --note-paper: ${note.color};`}>
+                                    <span class="note-card">
+                                        <span class="note-pill">{note.category}</span>
+                                        <span class="note-title">{note.title}</span>
+                                        {note.detail && <span class="note-detail">{note.detail}</span>}
+                                    </span>
+                                </span>
+                            ))}
+
+                            {folder.kind === "books" && latestBooks.map((book, i) => (
+                                <span class="paper" style={fan(i, folder.count)}>
+                                    <img src={book.coverImage} alt="" loading="lazy" decoding="async" />
+                                </span>
+                            ))}
+
+                            {folder.kind === "musee" && paintings.map((p, i) => (
+                                <span class="paper" style={fan(i, folder.count)}>
+                                    <img src={p.image} alt="" loading="lazy" decoding="async" />
+                                </span>
+                            ))}
+
+                            {folder.kind === "music" && (
+                                <span class="paper" style={fan(0, 1)}>
+                                    <span class="cd"></span>
+                                </span>
+                            )}
+
+                            {folder.kind === "invest" && (
+                                <span class="paper" style={fan(0, 1)}>
+                                    <svg class="mini-globe" data-mini-globe viewBox="0 0 100 100">
+                                        <circle cx="50" cy="50" r="48" fill="#dbe9f4" stroke="#252525" stroke-width="1.2" />
+                                    </svg>
+                                </span>
+                            )}
+
+                            <span class="folder-front"></span>
+                            <span class="folder-front right"></span>
+                        </span>
+                    </span>
+                    <span class="folder-label">{folder.label}</span>
+                </a>
+            </li>
+        ))}
+    </ul>
 </nav>
+
+<script>
+    // La mini-Terre (d3-geo depuis un CDN) n'est chargée qu'au premier survol du dossier
+    // « invest », ou tout de suite sur écran tactile où les dossiers sont toujours ouverts.
+    const investLink = document.querySelector<HTMLElement>('.folder-link[data-kind="invest"]');
+    let globeLoaded = false;
+    const loadGlobe = () => {
+        if (globeLoaded) return;
+        globeLoaded = true;
+        const url = "/scripts/mini-globe.js";
+        import(/* @vite-ignore */ url).catch((err) => console.error("mini-globe", err));
+    };
+    if (investLink) {
+        investLink.addEventListener("pointerenter", loadGlobe, { once: true });
+        investLink.addEventListener("focus", loadGlobe, { once: true });
+        if (window.matchMedia("(hover: none)").matches) loadGlobe();
+    }
+</script>
 
 <style>
     h2 {
         margin: 0.5em 0;
+    }
+
+    /* ── Navigation en dossiers (inspirée de iamrob.in) ── */
+    .folder-nav {
+        position: relative; /* plus de barre collante : les dossiers prennent de la place */
+        text-align: center;
+        padding-bottom: 1rem;
+    }
+    .folder-nav :global(.home-link) {
+        margin: 0 0 0.25rem;
+        padding: 0 !important;
+    }
+    .folders {
+        --folder-w: 5.2rem;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 0.5rem;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .folders li {
+        display: flex;
+        justify-content: center;
+    }
+    .folder-link {
+        --folder-open: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 3.4rem 0.25rem 0.5rem; /* place pour ce qui sort du dossier */
+        margin: 0 !important;
+        color: inherit;
+        text-decoration: none;
+        border-radius: 8px;
+    }
+    .folder-link:focus-visible {
+        --folder-open: 1;
+        outline: 2px solid var(--text-color);
+        outline-offset: 2px;
+    }
+    .folder-label {
+        font-size: 0.85rem;
+        line-height: 1.2;
+        text-underline-offset: 4px;
+    }
+    .folder-link:hover .folder-label,
+    .folder-link:focus-visible .folder-label {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+    }
+    .folder-link.active .folder-label {
+        text-decoration: underline;
+        text-decoration-thickness: 3px;
+    }
+
+    .folder {
+        /* Un seul état pilote le survol, le focus clavier et l'ouverture permanente au tactile */
+        --folder-lift: calc(-4px * var(--folder-open));
+        --front-skew: calc(15deg * var(--folder-open));
+        --front-scale: calc(1 - 0.4 * var(--folder-open));
+        --paper-shift: calc(10% - 45% * var(--folder-open));
+        --fan-spread: var(--folder-open);
+        display: block;
+        position: relative;
+        width: var(--folder-w);
+        height: calc(var(--folder-w) * 0.8);
+        pointer-events: none;
+        transform: translateY(var(--folder-lift));
+    }
+    .folder-back {
+        position: absolute;
+        inset: 0;
+        background: var(--folder-back);
+        border-radius: 0 0.2rem 0.2rem 0.2rem;
+    }
+    .folder-back::before {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 0;
+        width: 30%;
+        height: 10%;
+        background: inherit;
+        border-radius: 0.15rem 0.15rem 0 0;
+    }
+
+    .paper {
+        position: absolute;
+        bottom: 10%;
+        left: 50%;
+        width: 65%;
+        height: 85%;
+        overflow: hidden;
+        border-radius: 0.15rem;
+        background: #fff;
+        color: #000;
+        outline: 1px solid rgb(0 0 0 / 0.1);
+        transform-origin: center bottom;
+        transform:
+            translate(calc(-50% + var(--offset) * var(--fan-spread)), var(--paper-shift))
+            rotate(calc(var(--angle) * var(--fan-spread)));
+        text-align: left;
+    }
+    .paper img {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Notes : mini-cartes colorées comme sur la page Notes */
+    [data-kind="notes"] .paper {
+        padding: 0.12rem;
+        border-radius: 0;
+        background: var(--note-paper);
+    }
+    .note-card {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2rem;
+        min-height: 100%;
+        box-sizing: border-box;
+        border: 1px solid rgb(0 0 0 / 0.6);
+        padding: 0.2rem;
+        font-family: "iA Writer Mono", monospace;
+    }
+    .note-pill {
+        max-width: 100%;
+        overflow: hidden;
+        white-space: nowrap;
+        border: 1px solid rgb(0 0 0 / 0.6);
+        border-radius: 999px;
+        padding: 0.02rem 0.18rem;
+        font-size: 0.26rem;
+        line-height: 1.4;
+    }
+    .note-title {
+        font-size: 0.38rem;
+        line-height: 1.35;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+    }
+    .note-detail {
+        border-top: 1px solid rgb(0 0 0 / 0.6);
+        padding-top: 0.15rem;
+        font-family: "Caveat", cursive;
+        font-size: 0.42rem;
+        line-height: 1.2;
+    }
+
+    /* Livres : format couverture */
+    [data-kind="books"] .paper {
+        width: 58%;
+        height: 92%;
+        border-radius: 0.08rem;
+    }
+
+    /* Musée : tableaux paysage dans un cadre */
+    [data-kind="musee"] .paper {
+        width: 82%;
+        height: 62%;
+        padding: 0.12rem;
+        background: #f6f1e7;
+        border-radius: 0;
+        outline: 2px solid #6b5536;
+    }
+
+    /* Music et Invest : un seul objet rond, qui sort plus haut du dossier */
+    .folder[data-kind="music"],
+    .folder[data-kind="invest"] {
+        --paper-shift: calc(15% - 70% * var(--folder-open));
+    }
+
+    /* Music : un CD comme sur la page Music */
+    [data-kind="music"] .paper,
+    [data-kind="invest"] .paper {
+        width: 76%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        background: none;
+        outline: none;
+        overflow: visible;
+    }
+    .cd {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: #222;
+        overflow: hidden;
+    }
+    .cd::before {
+        content: "";
+        position: absolute;
+        inset: 6%;
+        border-radius: 50%;
+        border: 1px solid rgb(255 255 255 / 0.2);
+    }
+    .cd::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 34%;
+        height: 34%;
+        box-sizing: border-box;
+        border-radius: 50%;
+        border: 0.4rem solid #ff8477;
+        transform: translate(-50%, -50%);
+    }
+
+    /* Invest : la Terre */
+    .mini-globe {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    @media (hover: hover) {
+        .folder-link:hover {
+            --folder-open: 1;
+        }
+    }
+    /* Au tactile, les aperçus restent visibles sans premier appui */
+    @media (hover: none) {
+        .folder-link {
+            --folder-open: 1;
+        }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+        .folder,
+        .folder-front,
+        .paper {
+            transition: transform 200ms ease-in-out;
+        }
+        .folder-link:hover .cd,
+        .folder-link:focus-visible .cd {
+            animation: cd-spin 2.5s linear infinite;
+        }
+    }
+    @keyframes cd-spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .folder-front {
+        position: absolute;
+        inset: 0;
+        border-radius: 0.2rem;
+        background: var(--folder-front);
+        transform-origin: bottom;
+        transform: skewX(var(--front-skew)) scaleY(var(--front-scale));
+    }
+    .folder-front.right {
+        transform: skewX(calc(-1 * var(--front-skew))) scaleY(var(--front-scale));
+    }
+
+    @media (max-width: 520px) {
+        .folders {
+            --folder-w: 3.1rem;
+            gap: 0.15rem;
+        }
+        .folder-label {
+            font-size: 0.58rem;
+        }
+        .folder-link {
+            padding-top: 2.6rem;
+        }
     }
 
     /* Typing effect styles */
@@ -28,7 +439,7 @@ import HeaderLink from "./HeaderLink.astro";
         white-space: nowrap;
         border-right: 3px solid var(--text-color);
         width: 16ch; /* Increased width to fit "hi, i'm valentin." */
-        animation: 
+        animation:
             typing 2s steps(16), /* Increased steps to match character count */
             blink-caret .75s step-end infinite;
     }

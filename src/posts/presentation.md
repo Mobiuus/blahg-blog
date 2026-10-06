@@ -8,16 +8,19 @@ added: 2025-03-07
 ---
 
 <div class="presentation-container">
-  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRrcYu4Er60nPZDhNkbEws578arHDpwplCNc8rgVgkF-yiR8MEfqlDMc_N0il_vCnATGs8BriqsrLCK/embed?start=false&loop=false&delayms=10000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>" frameborder="0" width="100%" height="600" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
+  <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vRrcYu4Er60nPZDhNkbEws578arHDpwplCNc8rgVgkF-yiR8MEfqlDMc_N0il_vCnATGs8BriqsrLCK/embed?start=false&loop=false&delayms=10000" frameborder="0" width="960" height="569" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe>
 </div>
 
 
 <style>
+  /* sort de la colonne 70ch du body pour un embed plus large */
   .presentation-container {
     position: relative;
-    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(1100px, 100vw - 2.5rem);
+    aspect-ratio: 960 / 569; /* format de l'embed Google Slides (slide + barre de contrôle) */
     overflow: hidden;
-    width: 100%;
   }
   .presentation-container iframe {
     position: absolute;
