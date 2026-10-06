@@ -16,11 +16,8 @@ const PIN_PATH = "M0,0 C-2,-6 -10,-10 -10,-17 A10,10 0 1 1 10,-17 C10,-10 2,-6 0
 const { types, projects } = JSON.parse(document.getElementById("invest-data").textContent);
 const typeByKey = Object.fromEntries(types.map((t) => [t.key, t]));
 
-const wrap = document.getElementById("globe-wrap");
 const svg = document.getElementById("globe");
 const card = document.getElementById("pin-card");
-const cards = document.querySelectorAll("#cards .card");
-const chips = document.querySelectorAll(".type-chip");
 
 svg.setAttribute("viewBox", `0 0 ${SIZE} ${SIZE}`);
 
@@ -50,7 +47,6 @@ const sphere = { type: "Sphere" };
 let landGeo = null;
 
 let zoom = 1;
-let filter = "all";
 let selectedId = null;
 let lastInteraction = 0;
 let animation = null;
@@ -66,12 +62,12 @@ const pins = projects.map((p) => {
   title.textContent = p.name;
   g.addEventListener("click", (e) => {
     e.stopPropagation();
-    select(p.id, { zoomIn: false });
+    select(p.id);
   });
   g.addEventListener("keydown", (e) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
-      select(p.id, { zoomIn: false });
+      select(p.id);
     }
   });
   g.addEventListener("pointerdown", (e) => e.stopPropagation());
@@ -89,7 +85,7 @@ function render() {
   const center = [-lambda, -phi];
   const visible = [];
   for (const pin of pins) {
-    const shown = (filter === "all" || pin.p.type === filter) && geoDistance(pin.lonlat, center) < Math.PI / 2 - 0.02;
+    const shown = geoDistance(pin.lonlat, center) < Math.PI / 2 - 0.02;
     if (!shown) {
       pin.g.style.display = "none";
       continue;
@@ -206,19 +202,17 @@ function showCard(p) {
   card.querySelector(".pc-close").addEventListener("click", deselect);
 }
 
-function select(id, { zoomIn }) {
+function select(id) {
   const pin = pins.find((x) => x.p.id === id);
   if (!pin) return;
   selectedId = id;
   showCard(pin.p);
-  cards.forEach((c) => c.classList.toggle("selected", c.dataset.id === id));
-  flyTo(pin.lonlat, zoomIn ? Math.max(zoom, 3) : zoom);
+  flyTo(pin.lonlat, zoom);
 }
 
 function deselect() {
   selectedId = null;
   card.hidden = true;
-  cards.forEach((c) => c.classList.remove("selected"));
   lastInteraction = performance.now();
   render();
 }
@@ -227,35 +221,6 @@ function deselect() {
 svg.addEventListener("click", (e) => {
   if (dragStart && Math.hypot(e.clientX - dragStart.x, e.clientY - dragStart.y) > 4) return;
   if (selectedId) deselect();
-});
-
-// Cartes de la liste : centrer le globe sur le projet
-cards.forEach((c) => {
-  const go = () => {
-    select(c.dataset.id, { zoomIn: true });
-    wrap.scrollIntoView({ behavior: "smooth", block: "center" });
-  };
-  c.addEventListener("click", go);
-  c.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      go();
-    }
-  });
-});
-
-// ── Filtres par type ──
-chips.forEach((chip) => {
-  chip.addEventListener("click", () => {
-    filter = chip.dataset.type;
-    chips.forEach((c) => c.classList.toggle("active", c === chip));
-    cards.forEach((c) => {
-      c.style.display = filter === "all" || c.dataset.type === filter ? "" : "none";
-    });
-    const sel = pins.find((x) => x.p.id === selectedId);
-    if (sel && filter !== "all" && sel.p.type !== filter) deselect();
-    render();
-  });
 });
 
 render();

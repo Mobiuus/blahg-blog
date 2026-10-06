@@ -76,20 +76,6 @@ const projects: Project[] = [
   { id: "D24", date: "",           platform: "",            company: "Tomorrow Energy B.V.", name: "Holland Battery 2",                 location: "Eemshaven, Groningue",              country: "Pays-Bas",     rate: null,  months: null, frequency: "",       repayment: "",                  capacity: "46 MW / 184 MWh", type: "stockage", coords: [53.44, 6.83] },
 ];
 
-function toTime(date: string): number {
-  if (!date) return Number.MAX_SAFE_INTEGER; // dates inconnues en premier (les plus récentes)
-  const [d, m, y] = date.split("/").map(Number);
-  return new Date(y, m - 1, d).getTime();
-}
-
-const sorted = [...projects].sort((a, b) => toTime(b.date) - toTime(a.date));
-const typeByKey = Object.fromEntries(types.map((t) => [t.key, t])) as Record<TypeKey, ProjectType>;
-const usedTypes = types.filter((t) => projects.some((p) => p.type === t.key));
-
-const countries = new Set(projects.map((p) => p.country)).size;
-const rates = projects.map((p) => p.rate).filter((r): r is number => r !== null);
-const avgRate = (rates.reduce((a, r) => a + r, 0) / rates.length).toFixed(1).replace(".", ",");
-
 function fmtRate(r: number | null): string {
   return r === null ? "—" : r.toString().replace(".", ",") + " %";
 }
@@ -97,56 +83,13 @@ function fmtRate(r: number | null): string {
 
 <Layout title={`Invest | ${SITE_TITLE}`} description="Mes investissements dans la transition énergétique">
   <div class="invest-page">
-    <p class="invest-subtitle">
-      {projects.length} projets · {countries} pays · taux moyen {avgRate} %
-    </p>
-
     <div class="globe-wrap" id="globe-wrap">
       <svg id="globe" class="globe" role="img" aria-label="Globe des projets financés"></svg>
       <div class="globe-zoom">
         <button type="button" id="zoom-in" aria-label="Zoomer">+</button>
         <button type="button" id="zoom-out" aria-label="Dézoomer">−</button>
       </div>
-      <p class="globe-hint">Glisser pour faire tourner</p>
       <div class="pin-card" id="pin-card" hidden></div>
-    </div>
-
-    <div class="type-chips" role="group" aria-label="Filtrer par type de projet">
-      <button type="button" class="type-chip active" data-type="all">
-        Tous <span class="chip-count">{projects.length}</span>
-      </button>
-      {usedTypes.map((t) => (
-        <button type="button" class="type-chip" data-type={t.key}>
-          <span class="chip-dot" style={`background:${t.color}`} aria-hidden="true"></span>
-          {t.emoji} {t.label}
-          <span class="chip-count">{projects.filter((p) => p.type === t.key).length}</span>
-        </button>
-      ))}
-    </div>
-
-    <div class="cards" id="cards">
-      {sorted.map((p) => {
-        const t = typeByKey[p.type];
-        return (
-          <article class="card" data-type={p.type} data-id={p.id} tabindex="0">
-            <header class="card-head">
-              <span class="card-icon" aria-hidden="true">{t.emoji}</span>
-              <div class="card-head-text">
-                <h3 class="card-title">{p.name}</h3>
-                <span class="card-platform">{[p.company, p.platform].filter(Boolean).join(" · ")}</span>
-              </div>
-              <span class="card-rate">{fmtRate(p.rate)}</span>
-            </header>
-            <dl class="card-body">
-              <div class="row"><dt>Lieu</dt><dd>{p.location} ({p.country})</dd></div>
-              <div class="row"><dt>Type</dt><dd>{t.label}</dd></div>
-              {p.capacity && <div class="row"><dt>Capacité</dt><dd>{p.capacity}</dd></div>}
-              {p.months && <div class="row"><dt>Durée</dt><dd>{p.months} mois · {p.frequency.toLowerCase()} · {p.repayment.toLowerCase()}</dd></div>}
-              {p.date && <div class="row"><dt>Date</dt><dd>{p.date}</dd></div>}
-            </dl>
-          </article>
-        );
-      })}
     </div>
   </div>
 </Layout>
@@ -160,12 +103,6 @@ function fmtRate(r: number | null): string {
 <style>
   .invest-page {
     padding: 0 0 3rem;
-  }
-  .invest-subtitle {
-    text-align: center;
-    font-size: 1.2em;
-    color: #888;
-    margin: 0 0 1rem;
   }
 
   /* ── Globe ── */
@@ -209,155 +146,7 @@ function fmtRate(r: number | null): string {
   .globe-zoom button:hover {
     border-color: var(--text-color);
   }
-  .globe-hint {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    margin: 0;
-    font-size: 0.7rem;
-    color: var(--gray);
-  }
 
-  /* ── Filtres par type ── */
-  .type-chips {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .type-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    border: 1px solid var(--gray);
-    background: none;
-    color: var(--text-color);
-    padding: 0.2rem 0.65rem;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: border-color 0.15s;
-  }
-  .type-chip:hover,
-  .type-chip.active {
-    border-color: var(--text-color);
-  }
-  .type-chip.active {
-    font-weight: 700;
-  }
-  .chip-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-  .chip-count {
-    font-size: 0.72rem;
-    color: var(--gray);
-  }
-
-  /* ── Cartes projets ── */
-  .cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 1rem;
-  }
-  .card {
-    border: 1px solid var(--gray);
-    border-radius: 10px;
-    padding: 1rem 1.1rem;
-    background: var(--moretranswhite);
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
-  }
-  .card:hover,
-  .card.selected {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-    border-color: var(--text-color);
-  }
-  .card-head {
-    display: flex;
-    align-items: flex-start;
-    gap: 0.6rem;
-    margin-bottom: 0.75rem;
-  }
-  .card-icon {
-    font-size: 1.4rem;
-    line-height: 1;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-  .card-head-text {
-    flex: 1;
-    min-width: 0;
-  }
-  .card-title {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0;
-    color: var(--text-color);
-    line-height: 1.25;
-    text-align: left;
-  }
-  .card-platform {
-    display: inline-block;
-    font-size: 0.7rem;
-    color: var(--gray);
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-top: 2px;
-  }
-  .card-rate {
-    font-size: 0.75rem;
-    color: var(--text-color);
-    background: var(--moretransblack);
-    padding: 2px 8px;
-    border-radius: 999px;
-    font-variant-numeric: tabular-nums;
-    flex-shrink: 0;
-  }
-  .card-body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
-  }
-  .row {
-    display: grid;
-    grid-template-columns: 5.5rem 1fr;
-    gap: 0.5rem;
-    font-size: 0.82rem;
-    line-height: 1.35;
-  }
-  .row dt {
-    color: var(--gray);
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    align-self: center;
-  }
-  .row dd {
-    margin: 0;
-    color: var(--text-color);
-    word-break: break-word;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .card-rate {
-      background: var(--moretranswhite);
-    }
-  }
-
-  @media (max-width: 600px) {
-    .cards {
-      grid-template-columns: 1fr;
-    }
-    .row {
-      grid-template-columns: 5rem 1fr;
-    }
-  }
 </style>
 
 <!-- Éléments du globe générés en JS : styles globaux, préfixés par #globe-wrap -->
