@@ -74,6 +74,9 @@ const shelves = [
         justify-content: center;
         writing-mode: vertical-rl;
         text-orientation: mixed;
+        text-align: center;
+        padding: 8px 0;
+        box-sizing: border-box;
         font-size: 12px;
         backface-visibility: hidden;
         transition: transform 0.5s;
@@ -165,19 +168,20 @@ const shelves = [
         padding: 0 40px;
         text-align: left;
       }
-      .book-details h3 {
+      /* :global car le contenu des détails est injecté en JS, hors du scope Astro */
+      .book-details :global(h3) {
         margin: 0;
         font-size: 1.4em;
         color: var(--text-color);
         font-weight: bold;
         text-align: left;
       }
-      .book-details p {
+      .book-details :global(p) {
         margin: 10px 0;
         color: #888;
         text-align: left;
       }
-      .book-details .author {
+      .book-details :global(.author) {
         font-style: italic;
         color: #888;
         margin-top: 10px;

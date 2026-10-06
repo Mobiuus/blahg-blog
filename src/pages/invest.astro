@@ -2,412 +2,280 @@
 import Layout from "../components/Layout.astro";
 import { SITE_TITLE } from "../config";
 
-type Category = "solaire" | "agrivoltaique" | "eolien" | "chaleur" | "stockage" | "autres";
+type TypeKey =
+  | "solaire"
+  | "agrivoltaique"
+  | "eolien"
+  | "chaleur"
+  | "stockage"
+  | "hydro"
+  | "pyro"
+  | "cee"
+  | "multi";
 
-interface Invest {
-  developer: string;
-  platform: string;
-  location: string;
-  type: string;
-  year: number;
-  date: string;
-  duration: string;
-  capacity: string;
-  mwc: number | null;
-  categories: Category[];
-  coords: [number, number]; // [lat, lng]
-}
-
-const invests: Invest[] = [
-  { developer: "Urba 308", platform: "Lendopolis", location: "Rolampont, Haute-Marne (52)", type: "Solaire PV au sol", year: 2025, date: "04/04/2025", duration: "48 mois", capacity: "5,0 MWc", mwc: 5.0, categories: ["solaire"], coords: [47.87, 5.23] },
-  { developer: "GDSOL 98", platform: "Lendopolis", location: "Doulaincourt-Saucourt, Haute-Marne (52)", type: "Solaire PV au sol", year: 2025, date: "04/04/2025", duration: "42 mois", capacity: "5,7 MWc", mwc: 5.7, categories: ["solaire"], coords: [48.33, 5.23] },
-  { developer: "TSE Développement", platform: "Enerfip", location: "Multi-régions, France", type: "Solaire PV au sol (portefeuille)", year: 2025, date: "09/05/2025", duration: "42 mois", capacity: "199,8 MWc", mwc: 199.8, categories: ["solaire"], coords: [46.60, 2.50] },
-  { developer: "Montbéliard Énergies", platform: "Enerfip", location: "Montbéliard, Doubs (25)", type: "Réseau de chaleur (bois-énergie)", year: 2025, date: "21/05/2025", duration: "36 mois", capacity: "N/A", mwc: null, categories: ["chaleur"], coords: [47.51, 6.80] },
-  { developer: "Solskin 10 (Barconnière)", platform: "Enerfip", location: "Multi-dépts (16, 86, 87, 33, 79)", type: "Solaire PV toiture / hangars agricoles", year: 2025, date: "27/10/2025", duration: "24 mois", capacity: "2,6 MWc", mwc: 2.6, categories: ["solaire"], coords: [45.70, 0.80] },
-  { developer: "Eco Chaleur du Mantois", platform: "Lendosphère", location: "Mantes-la-Jolie, Yvelines (78)", type: "Réseau de chaleur (extension)", year: 2025, date: "25/11/2025", duration: "36 mois", capacity: "N/A", mwc: null, categories: ["chaleur"], coords: [48.99, 1.72] },
-  { developer: "Centrale PV de Cosne-sur-Loire", platform: "Lendosphère", location: "Cosne-sur-Loire, Nièvre (58)", type: "Solaire PV au sol", year: 2025, date: "25/11/2025", duration: "42 mois", capacity: "N/A (2 centrales)", mwc: null, categories: ["solaire"], coords: [47.41, 2.92] },
-  { developer: "Agri Italia Power (Energreen)", platform: "Enerfip", location: "Vallermosa & Samassi, Sardaigne (IT)", type: "Agrivoltaïque", year: 2026, date: "03/01/2026", duration: "24 mois", capacity: "3,0 MWc", mwc: 3.0, categories: ["agrivoltaique", "solaire"], coords: [39.46, 8.85] },
-  { developer: "Combes de la Romaine (Neoen)", platform: "Lendosphère", location: "Haute-Saône (70)", type: "Éolien terrestre (développement)", year: 2026, date: "22/02/2026", duration: "24 mois", capacity: "N/A", mwc: null, categories: ["eolien"], coords: [47.62, 6.15] },
-  { developer: "LORIS ENR CEE T2", platform: "Enerfip", location: "France (national)", type: "CEE / BFR (non-production)", year: 2026, date: "03/03/2026", duration: "36 mois", capacity: "N/A", mwc: null, categories: ["autres"], coords: [46.60, 2.50] },
-  { developer: "Campania Solar T2 (SIG)", platform: "Enerfip", location: "Campanie, Italie", type: "Solaire PV au sol (portefeuille)", year: 2026, date: "07/03/2026", duration: "24 mois", capacity: "137,9 MWc", mwc: 137.9, categories: ["solaire"], coords: [40.84, 14.25] },
-  { developer: "Solar Reserve T2 (NRG Plus Italia)", platform: "Enerfip", location: "Lombardie, Émilie-Romagne, Pouilles (IT)", type: "PV agrivoltaïque + BESS stockage", year: 2026, date: "07/03/2026", duration: "36 mois", capacity: "~472 MWc", mwc: 472, categories: ["agrivoltaique", "solaire", "stockage"], coords: [43.00, 12.50] },
-  { developer: "Torrente Solar (Kenergy)", platform: "Lendosphère", location: "Communauté Valencienne, Espagne", type: "Solaire PV au sol (4 centrales)", year: 2026, date: "15/03/2026", duration: "36 mois", capacity: "~205 MWc", mwc: 205, categories: ["solaire"], coords: [39.47, -0.38] },
-  { developer: "Mâcon La Grisière (SMEG)", platform: "Lendosphère", location: "Mâcon, Saône-et-Loire (71)", type: "Solaire PV au sol", year: 2026, date: "18/04/2026", duration: "36 mois", capacity: "5,93 MWc", mwc: 5.93, categories: ["solaire"], coords: [46.31, 4.83] },
-];
-
-const sorted = [...invests].sort((a, b) => {
-  const [da, ma, ya] = a.date.split("/").map(Number);
-  const [db, mb, yb] = b.date.split("/").map(Number);
-  return new Date(yb, mb - 1, db).getTime() - new Date(ya, ma - 1, da).getTime();
-});
-
-interface Cat {
-  key: "all" | Category;
+interface ProjectType {
+  key: TypeKey;
   label: string;
+  emoji: string;
   color: string;
 }
 
-const categories: Cat[] = [
-  { key: "all",           label: "Total",             color: "#6b6b6b" },
-  { key: "solaire",       label: "Solaire",           color: "#e9bc3f" },
-  { key: "agrivoltaique", label: "Agrivoltaïque",     color: "#24d05a" },
-  { key: "eolien",        label: "Éolien",            color: "#10a2f5" },
-  { key: "chaleur",       label: "Réseau de chaleur", color: "#e48500" },
-  { key: "stockage",      label: "Stockage (BESS)",   color: "#eb4888" },
-  { key: "autres",        label: "Autres",            color: "#a4a4a4" },
+interface Project {
+  id: string;
+  date: string; // jj/mm/aaaa, "" si inconnue
+  platform: string;
+  company: string;
+  name: string;
+  location: string;
+  country: string;
+  rate: number | null; // taux annuel en %
+  months: number | null;
+  frequency: string;
+  repayment: string;
+  capacity: string;
+  type: TypeKey;
+  coords: [number, number]; // [lat, lng]
+}
+
+const types: ProjectType[] = [
+  { key: "solaire",       label: "Photovoltaïque",    emoji: "☀️", color: "#e9bc3f" },
+  { key: "agrivoltaique", label: "Agrivoltaïque",     emoji: "🌾", color: "#24d05a" },
+  { key: "eolien",        label: "Éolien",            emoji: "🌬️", color: "#10a2f5" },
+  { key: "stockage",      label: "Stockage (BESS)",   emoji: "🔋", color: "#eb4888" },
+  { key: "chaleur",       label: "Réseau de chaleur", emoji: "🔥", color: "#e48500" },
+  { key: "hydro",         label: "Hydroélectricité",  emoji: "💧", color: "#2bb3c0" },
+  { key: "pyro",          label: "Pyrogazéification", emoji: "🪵", color: "#9a6b4a" },
+  { key: "cee",           label: "CEE",               emoji: "📄", color: "#a4a4a4" },
+  { key: "multi",         label: "Multi-énergies",    emoji: "⚡", color: "#8b6cf0" },
 ];
 
-function statsFor(key: Cat["key"]): { count: number; mwc: number } {
-  const filtered = key === "all"
-    ? invests
-    : invests.filter((i) => i.categories.includes(key as Category));
-  const mwc = filtered.reduce((acc, i) => acc + (i.mwc ?? 0), 0);
-  return { count: filtered.length, mwc };
+const projects: Project[] = [
+  { id: "D01", date: "04/04/2025", platform: "Lendopolis",  company: "Urbasolar",            name: "Urba 308 (Rolampont)",              location: "Rolampont, Haute-Marne",            country: "France",       rate: 6.5,   months: 48, frequency: "Annuel",     repayment: "In fine",           capacity: "5,0 MWc",   type: "solaire",       coords: [47.95, 5.28] },
+  { id: "D02", date: "04/04/2025", platform: "Lendopolis",  company: "Générale du Solaire",  name: "GDSOL 98 (Doulaincourt)",           location: "Doulaincourt-Saucourt, Haute-Marne", country: "France",      rate: 6.5,   months: 45, frequency: "Annuel",     repayment: "In fine",           capacity: "5,7 MWc",   type: "solaire",       coords: [48.32, 5.20] },
+  { id: "D03", date: "09/05/2025", platform: "Enerfip",     company: "TSE",                  name: "TSE Développement",                 location: "Multi-régions",                     country: "France",       rate: 7.5,   months: 42, frequency: "Annuel",     repayment: "In fine",           capacity: "199,8 MWc", type: "agrivoltaique", coords: [46.60, 2.50] },
+  { id: "D04", date: "21/05/2025", platform: "Enerfip",     company: "Dalkia",               name: "Montbéliard Énergies",              location: "Montbéliard, Doubs",                country: "France",       rate: 7.2,   months: 36, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "chaleur",       coords: [47.51, 6.80] },
+  { id: "D05", date: "27/10/2025", platform: "Enerfip",     company: "Barconnière",          name: "Barconnière Solaire (Solskin 10)",  location: "Nouvelle-Aquitaine (multi-sites)",  country: "France",       rate: 7.5,   months: 24, frequency: "Annuel",     repayment: "In fine",           capacity: "2,6 MWc",   type: "solaire",       coords: [45.70, 0.80] },
+  { id: "D06", date: "25/11/2025", platform: "Lendosphère", company: "Dalkia",               name: "Extension réseau de chaleur mantois", location: "Mantes-la-Jolie, Yvelines",       country: "France",       rate: 6.5,   months: 36, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "chaleur",       coords: [48.99, 1.72] },
+  { id: "D07", date: "25/11/2025", platform: "Lendosphère", company: "EDF Power Solutions",  name: "PV Cosne-sur-Loire",                location: "Cosne-sur-Loire, Nièvre",           country: "France",       rate: 7.0,   months: 42, frequency: "Semestriel", repayment: "In fine",           capacity: "",          type: "solaire",       coords: [47.41, 2.92] },
+  { id: "D08", date: "03/01/2026", platform: "Enerfip",     company: "Energreen",            name: "Agri Italia Power",                 location: "Vallermosa & Samassi, Sardaigne",   country: "Italie",       rate: 8.5,   months: 24, frequency: "Annuel",     repayment: "In fine",           capacity: "3,0 MWc",   type: "agrivoltaique", coords: [39.46, 8.85] },
+  { id: "D09", date: "22/02/2026", platform: "Lendosphère", company: "Neoen",                name: "Éolien Combes de la Romaine",       location: "Haute-Saône",                       country: "France",       rate: 6.5,   months: 24, frequency: "Semestriel", repayment: "Annuité constante", capacity: "",          type: "eolien",        coords: [47.62, 6.15] },
+  { id: "D10", date: "03/03/2026", platform: "Enerfip",     company: "LORIS CEE",            name: "LORIS ENR CEE T2",                  location: "France (national)",                 country: "France",       rate: 9.0,   months: 34, frequency: "Trimestriel", repayment: "In fine",          capacity: "",          type: "cee",           coords: [46.10, 3.40] },
+  { id: "D11", date: "07/03/2026", platform: "Enerfip",     company: "Sun Investment Group", name: "Campania Solar T2",                 location: "Campanie",                          country: "Italie",       rate: 9.0,   months: 21, frequency: "Annuel",     repayment: "In fine",           capacity: "137,9 MWc", type: "solaire",       coords: [40.84, 14.25] },
+  { id: "D12", date: "07/03/2026", platform: "Enerfip",     company: "NRG PLUS",             name: "Solar Reserve T2",                  location: "Lombardie, Émilie-Romagne, Pouilles", country: "Italie",     rate: 9.5,   months: 24, frequency: "Annuel",     repayment: "In fine",           capacity: "~472 MWc",  type: "stockage",      coords: [44.50, 11.00] },
+  { id: "D13", date: "15/03/2026", platform: "Lendosphère", company: "Kenergy",              name: "4 centrales solaires (Valence)",    location: "Communauté valencienne",            country: "Espagne",      rate: 8.25,  months: 36, frequency: "Semestriel", repayment: "In fine",           capacity: "~205 MWc",  type: "solaire",       coords: [39.47, -0.38] },
+  { id: "D14", date: "01/04/2026", platform: "Enerfip",     company: "Avangreen",            name: "DataSun Ceuta T3",                  location: "Ceuta",                             country: "Espagne",      rate: 8.5,   months: 27, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "solaire",       coords: [35.89, -5.32] },
+  { id: "D15", date: "18/04/2026", platform: "Enerfip",     company: "SMEG",                 name: "Mâcon La Grisière",                 location: "Mâcon, Saône-et-Loire",             country: "France",       rate: 7.0,   months: 36, frequency: "Annuel",     repayment: "In fine",           capacity: "5,93 MWc",  type: "solaire",       coords: [46.31, 4.83] },
+  { id: "D16", date: "04/05/2026", platform: "Enerfip",     company: "RelyAssets",           name: "Chile Calama Storage",              location: "Calama",                            country: "Chili",        rate: 10.0,  months: 24, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "stockage",      coords: [-22.46, -68.93] },
+  { id: "D17", date: "04/05/2026", platform: "Enerfip",     company: "Hydroneo",             name: "Rwakalé",                           location: "Rwanda",                            country: "Rwanda",       rate: 7.0,   months: 14, frequency: "Annuel",     repayment: "Amortissement",     capacity: "",          type: "hydro",         coords: [-2.20, 29.60] },
+  { id: "D18", date: "04/05/2026", platform: "Enerfip",     company: "Hydroneo",             name: "Nyirahindwe T2",                    location: "Rwanda",                            country: "Rwanda",       rate: 9.5,   months: 16, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "hydro",         coords: [-1.60, 29.90] },
+  { id: "D19", date: "04/05/2026", platform: "Enerfip",     company: "AFRICA REN",           name: "Africa Ren Development",            location: "Sénégal",                           country: "Sénégal",      rate: 9.5,   months: 25, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "multi",         coords: [14.50, -16.20] },
+  { id: "D20", date: "04/05/2026", platform: "Enerfip",     company: "Volta Investments",    name: "GreenPower Asia",                   location: "Sri Lanka",                         country: "Sri Lanka",    rate: 9.0,   months: 14, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "solaire",       coords: [7.87, 80.77] },
+  { id: "D21", date: "09/07/2026", platform: "Lendosphère", company: "Valorem",              name: "Stockage Fagnières 2",              location: "Fagnières, Marne",                  country: "France",       rate: 7.0,   months: 32, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "stockage",      coords: [48.96, 4.32] },
+  { id: "D22", date: "10/07/2026", platform: "Enerfip",     company: "Charwood Energy",      name: "W&nergy Cognac",                    location: "Cognac, Charente",                  country: "France",       rate: 9.0,   months: 36, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "pyro",          coords: [45.69, -0.33] },
+  { id: "D23", date: "14/09/2026", platform: "Enerfip",     company: "NRG PLUS",             name: "NRG PLUS Colombia",                 location: "Colombie",                          country: "Colombie",     rate: 11.75, months: 36, frequency: "Annuel",     repayment: "In fine",           capacity: "",          type: "stockage",      coords: [4.60, -74.10] },
+  { id: "D24", date: "",           platform: "",            company: "Tomorrow Energy B.V.", name: "Holland Battery 2",                 location: "Eemshaven, Groningue",              country: "Pays-Bas",     rate: null,  months: null, frequency: "",       repayment: "",                  capacity: "46 MW / 184 MWh", type: "stockage", coords: [53.44, 6.83] },
+];
+
+function toTime(date: string): number {
+  if (!date) return Number.MAX_SAFE_INTEGER; // dates inconnues en premier (les plus récentes)
+  const [d, m, y] = date.split("/").map(Number);
+  return new Date(y, m - 1, d).getTime();
 }
 
-function fmtMwc(v: number): string {
-  if (v === 0) return "—";
-  return v.toFixed(1).replace(".", ",") + " MWc";
-}
+const sorted = [...projects].sort((a, b) => toTime(b.date) - toTime(a.date));
+const typeByKey = Object.fromEntries(types.map((t) => [t.key, t])) as Record<TypeKey, ProjectType>;
+const usedTypes = types.filter((t) => projects.some((p) => p.type === t.key));
 
-function iconFor(type: string): string {
-  const t = type.toLowerCase();
-  if (t.includes("éolien")) return "🌬️";
-  if (t.includes("chaleur")) return "🔥";
-  if (t.includes("bess") || t.includes("stockage")) return "🔋";
-  if (t.includes("agrivolt")) return "🌾";
-  if (t.includes("cee") || t.includes("bfr")) return "📄";
-  if (t.includes("solaire") || t.includes("pv")) return "☀️";
-  return "⚡";
-}
+const countries = new Set(projects.map((p) => p.country)).size;
+const rates = projects.map((p) => p.rate).filter((r): r is number => r !== null);
+const avgRate = (rates.reduce((a, r) => a + r, 0) / rates.length).toFixed(1).replace(".", ",");
 
-const rows = categories.filter((c) => statsFor(c.key).count > 0);
+function fmtRate(r: number | null): string {
+  return r === null ? "—" : r.toString().replace(".", ",") + " %";
+}
 ---
 
-<Layout title={`Invest | ${SITE_TITLE}`} description="Mes investissements dans les énergies renouvelables">
+<Layout title={`Invest | ${SITE_TITLE}`} description="Mes investissements dans la transition énergétique">
   <div class="invest-page">
-    <!-- ── Carte géographique ── -->
-    <div id="map" class="map" aria-label="Carte des projets"></div>
+    <p class="invest-subtitle">
+      {projects.length} projets · {countries} pays · taux moyen {avgRate} %
+    </p>
 
-    <!-- ── Tableau récap ── -->
-    <table class="recap">
-      <thead>
-        <tr>
-          <th scope="col">Catégorie</th>
-          <th scope="col" class="num">Projets</th>
-          <th scope="col" class="num">Capacité</th>
-        </tr>
-      </thead>
-      <tbody>
-        {rows.map((c) => {
-          const s = statsFor(c.key);
-          return (
-            <tr
-              class:list={["recap-row", { "recap-total": c.key === "all" }]}
-              data-cat={c.key}
-              tabindex="0"
-              role="button"
-              aria-label={`Filtrer: ${c.label}`}
-            >
-              <td>
-                <span class="dot" style={`background:${c.color}`} aria-hidden="true"></span>
-                {c.label}
-              </td>
-              <td class="num">{s.count}</td>
-              <td class="num">{fmtMwc(s.mwc)}</td>
-            </tr>
-          );
-        })}
-      </tbody>
-    </table>
-
-    <!-- ── Liste filtrée (cachée par défaut) ── -->
-    <div class="cards-wrapper" id="cards-wrapper" hidden>
-      <div class="cards-head">
-        <h2 class="cards-title" id="cards-title">Projets</h2>
-        <button type="button" class="cards-close" id="cards-close" aria-label="Fermer">×</button>
+    <div class="globe-wrap" id="globe-wrap">
+      <svg id="globe" class="globe" role="img" aria-label="Globe des projets financés"></svg>
+      <div class="globe-zoom">
+        <button type="button" id="zoom-in" aria-label="Zoomer">+</button>
+        <button type="button" id="zoom-out" aria-label="Dézoomer">−</button>
       </div>
-      <div class="cards" id="cards">
-        {sorted.map((p) => (
-          <article class="card" data-cats={p.categories.join(",")}>
+      <p class="globe-hint">Glisser pour faire tourner</p>
+      <div class="pin-card" id="pin-card" hidden></div>
+    </div>
+
+    <div class="type-chips" role="group" aria-label="Filtrer par type de projet">
+      <button type="button" class="type-chip active" data-type="all">
+        Tous <span class="chip-count">{projects.length}</span>
+      </button>
+      {usedTypes.map((t) => (
+        <button type="button" class="type-chip" data-type={t.key}>
+          <span class="chip-dot" style={`background:${t.color}`} aria-hidden="true"></span>
+          {t.emoji} {t.label}
+          <span class="chip-count">{projects.filter((p) => p.type === t.key).length}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="cards" id="cards">
+      {sorted.map((p) => {
+        const t = typeByKey[p.type];
+        return (
+          <article class="card" data-type={p.type} data-id={p.id} tabindex="0">
             <header class="card-head">
-              <span class="card-icon" aria-hidden="true">{iconFor(p.type)}</span>
+              <span class="card-icon" aria-hidden="true">{t.emoji}</span>
               <div class="card-head-text">
-                <h3 class="card-title">{p.developer}</h3>
-                <span class="card-platform">{p.platform}</span>
+                <h3 class="card-title">{p.name}</h3>
+                <span class="card-platform">{[p.company, p.platform].filter(Boolean).join(" · ")}</span>
               </div>
-              <span class="card-year">{p.year}</span>
+              <span class="card-rate">{fmtRate(p.rate)}</span>
             </header>
             <dl class="card-body">
-              <div class="row"><dt>Lieu</dt><dd>{p.location}</dd></div>
-              <div class="row"><dt>Type</dt><dd>{p.type}</dd></div>
-              <div class="row"><dt>Capacité</dt><dd>{p.capacity}</dd></div>
-              <div class="row"><dt>Durée</dt><dd>{p.duration}</dd></div>
+              <div class="row"><dt>Lieu</dt><dd>{p.location} ({p.country})</dd></div>
+              <div class="row"><dt>Type</dt><dd>{t.label}</dd></div>
+              {p.capacity && <div class="row"><dt>Capacité</dt><dd>{p.capacity}</dd></div>}
+              {p.months && <div class="row"><dt>Durée</dt><dd>{p.months} mois · {p.frequency.toLowerCase()} · {p.repayment.toLowerCase()}</dd></div>}
+              {p.date && <div class="row"><dt>Date</dt><dd>{p.date}</dd></div>}
             </dl>
           </article>
-        ))}
-      </div>
+        );
+      })}
     </div>
   </div>
 </Layout>
 
-<!-- ── Leaflet (OpenStreetMap) via CDN ── -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
-<script>
-  // @ts-nocheck
-  const CAT_COLORS: Record<string, string> = {
-    solaire: "#e9bc3f",
-    agrivoltaique: "#24d05a",
-    eolien: "#10a2f5",
-    chaleur: "#e48500",
-    stockage: "#eb4888",
-    autres: "#a4a4a4",
-  };
-
-  interface ProjectMeta {
-    developer: string;
-    location: string;
-    type: string;
-    capacity: string;
-    year: number;
-    categories: string[];
-    coords: [number, number];
-  }
-
-  const projects: ProjectMeta[] = JSON.parse(
-    document.getElementById("projects-data")?.textContent ?? "[]"
-  );
-
-  const rows = document.querySelectorAll<HTMLTableRowElement>(".recap-row");
-  const wrapper = document.getElementById("cards-wrapper") as HTMLElement | null;
-  const title = document.getElementById("cards-title") as HTMLElement | null;
-  const closeBtn = document.getElementById("cards-close") as HTMLButtonElement | null;
-  const cards = document.querySelectorAll<HTMLElement>(".card");
-
-  let map: any = null;
-  let markers: any[] = [];
-
-  async function initMap() {
-    // Dynamic import of Leaflet JS
-    await new Promise<void>((resolve, reject) => {
-      const s = document.createElement("script");
-      s.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-      s.integrity = "sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=";
-      s.crossOrigin = "";
-      s.onload = () => resolve();
-      s.onerror = () => reject(new Error("leaflet load failed"));
-      document.head.appendChild(s);
-    });
-
-    const L = (window as any).L;
-    const el = document.getElementById("map");
-    if (!el || !L) return;
-
-    map = L.map(el, { scrollWheelZoom: false }).setView([45.5, 5.0], 4);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "© OpenStreetMap",
-      maxZoom: 18,
-    }).addTo(map);
-
-    projects.forEach((p) => {
-      const primary = p.categories[0] ?? "autres";
-      const color = CAT_COLORS[primary] ?? "#6b6b6b";
-      const m = L.circleMarker(p.coords, {
-        radius: 8,
-        color: "#fff",
-        weight: 2,
-        fillColor: color,
-        fillOpacity: 0.9,
-      })
-        .bindPopup(
-          `<strong>${p.developer}</strong><br>
-           <small>${p.location}</small><br>
-           ${p.type}<br>
-           <em>${p.capacity} · ${p.year}</em>`
-        )
-        .addTo(map);
-      (m as any)._cats = p.categories;
-      markers.push(m);
-    });
-
-    // Fix sizing after mount
-    setTimeout(() => map.invalidateSize(), 50);
-  }
-
-  function filterMarkers(cat: string) {
-    if (!map) return;
-    const L = (window as any).L;
-    markers.forEach((m) => {
-      const cats: string[] = (m as any)._cats ?? [];
-      const show = cat === "all" || cats.includes(cat);
-      if (show) m.addTo(map);
-      else map.removeLayer(m);
-    });
-  }
-
-  function applyFilter(cat: string, label: string) {
-    if (!wrapper || !title) return;
-    wrapper.hidden = false;
-    title.textContent = label;
-
-    cards.forEach((card) => {
-      const cats = (card.dataset.cats ?? "").split(",");
-      const show = cat === "all" || cats.includes(cat);
-      (card as HTMLElement).style.display = show ? "" : "none";
-    });
-
-    rows.forEach((r) => {
-      const active = r.dataset.cat === cat;
-      r.classList.toggle("active", active);
-    });
-
-    filterMarkers(cat);
-  }
-
-  rows.forEach((row) => {
-    const trigger = () => {
-      const cat = row.dataset.cat ?? "all";
-      const label = row.querySelector("td")?.textContent?.trim() ?? "Projets";
-      applyFilter(cat, label);
-    };
-    row.addEventListener("click", trigger);
-    row.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        trigger();
-      }
-    });
-  });
-
-  closeBtn?.addEventListener("click", () => {
-    if (!wrapper) return;
-    wrapper.hidden = true;
-    rows.forEach((r) => r.classList.remove("active"));
-    filterMarkers("all");
-  });
-
-  initMap();
-</script>
-
-<!-- Project data for client-side script -->
-<script type="application/json" id="projects-data" set:html={JSON.stringify(
-  invests.map(({ developer, location, type, capacity, year, categories, coords }) => ({
-    developer, location, type, capacity, year, categories, coords,
-  }))
-)}></script>
+<script type="application/json" id="invest-data" set:html={JSON.stringify({
+  types,
+  projects: projects.map((p) => ({ ...p, rateLabel: fmtRate(p.rate) })),
+})}></script>
+<script is:inline type="module" src="/scripts/invest-globe.js"></script>
 
 <style>
   .invest-page {
-    padding: 1rem 0 3rem;
+    padding: 0 0 3rem;
+  }
+  .invest-subtitle {
+    text-align: center;
+    font-size: 1.2em;
+    color: #888;
+    margin: 0 0 1rem;
   }
 
-  /* ── Map ── */
-  .map {
+  /* ── Globe ── */
+  .globe-wrap {
+    position: relative;
     width: 100%;
-    height: 380px;
-    border-radius: 10px;
+    max-width: 560px;
+    margin: 0 auto 1.5rem;
+    aspect-ratio: 1 / 1;
+  }
+  .globe {
+    width: 100%;
+    height: 100%;
+    display: block;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .globe:active {
+    cursor: grabbing;
+  }
+  .globe-zoom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .globe-zoom button {
+    width: 30px;
+    height: 30px;
     border: 1px solid var(--gray);
-    margin-bottom: 1.5rem;
-    z-index: 0;
+    border-radius: 6px;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .globe-zoom button:hover {
+    border-color: var(--text-color);
+  }
+  .globe-hint {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    margin: 0;
+    font-size: 0.7rem;
+    color: var(--gray);
   }
 
-  /* ── Table ── */
-  .recap {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-    margin-bottom: 2rem;
+  /* ── Filtres par type ── */
+  .type-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
   }
-  .recap th,
-  .recap td {
-    padding: 0.6rem 0.8rem;
-    text-align: left;
-    border-bottom: 1px solid var(--gray);
-  }
-  .recap th {
-    color: var(--gray);
-    font-weight: 500;
-    font-size: 0.72rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-  .recap td.num,
-  .recap th.num {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-  }
-  .recap-row {
-    cursor: pointer;
-    transition: background 0.12s ease;
-  }
-  .recap-row:hover {
-    background: var(--moretransblack);
-  }
-  .recap-row.active {
-    background: var(--moretransblack);
-    font-weight: 600;
-  }
-  .recap-row.recap-total td {
-    font-weight: 700;
+  .type-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid var(--gray);
+    background: none;
     color: var(--text-color);
-    border-bottom: 2px solid var(--text-color);
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: border-color 0.15s;
   }
-  .dot {
-    display: inline-block;
+  .type-chip:hover,
+  .type-chip.active {
+    border-color: var(--text-color);
+  }
+  .type-chip.active {
+    font-weight: 700;
+  }
+  .chip-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
-    margin-right: 0.6rem;
-    vertical-align: middle;
+    flex-shrink: 0;
   }
-
-  /* ── Cards wrapper ── */
-  .cards-wrapper {
-    margin-top: 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--gray);
-  }
-  .cards-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-  }
-  .cards-title {
-    margin: 0;
-    font-size: 1.1rem;
-    color: var(--text-color);
-  }
-  .cards-close {
-    background: none;
-    border: none;
+  .chip-count {
+    font-size: 0.72rem;
     color: var(--gray);
-    font-size: 1.6rem;
-    line-height: 1;
-    cursor: pointer;
-    padding: 0 0.25rem;
-  }
-  .cards-close:hover {
-    color: var(--text-color);
   }
 
+  /* ── Cartes projets ── */
   .cards {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
     gap: 1rem;
   }
-
   .card {
     border: 1px solid var(--gray);
     border-radius: 10px;
     padding: 1rem 1.1rem;
     background: var(--moretranswhite);
-    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   }
-  .card:hover {
+  .card:hover,
+  .card.selected {
     transform: translateY(-2px);
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    border-color: var(--text-color);
   }
   .card-head {
     display: flex;
@@ -431,6 +299,7 @@ const rows = categories.filter((c) => statsFor(c.key).count > 0);
     margin: 0;
     color: var(--text-color);
     line-height: 1.25;
+    text-align: left;
   }
   .card-platform {
     display: inline-block;
@@ -440,9 +309,9 @@ const rows = categories.filter((c) => statsFor(c.key).count > 0);
     text-transform: uppercase;
     margin-top: 2px;
   }
-  .card-year {
+  .card-rate {
     font-size: 0.75rem;
-    color: var(--gray);
+    color: var(--text-color);
     background: var(--moretransblack);
     padding: 2px 8px;
     border-radius: 999px;
@@ -476,32 +345,105 @@ const rows = categories.filter((c) => statsFor(c.key).count > 0);
   }
 
   @media (prefers-color-scheme: dark) {
-    .card,
-    .card-year {
-      background: var(--moretranswhite);
-    }
-    .recap-row:hover,
-    .recap-row.active {
+    .card-rate {
       background: var(--moretranswhite);
     }
   }
 
   @media (max-width: 600px) {
-    .map {
-      height: 300px;
-    }
     .cards {
       grid-template-columns: 1fr;
     }
     .row {
       grid-template-columns: 5rem 1fr;
     }
-    .recap {
-      font-size: 0.85rem;
+  }
+</style>
+
+<!-- Éléments du globe générés en JS : styles globaux, préfixés par #globe-wrap -->
+<style is:global>
+  #globe-wrap .g-ocean {
+    fill: var(--moretransblack);
+  }
+  #globe-wrap .g-grat {
+    fill: none;
+    stroke: var(--gray);
+    stroke-opacity: 0.25;
+    stroke-width: 0.5;
+  }
+  #globe-wrap .g-land {
+    fill: var(--background-color);
+    stroke: var(--text-color);
+    stroke-width: 0.8;
+    stroke-linejoin: round;
+  }
+  #globe-wrap .g-outline {
+    fill: none;
+    stroke: var(--text-color);
+    stroke-width: 1;
+  }
+  #globe-wrap .g-pin {
+    cursor: pointer;
+  }
+  #globe-wrap .g-pin path {
+    stroke: var(--background-color);
+    stroke-width: 1.5;
+  }
+  #globe-wrap .g-pin text {
+    font-size: 10px;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }
+  #globe-wrap .g-pin.selected path {
+    stroke: var(--text-color);
+    stroke-width: 2;
+  }
+  @media (prefers-color-scheme: dark) {
+    #globe-wrap .g-ocean {
+      fill: var(--moretranswhite);
     }
-    .recap th,
-    .recap td {
-      padding: 0.5rem 0.4rem;
-    }
+  }
+
+  #globe-wrap .pin-card {
+    position: absolute;
+    left: 50%;
+    top: 0.5rem;
+    transform: translateX(-50%);
+    width: min(320px, 92%);
+    border: 1px solid var(--text-color);
+    border-radius: 10px;
+    background: var(--background-color);
+    padding: 0.8rem 1rem;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  #globe-wrap .pin-card h3 {
+    margin: 0 1.2rem 0.2rem 0;
+    font-size: 0.95rem;
+    text-align: left;
+    color: var(--text-color);
+  }
+  #globe-wrap .pin-card .pc-sub {
+    color: var(--gray);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 0.4rem;
+  }
+  #globe-wrap .pin-card p {
+    margin: 0.15rem 0;
+  }
+  #globe-wrap .pin-card .pc-close {
+    position: absolute;
+    top: 0.3rem;
+    right: 0.5rem;
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    line-height: 1;
+    color: var(--gray);
+    cursor: pointer;
   }
 </style>
