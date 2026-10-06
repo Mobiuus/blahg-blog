@@ -121,27 +121,36 @@ const first = paintings[0];
 </html>
 
 <style>
-  /* La galerie peut être plus large que la colonne de texte du site */
+  /* La galerie peut être plus large que la colonne de texte du site,
+     et tient sur un seul écran (sans défilement) */
   :global(html),
   :global(body) {
     max-width: 1000px;
   }
+  :global(html) {
+    padding: 0;
+  }
   :global(body) {
-    min-height: 100vh;
+    height: 100vh;
+    height: 100dvh;
     box-sizing: border-box;
   }
 
   .gallery {
+    height: 100%;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.25rem;
-    padding: 3.5rem 0 2rem;
+    gap: 1rem;
+    padding: 2.75rem 0 0.5rem;
   }
 
+  /* Le tableau prend toute la hauteur restante ; le reste a une hauteur fixe */
   .stage {
     width: 100%;
-    height: min(62vh, 520px);
+    flex: 1 1 auto;
+    min-height: 180px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -248,9 +257,6 @@ const first = paintings[0];
   @media (max-width: 600px) {
     .gallery {
       padding-top: 3rem;
-    }
-    .stage {
-      height: 50vh;
     }
     .controls {
       gap: 0.75rem;
