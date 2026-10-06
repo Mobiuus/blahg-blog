@@ -423,6 +423,16 @@ const fan = (index: number, count: number) => {
         50% { border-color: var(--text-color) }
     }
 
+    /* Téléphone : titre plus petit pour tenir en entier dans la largeur, donc centré */
+    @media (max-width: 520px) {
+        .typing-effect {
+            font-size: 1.6rem;
+        }
+        .header-section {
+            margin: 12px 0;
+        }
+    }
+
     /* Make sure the animation only plays once when the page loads */
     @media (prefers-reduced-motion) {
         .typing-effect {
