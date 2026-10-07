@@ -42,35 +42,22 @@ const norm = (s) =>
 
 const data = await fetch(DATA_URL).then((r) => r.json());
 
-// ── Projection : Mercator ajusté au contour de l'Île-de-France ──
+// ── Projection : Mercator. Les tronçons sont d'abord résolus en coordonnées brutes,
+// puis la carte est cadrée sur le disque qui les englobe (voir « Cadrage » plus bas) ──
 const RAD = Math.PI / 180;
 const merc = (lon, lat) => [lon * RAD, Math.log(Math.tan(Math.PI / 4 + (lat * RAD) / 2))];
-let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-for (const d of data.departements) {
-  for (const ring of d.rings) {
-    for (const [lon, lat] of ring) {
-      const [x, y] = merc(lon, lat);
-      minX = Math.min(minX, x); maxX = Math.max(maxX, x);
-      minY = Math.min(minY, y); maxY = Math.max(maxY, y);
-    }
-  }
-}
-const availH = H - 2 * PAD - DEPTH - 12;
-const scale = Math.min((W - 2 * PAD) / (maxX - minX), availH / (maxY - minY));
-const offX = (W - (maxX - minX) * scale) / 2;
-const offY = PAD + (availH - (maxY - minY) * scale) / 2;
-const project = ([lon, lat]) => {
+const rawProject = ([lon, lat]) => {
   const [x, y] = merc(lon, lat);
-  return [offX + (x - minX) * scale, offY + (maxY - y) * scale];
+  return [x, -y]; // y vers le bas, comme en SVG
 };
+let project = rawProject;
 
 const f1 = (v) => v.toFixed(1);
 const linePath = (pts, closed = false) =>
   pts.length ? "M" + pts.map((p) => f1(p[0]) + "," + f1(p[1])).join("L") + (closed ? "Z" : "") : "";
 const dotsPath = (pts) => pts.map((p) => `M${f1(p[0])},${f1(p[1])}h0.01`).join("");
 
-const silhouette = data.departements.flatMap((d) => d.rings).map((r) => linePath(r.map(project), true)).join("");
-const stationXY = data.stations.map(([, lon, lat]) => project([lon, lat]));
+let stationXY = data.stations.map(([, lon, lat]) => project([lon, lat]));
 
 // ── Tronçons parcourus ──
 const stationNorm = data.stations.map(([name]) => norm(name));
@@ -175,22 +162,61 @@ for (const trip of trips) {
   if (leg) legs.push(leg);
   else console.warn("Map : tronçon introuvable", trip);
 }
+
+// ── Cadrage : la carte se limite au disque qui englobe tout ce qui a été parcouru, plus une marge.
+// Il s'agrandit tout seul quand de nouveaux tronçons sont ajoutés. ──
+const DISC_MARGIN = 0.12; // marge relative au rayon
+const DISC_MIN_KM = 3; // marge minimale
+const kmPerUnit = 6371 * Math.cos(48.85 * RAD); // unités Mercator brutes → km, à la latitude de Paris
+let extent = legs.flatMap((l) => l.coords);
+if (!extent.length) {
+  extent = data.departements.flatMap((d) => d.rings.flat()).map(rawProject);
+}
+const xs = extent.map((p) => p[0]), ys = extent.map((p) => p[1]);
+const center = [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+const radius = Math.max(...extent.map((p) => Math.hypot(p[0] - center[0], p[1] - center[1])))
+  * (1 + DISC_MARGIN) + DISC_MIN_KM / kmPerUnit;
+const availH = H - 2 * PAD - DEPTH - 12;
+const scale = Math.min(W - 2 * PAD, availH) / (2 * radius);
+const disc = { x: W / 2, y: PAD + availH / 2, r: radius * scale };
+const fit = ([x, y]) => [disc.x + (x - center[0]) * scale, disc.y + (y - center[1]) * scale];
+project = (p) => fit(rawProject(p));
+stationXY = stationXY.map(fit);
+for (const leg of legs) leg.coords = leg.coords.map(fit);
+
+const discPath = `M${f1(disc.x - disc.r)},${f1(disc.y)}a${f1(disc.r)},${f1(disc.r)} 0 1,0 ${f1(2 * disc.r)},0a${f1(disc.r)},${f1(disc.r)} 0 1,0 ${f1(-2 * disc.r)},0Z`;
+const silhouette = data.departements.flatMap((d) => d.rings).map((r) => linePath(r.map(project), true)).join("");
 const visitedStops = [...new Set(legs.flatMap((l) => l.stops))].map((id) => stationXY[id]);
 
 // ── Sol : ombre, socle, face supérieure, quadrillage, départements, rivières, réseau grisé ──
+// Le plateau a la forme de l'Île-de-France découpée par le disque de cadrage
 const defs = el("defs", {}, ground);
 el("path", { id: "idf-sil", d: silhouette }, defs);
+el("path", { id: "idf-disc-shape", d: discPath }, defs);
 el("path", { d: silhouette }, el("clipPath", { id: "idf-clip" }, defs));
+el("path", { d: discPath }, el("clipPath", { id: "idf-disc" }, defs));
 el("feGaussianBlur", { stdDeviation: 10 }, el("filter", { id: "idf-blur", x: "-20%", y: "-20%", width: "140%", height: "140%" }, defs));
 ground.setAttribute("viewBox", `0 0 ${W} ${H}`);
 
-el("use", { href: "#idf-sil", class: "i-shadow", filter: "url(#idf-blur)", transform: `translate(0 ${DEPTH + 10})` }, ground);
-el("use", { href: "#idf-sil", class: "i-edge", y: DEPTH }, ground);
-for (let i = DEPTH; i >= 1; i--) el("use", { href: "#idf-sil", class: "i-side", y: i }, ground);
-el("use", { href: "#idf-sil", class: "i-edge" }, ground);
-el("use", { href: "#idf-sil", class: "i-top" }, ground);
+// Forme du plateau décalée de dy : remplissage, ou contour (moitié extérieure d'un trait épais,
+// la face du dessus recouvrant l'autre moitié)
+function slab(cls, dy, parent = ground) {
+  const g = el("g", { transform: `translate(0 ${dy})` }, parent);
+  if (cls === "i-edge") {
+    el("use", { href: "#idf-sil", class: cls, "clip-path": "url(#idf-disc)" }, g);
+    el("use", { href: "#idf-disc-shape", class: cls, "clip-path": "url(#idf-clip)" }, g);
+  } else {
+    el("use", { href: "#idf-sil", class: cls, "clip-path": "url(#idf-disc)" }, g);
+  }
+  return g;
+}
+slab("i-shadow", DEPTH + 10).setAttribute("filter", "url(#idf-blur)");
+slab("i-edge", DEPTH);
+for (let i = DEPTH; i >= 1; i--) slab("i-side", i);
+slab("i-edge", 0);
+slab("i-top", 0);
 
-const top = el("g", { "clip-path": "url(#idf-clip)" }, ground);
+const top = el("g", { "clip-path": "url(#idf-clip)" }, el("g", { "clip-path": "url(#idf-disc)" }, ground));
 const grid = [];
 for (let lon = 1.4; lon <= 3.61; lon += 0.1) grid.push(linePath([project([lon, 48]), project([lon, 49.4])]));
 for (let lat = 48.1; lat <= 49.31; lat += 0.1) grid.push(linePath([project([1.3, lat]), project([3.7, lat])]));
@@ -208,8 +234,11 @@ const netStops = el("path", { class: "i-net-stops", d: dotsPath(stationXY) }, to
 
 // ── Tracés parcourus, au-dessus du brouillard ──
 routes.setAttribute("viewBox", `0 0 ${W} ${H}`);
-el("path", { d: silhouette }, el("clipPath", { id: "idf-clip-routes" }, el("defs", {}, routes)));
-const routeLayer = el("g", { "clip-path": "url(#idf-clip-routes)" }, routes);
+const routeDefs = el("defs", {}, routes);
+el("path", { d: silhouette }, el("clipPath", { id: "idf-clip-routes" }, routeDefs));
+el("path", { d: discPath }, el("clipPath", { id: "idf-disc-routes" }, routeDefs));
+const routeLayer = el("g", { "clip-path": "url(#idf-clip-routes)" },
+  el("g", { "clip-path": "url(#idf-disc-routes)" }, routes));
 const casings = legs.map((l) => el("path", { class: "i-trip-casing", d: linePath(l.coords) }, routeLayer));
 const tripPaths = legs.map((l) => el("path", { class: "i-trip", d: linePath(l.coords), stroke: l.line.c }, routeLayer));
 const stopRings = el("path", { class: "i-stop-ring", d: dotsPath(visitedStops) }, routeLayer);
@@ -253,6 +282,7 @@ const fctx = fogCanvas.getContext("2d");
 const mask = document.createElement("canvas");
 const mctx = mask.getContext("2d");
 const silPath = new Path2D(silhouette);
+const discPath2D = new Path2D(discPath);
 const legsPath = new Path2D(legs.map((l) => linePath(l.coords)).join(""));
 const stopsPath = new Path2D(dotsPath(visitedStops));
 
@@ -281,7 +311,10 @@ function drawMask(progress) {
   mctx.clearRect(0, 0, mask.width, mask.height);
   mctx.setTransform(s, 0, 0, s, -vx * s, -vy * s);
   mctx.fillStyle = "#fff";
+  mctx.save();
+  mctx.clip(discPath2D);
   mctx.fill(silPath);
+  mctx.restore();
   if (progress <= 0 || !legs.length) return;
   mctx.globalCompositeOperation = "destination-out";
   mctx.lineCap = "round";
