@@ -1,0 +1,210 @@
+---
+import Layout from "../components/Layout.astro";
+import { SITE_TITLE } from "../config";
+
+// Tronçons déjà parcourus : ligne + deux stations (dans n'importe quel sens).
+// Tous les arrêts desservis entre les deux sont considérés comme visités.
+// Lignes : M1…M14, M3bis, M7bis · RER RA…RE · Transilien TH, TJ, TK, TL, TN, TP, TR, TU, TV
+//          Tram T1…T14, T3a, T3b · ORLYVAL · CDGVAL · C1 (câble) · FUN (funiculaire de Montmartre)
+// Les noms sont comparés sans accents, tirets ni majuscules (« Chevilly Larue » = « Chevilly-Larue »).
+interface Trip {
+  line: string;
+  from: string;
+  to: string;
+}
+
+const trips: Trip[] = [
+  { line: "M14", from: "Porte de Clichy", to: "Chevilly-Larue" },
+];
+---
+
+<Layout title={`Map | ${SITE_TITLE}`} description="Le réseau francilien, exploré tronçon par tronçon">
+  <div class="map-page">
+    <div class="idf-wrap" id="idf-wrap">
+      <div class="idf-stage" id="idf-stage">
+        <div class="idf-board" id="idf-board">
+          <svg id="idf-ground" class="idf-layer" role="img" aria-label="Carte du réseau ferré d'Île-de-France"></svg>
+          <canvas id="idf-fog" class="idf-layer idf-fog" aria-hidden="true"></canvas>
+          <svg id="idf-routes" class="idf-layer idf-routes" aria-hidden="true"></svg>
+        </div>
+      </div>
+      <div class="idf-zoom">
+        <button type="button" id="idf-zoom-in" aria-label="Zoomer">+</button>
+        <button type="button" id="idf-zoom-out" aria-label="Dézoomer">−</button>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script type="application/json" id="map-data" set:html={JSON.stringify({ trips })}></script>
+<script is:inline type="module" src="/scripts/idf-map.js"></script>
+
+<style>
+  .map-page {
+    padding: 0 0 3rem;
+  }
+
+  /* La carte déborde un peu de la colonne de texte sur grand écran */
+  .idf-wrap {
+    position: relative;
+    width: min(calc(100vw - 32px), 900px);
+    left: 50%;
+    transform: translateX(-50%);
+    aspect-ratio: 1000 / 760;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    perspective: 1600px;
+    perspective-origin: 50% 20%;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .idf-wrap.dragging {
+    cursor: grabbing;
+  }
+  .idf-stage {
+    position: absolute;
+    inset: 0;
+    transform-style: preserve-3d;
+    transform-origin: 50% 50%;
+  }
+  /* Plateau centré dans la scène (margin-top en % = % de la largeur) */
+  .idf-board {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    margin-top: -41%;
+    aspect-ratio: 1000 / 820;
+    transform-style: preserve-3d;
+    transform-origin: 50% 50%;
+  }
+  .idf-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+  }
+  /* Couches empilées en profondeur : le brouillard flotte au-dessus du sol, les tracés au-dessus */
+  .idf-fog {
+    transform: translateZ(5px);
+    pointer-events: none;
+  }
+  .idf-routes {
+    transform: translateZ(9px);
+    pointer-events: none;
+  }
+
+  .idf-zoom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .idf-zoom button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .idf-zoom button:hover {
+    border-color: var(--text-color);
+  }
+</style>
+
+<!-- Éléments de la carte générés en JS : styles globaux, préfixés par #idf-wrap -->
+<style is:global>
+  #idf-wrap {
+    --idf-side: #d2d2d2;
+    --idf-top: var(--background-color);
+    --idf-river: #b7d2e6;
+  }
+  @media (prefers-color-scheme: dark) {
+    #idf-wrap {
+      --idf-side: #3b3b3b;
+      --idf-top: #2d2d2d;
+      --idf-river: #3d5a70;
+    }
+  }
+  #idf-wrap .i-shadow {
+    fill: #000;
+    opacity: 0.22;
+  }
+  #idf-wrap .i-side {
+    fill: var(--idf-side);
+  }
+  #idf-wrap .i-edge {
+    fill: none;
+    stroke: var(--text-color);
+    stroke-width: 2.4;
+    stroke-linejoin: round;
+  }
+  #idf-wrap .i-top {
+    fill: var(--idf-top);
+  }
+  #idf-wrap .i-grid {
+    fill: none;
+    stroke: var(--gray);
+    stroke-opacity: 0.18;
+    stroke-width: 0.5;
+  }
+  #idf-wrap .i-depts {
+    fill: none;
+    stroke: var(--gray);
+    stroke-opacity: 0.55;
+    stroke-width: 0.7;
+    stroke-dasharray: 3 2;
+    stroke-linejoin: round;
+  }
+  #idf-wrap .i-river {
+    fill: none;
+    stroke: var(--idf-river);
+    stroke-width: 2.2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  #idf-wrap .i-net {
+    fill: none;
+    stroke: var(--gray);
+    stroke-opacity: 0.45;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  #idf-wrap .i-net-stops {
+    fill: none;
+    stroke: var(--gray);
+    stroke-opacity: 0.6;
+    stroke-linecap: round;
+  }
+  #idf-wrap .i-trip-casing {
+    fill: none;
+    stroke: var(--background-color);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  #idf-wrap .i-trip {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 1.5px 1px rgb(0 0 0 / 0.35));
+  }
+  #idf-wrap .i-stop-ring {
+    fill: none;
+    stroke: var(--text-color);
+    stroke-linecap: round;
+  }
+  #idf-wrap .i-stop-dot {
+    fill: none;
+    stroke: #fff;
+    stroke-linecap: round;
+  }
+</style>

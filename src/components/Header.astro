@@ -38,7 +38,7 @@ const sleeveColors = ["#ff8477", "#6ad09d", "#b3cdfb"];
 const albums = await getRecentAlbumCovers();
 const sleeves = [0, 1, 2].map((i) => ({ cover: albums[i]?.cover ?? "", color: sleeveColors[i] }));
 
-type Kind = "notes" | "books" | "musee" | "music" | "invest";
+type Kind = "notes" | "books" | "musee" | "music" | "map" | "invest";
 interface Folder {
   kind: Kind;
   label: string;
@@ -52,7 +52,8 @@ const folders: Folder[] = [
   { kind: "books",  label: "books",            href: "/bookshelf", front: "#c6a77c", back: "#ad8e64" },
   { kind: "musee",  label: "musée imaginaire", href: "https://valentin.vc/musee-imaginaire/", front: "#bca2cf", back: "#a68ab9" },
   { kind: "music",  label: "music",            href: "/music",     front: "#9bb0d9", back: "#8597c4" },
-  { kind: "invest", label: "invest",           href: "/invest",    front: "#a9c6a2", back: "#8fae88" },
+  { kind: "map",    label: "map",              href: "/map",       front: "#d9c58a", back: "#c2ad70" },
+  { kind: "invest", label: "invest",          href: "/invest",    front: "#a9c6a2", back: "#8fae88" },
 ];
 
 // Éventail : angle et décalage de chaque élément selon sa position
@@ -117,6 +118,29 @@ const fan = (index: number, count: number) => {
                                 </span>
                             ))}
 
+                            {folder.kind === "map" && (
+                                <span class="paper" style={fan(0, 1)}>
+                                    <svg class="mini-map" viewBox="0 0 100 64">
+                                        <rect width="100" height="64" fill="#efefef" />
+                                        <path d="M-2,14 C20,12 30,30 52,28 S82,8 102,12" fill="none" stroke="#62259D" stroke-width="2.2" stroke-opacity="0.55" />
+                                        <path d="M18,-2 C22,14 40,18 46,36" fill="none" stroke="#FFCD00" stroke-width="2.2" stroke-opacity="0.7" />
+                                        <path d="M70,-2 C66,10 78,20 88,34" fill="none" stroke="#E3051C" stroke-width="2.2" stroke-opacity="0.45" />
+                                        <path d="M0,53 H100" stroke="#252525" stroke-width="1" />
+                                        <path d="M0,55.5 H100" stroke="#252525" stroke-width="2" stroke-dasharray="1 4" stroke-opacity="0.5" />
+                                        <g class="mini-metro" fill="#efefef" stroke="#252525" stroke-width="1" stroke-linejoin="round">
+                                            <rect x="0" y="38" width="27" height="12" rx="2" />
+                                            <path d="M30,38 H52 Q58,38 59.5,45 V50 H30 Z" />
+                                            <path d="M1,46 H26 M31,46 H59" stroke="#62259D" stroke-width="1.6" />
+                                            <path d="M3,40.5 h4 v3.5 h-4 Z M10,40.5 h4 v3.5 h-4 Z M17,40.5 h4 v3.5 h-4 Z M33,40.5 h4 v3.5 h-4 Z M40,40.5 h4 v3.5 h-4 Z M53,40.5 Q56,40.5 57,44 H53 Z" fill="#b7d2e6" stroke-width="0.6" />
+                                            <circle cx="5" cy="51" r="1.7" />
+                                            <circle cx="22" cy="51" r="1.7" />
+                                            <circle cx="35" cy="51" r="1.7" />
+                                            <circle cx="54" cy="51" r="1.7" />
+                                        </g>
+                                    </svg>
+                                </span>
+                            )}
+
                             {folder.kind === "invest" && (
                                 <span class="paper" style={fan(0, 1)}>
                                     <svg class="mini-globe" data-mini-globe viewBox="0 0 100 100">
@@ -168,7 +192,7 @@ const fan = (index: number, count: number) => {
     .folders {
         --folder-w: 3.4rem;
         display: grid;
-        grid-template-columns: repeat(6, minmax(0, 1fr));
+        grid-template-columns: repeat(7, minmax(0, 1fr));
         gap: 0.25rem;
         list-style: none;
         margin: 0;
@@ -336,6 +360,50 @@ const fan = (index: number, count: number) => {
         aspect-ratio: 1 / 1;
         border-radius: 0.1em;
         box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.15);
+    }
+
+    /* Map : un bout de plan avec un métro qui fait l'aller-retour, qui roule quand le dossier est ouvert */
+    [data-kind="map"] .paper {
+        width: 84%;
+        height: 64%;
+        border-radius: 0.15em;
+    }
+    .mini-map {
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+    .mini-metro {
+        transform: translateX(20px);
+        animation: metro-run 7s linear infinite;
+        animation-delay: -1.6s; /* à l'arrêt, la rame est déjà dans le cadre */
+        animation-play-state: paused;
+    }
+    .folder-link:focus-visible .mini-metro {
+        animation-play-state: running;
+    }
+    @media (hover: hover) {
+        .folder-link:hover .mini-metro {
+            animation-play-state: running;
+        }
+    }
+    @media (hover: none) {
+        .mini-metro {
+            animation-play-state: running;
+        }
+    }
+    @media (prefers-reduced-motion: reduce) {
+        .mini-metro {
+            animation: none;
+        }
+    }
+    /* Gauche → droite, demi-tour hors cadre, puis droite → gauche (la rame mesure 60 unités) */
+    @keyframes metro-run {
+        0%   { transform: translateX(-64px) scaleX(1) translateX(0); }
+        45%  { transform: translateX(104px) scaleX(1) translateX(0); }
+        50%  { transform: translateX(104px) scaleX(-1) translateX(-60px); }
+        95%  { transform: translateX(-64px) scaleX(-1) translateX(-60px); }
+        100% { transform: translateX(-64px) scaleX(1) translateX(0); }
     }
 
     /* Invest : la Terre, qui reste dans le dossier quand il est fermé */
