@@ -3,12 +3,13 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import { getAllBooks, getToReadBooks } from "../lib/books";
+import { getBooksByCategory, getToReadBooks } from "../lib/books";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
+// « Pile à lire » en haut, puis une étagère « Lu ! » par catégorie
 const shelves = [
   { title: "Pile à lire", books: getToReadBooks() },
-  { title: "Lu !", books: getAllBooks() },
+  ...getBooksByCategory().map((c) => ({ title: `Lu ! — ${c.title}`, books: c.books })),
 ];
 ---
 

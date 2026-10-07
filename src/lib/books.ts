@@ -1,9 +1,21 @@
 // src/lib/books.ts
 
+// Catégories des étagères « Lu ! », dans l'ordre d'affichage
+export const categories = [
+  { key: "ecofi", title: "Éco/Fi" },
+  { key: "ecologie", title: "Écologie" },
+  { key: "politique", title: "Politique" },
+  { key: "sciences-humaines", title: "Sciences humaines" },
+  { key: "litteratures", title: "Littératures" },
+] as const;
+
+export type Category = (typeof categories)[number]["key"];
+
 export interface Book {
   slug: string;
   title: string;
   author: string;
+  category?: Category; // livres lus uniquement
   date: string;
   rating: number;
   coverImage: string;
@@ -17,6 +29,7 @@ export const books: Book[] = [
     slug: "Le Grand retour de la terre dans les patrimoines",
     title: "Le Grand retour de la terre dans les patrimoines",
     author: "Alain Trannoy - Etienne Wasmer",
+    category: "ecofi",
     date: "July 3, 2022",
     rating: 9,
     coverImage: "https://m.media-amazon.com/images/I/61KxJ2kJp4L._SL1500_.jpg",
@@ -28,6 +41,7 @@ export const books: Book[] = [
     slug: "Magellan",
     title: "Magellan",
     author: "Stefan Sweig",
+    category: "litteratures",
     date: "January 1, 1938",
     rating: 10,
     coverImage: "https://m.media-amazon.com/images/I/71PFN2L54OL._SL1500_.jpg",
@@ -39,6 +53,7 @@ export const books: Book[] = [
     slug: "Décroissances: Regards croisés sur les urgences du temps",
     title: "Décroissances",
     author: "Quatorze penseurs",
+    category: "ecologie",
     date: "May 16, 2024",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/610e61liI-L._SL1066_.jpg",
@@ -50,6 +65,7 @@ export const books: Book[] = [
     slug: "Atlas de l'anthropocène",
     title: "Atlas de l'anthropocène",
     author: "François Gemenne",
+    category: "ecologie",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/712FqGQWe-L._SL1193_.jpg",
@@ -61,6 +77,7 @@ export const books: Book[] = [
     slug: "La mer - Une infographie",
     title: "La mer - Une infographie",
     author: "Cyrille P. Coutansais",
+    category: "ecologie",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/41eCvRauIyL._SY522_.jpg",
@@ -72,6 +89,7 @@ export const books: Book[] = [
     slug: "Culture écologique",
     title: "Culture écologique",
     author: "Pierre Charbonnier",
+    category: "ecologie",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/81f6t+bfccL._SL1500_.jpg",
@@ -91,6 +109,7 @@ export const books: Book[] = [
     slug: "Race et histoire",
     title: "Race et histoire",
     author: "Claude Lévi-Strauss",
+    category: "sciences-humaines",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/91DBHOzcPcL._SL1500_.jpg",
@@ -107,6 +126,7 @@ export const books: Book[] = [
     slug: "La démocratie aux marges",
     title: "La démocratie aux marges",
     author: "David Graeber",
+    category: "sciences-humaines",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/61JY0fSThwL._SL1051_.jpg",
@@ -118,6 +138,7 @@ export const books: Book[] = [
     slug: "Comment les économistes réchauffent la planète",
     title: "Comment les économistes réchauffent la planète",
     author: "Antonin Pottier",
+    category: "ecologie",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/81kl+IUD5TL._SL1500_.jpg",
@@ -129,6 +150,7 @@ export const books: Book[] = [
     slug: "Un nouveau contrat écologique",
     title: "Un nouveau contrat écologique",
     author: "Antonin Pottier - Emmanuel Combet",
+    category: "ecologie",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/71DQAqREOeL._SL1500_.jpg",
@@ -140,6 +162,7 @@ export const books: Book[] = [
     slug: "Concilier économie et écologie : les textes fondateurs du CIRED",
     title: "Concilier économie et écologie",
     author: "Antonin Pottier - Franck Lecocq",
+    category: "ecologie",
     date: "September 02, 2021",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/81oDXjoOnZL._SL1500_.jpg",
@@ -151,6 +174,7 @@ export const books: Book[] = [
     slug: "Le Brésil, terre d'avenir",
     title: "Le Brésil, terre d'avenir",
     author: "Stefan Sweig",
+    category: "litteratures",
     date: "January 1, 1941",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/71okS9zXyWL._SL1500_.jpg",
@@ -162,6 +186,7 @@ export const books: Book[] = [
     slug: "Dette : 5 000 ans d'histoire",
     title: "Dette : 5 000 ans d'histoire",
     author: "Stefan Sweig",
+    category: "ecofi",
     date: "July 12, 2011",
     rating: 8,
     coverImage: "https://m.media-amazon.com/images/I/41bNKPzXByL.jpg",
@@ -173,6 +198,7 @@ export const books: Book[] = [
     slug: "Homo Domesticus",
     title: "Homo Domesticus",
     author: "James C. Scott",
+    category: "sciences-humaines",
     date: "January 1, 2017",
     rating: 10,
     coverImage: "https://m.media-amazon.com/images/I/618MClX7uLL._SL1216_.jpg",
@@ -184,6 +210,7 @@ export const books: Book[] = [
     slug: "Le Mont Analogue",
     title: "Le Mont Analogue",
     author: "René Daumal",
+    category: "litteratures",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/61lT7jd9TEL._SL1500_.jpg",
@@ -195,6 +222,7 @@ export const books: Book[] = [
     slug: "Pilules roses",
     title: "Pilules roses",
     author: "Juliette Ferry-Danini",
+    category: "sciences-humaines",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/61TdG7nu5QL._SL1500_.jpg",
@@ -206,6 +234,7 @@ export const books: Book[] = [
     slug: "Gérer l'inévitable",
     title: "Gérer l'inévitable",
     author: "Clément Jeanneau - Antoine Poincaré",
+    category: "ecologie",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/51olMa5XAoL._SL1500_.jpg",
@@ -217,6 +246,7 @@ export const books: Book[] = [
     slug: "Les cent onze parfums qu'il faut sentir avant de mourir",
     title: "Les cent onze parfums qu'il faut sentir avant de mourir",
     author: "Yohan Cervi - Jeanne Doré - Anne-Sophie Toublanc",
+    category: "litteratures",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/51dPjzN-MRL._SL1500_.jpg",
@@ -228,6 +258,7 @@ export const books: Book[] = [
     slug: "Réformer (vraiment) les retraites",
     title: "Réformer (vraiment) les retraites",
     author: "Charles Dennery",
+    category: "politique",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/61lCf4CrlIL._SL1500_.jpg",
@@ -239,6 +270,7 @@ export const books: Book[] = [
     slug: "Les Lumières sombres",
     title: "Les Lumières sombres",
     author: "Arnaud Miranda",
+    category: "politique",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/71Zo0MwmAAL._SL1500_.jpg",
@@ -250,6 +282,7 @@ export const books: Book[] = [
     slug: "Chasseurs d'États",
     title: "Chasseurs d'États",
     author: "Benjamin Lemoine",
+    category: "ecofi",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/61dluFLr37L._SL1500_.jpg",
@@ -261,6 +294,7 @@ export const books: Book[] = [
     slug: "Le fil invisible du capital",
     title: "Le fil invisible du capital",
     author: "Ulysse Lojkine",
+    category: "ecofi",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/51kUPAFKb+L._SL1500_.jpg",
@@ -272,6 +306,7 @@ export const books: Book[] = [
     slug: "Bâtir la civilisation du temps libéré",
     title: "Bâtir la civilisation du temps libéré",
     author: "André Gorz",
+    category: "sciences-humaines",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/41IyiBFaTxL._SL1500_.jpg",
@@ -283,6 +318,7 @@ export const books: Book[] = [
     slug: "La liberté d'être libre",
     title: "La liberté d'être libre",
     author: "Hannah Arendt",
+    category: "sciences-humaines",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/31q0Ei01hOL._SL1500_.jpg",
@@ -294,6 +330,7 @@ export const books: Book[] = [
     slug: "Il n'y a qu'un seul droit de l'homme",
     title: "Il n'y a qu'un seul droit de l'homme",
     author: "Hannah Arendt",
+    category: "sciences-humaines",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/61qdobQRLFL._SL1500_.jpg",
@@ -305,6 +342,7 @@ export const books: Book[] = [
     slug: "Sortir du travail qui ne paie plus",
     title: "Sortir du travail qui ne paie plus",
     author: "Antoine Foucher",
+    category: "politique",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/61EwjAQlHxL._SL1500_.jpg",
@@ -316,6 +354,7 @@ export const books: Book[] = [
     slug: "Éloge de la philosophie antique",
     title: "Éloge de la philosophie antique",
     author: "Pierre Hadot",
+    category: "sciences-humaines",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/51Xb0MqEvlL._SL1500_.jpg",
@@ -327,11 +366,204 @@ export const books: Book[] = [
     slug: "Le temps des salauds",
     title: "Le temps des salauds",
     author: "Hugues Jallon",
+    category: "politique",
     date: "",
     rating: 0,
     coverImage: "https://m.media-amazon.com/images/I/61k9xydosXL._SL1500_.jpg",
     spineColor: "#C3DABD",
     textColor: "#1F3B57",
+    summary: ""
+  },
+  {
+    slug: "Efficiently Inefficient",
+    title: "Efficiently Inefficient",
+    author: "Lasse Heje Pedersen",
+    category: "ecofi",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/0691166196.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#D9342B",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Investing Amid Low Expected Returns",
+    title: "Investing Amid Low Expected Returns",
+    author: "Antti Ilmanen",
+    category: "ecofi",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/1119860199.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#1F3B73",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Les Globalistes",
+    title: "Les Globalistes",
+    author: "Quinn Slobodian",
+    category: "ecofi",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2021457923.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#F4F0EC",
+    textColor: "#E0552C",
+    summary: ""
+  },
+  {
+    slug: "L'illusion de la finance verte",
+    title: "L'illusion de la finance verte",
+    author: "Alain Grandjean - Julien Lefournier",
+    category: "ecofi",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2708253735.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#FFF",
+    textColor: "#2E7D32",
+    summary: ""
+  },
+  {
+    slug: "Pourquoi sommes-nous capitalistes (malgré nous) ?",
+    title: "Pourquoi sommes-nous capitalistes (malgré nous) ?",
+    author: "Denis Colombi",
+    category: "ecofi",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2228929719.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#B9BABA",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Où va l'argent des pauvres",
+    title: "Où va l'argent des pauvres",
+    author: "Denis Colombi",
+    category: "ecofi",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2228925411.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#BDA86E",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Que fait la police ?",
+    title: "Que fait la police ?",
+    author: "Mathieu Zagrodzki",
+    category: "politique",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2815902621.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#FFF",
+    textColor: "#C8102E",
+    summary: ""
+  },
+  {
+    slug: "L'étrange défaite",
+    title: "L'étrange défaite",
+    author: "Marc Bloch",
+    category: "litteratures",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2070325695.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#FFF",
+    textColor: "#1F4E9A",
+    summary: ""
+  },
+  {
+    slug: "Le Hussard bleu",
+    title: "Le Hussard bleu",
+    author: "Roger Nimier",
+    category: "litteratures",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2070247317.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#F5EDDB",
+    textColor: "#C8102E",
+    summary: ""
+  },
+  {
+    slug: "Croire aux fauves",
+    title: "Croire aux fauves",
+    author: "Nastassja Martin",
+    category: "ecologie",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2072849780.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#A89B85",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Manières d'être vivant",
+    title: "Manières d'être vivant",
+    author: "Baptiste Morizot",
+    category: "ecologie",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2330129734.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#2E5C86",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Technocratisme",
+    title: "Technocratisme",
+    author: "Alexandre Moatti",
+    category: "politique",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2354802730.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#FFF",
+    textColor: "#1F3B73",
+    summary: ""
+  },
+  {
+    slug: "La bataille de la Sécu",
+    title: "La bataille de la Sécu",
+    author: "Nicolas Da Silva",
+    category: "politique",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2358722413.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#C7A868",
+    textColor: "#1F2F6B",
+    summary: ""
+  },
+  {
+    slug: "L'extrême centre ou le poison français",
+    title: "L'extrême centre ou le poison français",
+    author: "Pierre Serna",
+    category: "politique",
+    date: "",
+    rating: 0,
+    coverImage: "https://covers.openlibrary.org/b/isbn/9791026706755-L.jpg",
+    spineColor: "#1E7A8A",
+    textColor: "#FFF",
+    summary: ""
+  },
+  {
+    slug: "Dans la machine de l'État",
+    title: "Dans la machine de l'État",
+    author: "Emmanuel Constantin",
+    category: "politique",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2073028454.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#FFF",
+    textColor: "#2E9E3E",
+    summary: ""
+  },
+  {
+    slug: "La poudre aux yeux",
+    title: "La poudre aux yeux",
+    author: "Justine Reix",
+    category: "politique",
+    date: "",
+    rating: 0,
+    coverImage: "https://images-na.ssl-images-amazon.com/images/P/2709669293.01._SCLZZZZZZZ_.jpg",
+    spineColor: "#1F9AA3",
+    textColor: "#FFF",
     summary: ""
   },
 ];
@@ -465,7 +697,7 @@ export const toReadBooks: Book[] = [
     author: "René Guénon",
     date: "",
     rating: 0,
-    coverImage: "https://m.media-amazon.com/images/I/81WFu4cFL2L._SL1500_.jpg",
+    coverImage: "https://editions-allia.com/files/book_937_image_cover.jpg",
     spineColor: "#FFF",
     textColor: "#C8102E",
     summary: ""
@@ -476,7 +708,7 @@ export const toReadBooks: Book[] = [
     author: "Georges Bernanos",
     date: "",
     rating: 0,
-    coverImage: "https://m.media-amazon.com/images/I/51mszrkw93L._SL1500_.jpg",
+    coverImage: "https://www.editions-allia.com/files/book_1099_image_cover.jpg",
     spineColor: "#FFF",
     textColor: "#1C7DC4",
     summary: ""
@@ -520,7 +752,7 @@ export const toReadBooks: Book[] = [
     author: "Eric Chauvier",
     date: "",
     rating: 0,
-    coverImage: "https://m.media-amazon.com/images/I/61AMIGEgb7L._SL1500_.jpg",
+    coverImage: "https://www.editions-allia.com/files/book_398_image_cover.jpg",
     spineColor: "#A48661",
     textColor: "#FFF",
     summary: ""
@@ -555,6 +787,11 @@ export function getToReadBooks(): Book[] {
 
 export function getAllBooks(): Book[] {
   return books;
+}
+
+// Livres lus regroupés par catégorie, dans l'ordre de `categories`
+export function getBooksByCategory(): { key: Category; title: string; books: Book[] }[] {
+  return categories.map((c) => ({ key: c.key, title: c.title, books: books.filter((b) => b.category === c.key) }));
 }
 
 export function getBook(slug: string): Book | undefined {
