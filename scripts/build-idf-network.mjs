@@ -199,7 +199,7 @@ function cleanStopName(name, key) {
   return name
     .replace(/\s*[\(\[][^)\]]*[\)\]]\s*$/g, "")
     .replace(/\s*[-–]\s*(quai|voie|platform)\b.*$/i, "")
-    .replace(/^(M[ée]tro|RER|Tram(way)?|Gare de|Gare)\s+(?=\S)/i, (m) => (/^gare de/i.test(m) ? m : ""))
+    .replace(/^(M[ée]tro|RER|Tram(way)?)\s+(?=\S)/i, "")
     .trim();
 }
 

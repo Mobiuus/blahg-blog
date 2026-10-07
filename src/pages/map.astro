@@ -14,7 +14,29 @@ interface Trip {
 }
 
 const trips: Trip[] = [
-  { line: "M14", from: "Porte de Clichy", to: "Chevilly-Larue" },
+  // Métro
+  { line: "M1",  from: "La Défense",              to: "Château de Vincennes" },
+  { line: "M2",  from: "Porte Dauphine",          to: "Colonel Fabien" },
+  { line: "M3",  from: "Pont de Levallois",       to: "Père Lachaise" },
+  { line: "M4",  from: "Porte de Clignancourt",   to: "Porte d'Orléans" },
+  { line: "M5",  from: "Gare du Nord",            to: "Place d'Italie" },
+  { line: "M6",  from: "Passy",                   to: "Bercy" },
+  { line: "M7",  from: "Gare de l'Est",           to: "Châtelet" },
+  { line: "M8",  from: "École Militaire",         to: "Ledru-Rollin" },
+  { line: "M9",  from: "Franklin D. Roosevelt",   to: "République" },
+  { line: "M12", from: "Porte de la Chapelle",    to: "Porte de Versailles" },
+  { line: "M13", from: "Place de Clichy",         to: "Montparnasse" },
+  { line: "M14", from: "Porte de Clichy",         to: "Chevilly-Larue" },
+  // RER
+  { line: "RA",  from: "La Défense",              to: "Val de Fontenay" },
+  { line: "RB",  from: "La Plaine Stade de France", to: "Arcueil Cachan" },
+  { line: "RC",  from: "Saint-Michel Notre-Dame",  to: "Juvisy" },
+  { line: "RD",  from: "Gare du Nord",            to: "Évry-Courcouronnes" },
+  { line: "RE",  from: "La Défense",              to: "Rosa Parks" },
+  // Transilien
+  { line: "TH",  from: "Gare du Nord",            to: "Auvers-sur-Oise" },
+  { line: "TJ",  from: "Saint-Lazare",            to: "Asnières-sur-Seine" },
+  { line: "TL",  from: "Saint-Lazare",            to: "Courbevoie" },
 ];
 ---
 
@@ -85,7 +107,7 @@ const trips: Trip[] = [
     width: 100%;
     height: 100%;
     display: block;
-    overflow: visible;
+    overflow: hidden; /* en zoomant, la vue reste dans le cadre du plateau */
   }
   /* Couches empilées en profondeur : le brouillard flotte au-dessus du sol, les tracés au-dessus */
   .idf-fog {

@@ -12,7 +12,6 @@ const TILT = 34; // inclinaison du plateau (degrés)
 const BASE_SCALE = 0.95; // marge pour que le bord proche (agrandi par la perspective) reste visible
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 10;
-const FOG_SCALE = 1.5; // résolution du brouillard (px de canvas par unité de plateau)
 const CORRIDOR = 9; // demi-largeur de la zone dégagée le long d'un tronçon
 const STOP_RADIUS = 13; // rayon dégagé autour d'une station visitée
 const INTRO_MS = 1800;
@@ -74,24 +73,28 @@ const silhouette = data.departements.flatMap((d) => d.rings).map((r) => linePath
 const stationXY = data.stations.map(([, lon, lat]) => project([lon, lat]));
 
 // ── Tronçons parcourus ──
-const idsByName = new Map();
-data.stations.forEach(([name], i) => {
+const stationNorm = data.stations.map(([name]) => norm(name));
+// Recherche parmi les seules stations de la ligne : nom exact, puis nom qui commence par la saisie
+// (« La Défense » → « La Défense - Grande Arche »), puis nom qui la contient (« Saint-Michel Notre-Dame »)
+function matchStation(name, lineIds) {
   const n = norm(name);
-  if (!idsByName.has(n)) idsByName.set(n, new Set());
-  idsByName.get(n).add(i);
-});
-function matchStation(name) {
-  const n = norm(name);
-  if (idsByName.has(n)) return idsByName.get(n);
-  const ids = new Set();
-  for (const [key, set] of idsByName) if (key.includes(n) || (key.length > 4 && n.includes(key))) set.forEach((i) => ids.add(i));
-  return ids;
+  const tests = [
+    (key) => key === n,
+    (key) => key.startsWith(n + " "),
+    (key) => key.includes(n) || (key.length > 4 && n.includes(key)),
+  ];
+  for (const test of tests) {
+    const ids = new Set([...lineIds].filter((id) => test(stationNorm[id])));
+    if (ids.size) return ids;
+  }
+  return new Set();
 }
 function resolve(trip) {
   const line = data.lines.find((l) => l.k.toLowerCase() === trip.line.toLowerCase());
   if (!line) return null;
-  const from = matchStation(trip.from);
-  const to = matchStation(trip.to);
+  const lineIds = new Set(line.v.flatMap((v) => v.s));
+  const from = matchStation(trip.from, lineIds);
+  const to = matchStation(trip.to, lineIds);
   let best = null;
   for (const v of line.v) {
     const i = v.s.findIndex((id) => from.has(id));
@@ -101,7 +104,7 @@ function resolve(trip) {
     // à plusieurs variantes possibles, on garde la plus omnibus (le plus d'arrêts entre les deux)
     if (!best || b - a > best.b - best.a) best = { v, a, b };
   }
-  if (!best) return null;
+  if (!best) return shortestPath(line, from, to);
   const { v, a, b } = best;
   const stops = v.s.slice(a, b + 1);
   let coords;
@@ -113,6 +116,59 @@ function resolve(trip) {
   }
   return { line, stops, coords };
 }
+// Aucune desserte directe (correspondance entre branches, ex. Paris-Nord → Auvers-sur-Oise) :
+// plus court chemin sur le graphe des arrêts consécutifs de toutes les variantes de la ligne
+function shortestPath(line, from, to) {
+  const edges = new Map(); // id -> [{ to, len, coords }]
+  const addEdge = (s, t, coords) => {
+    let len = 0;
+    for (let i = 1; i < coords.length; i++) len += Math.hypot(coords[i][0] - coords[i - 1][0], coords[i][1] - coords[i - 1][1]);
+    if (!edges.has(s)) edges.set(s, []);
+    edges.get(s).push({ to: t, len, coords });
+  };
+  for (const v of line.v) {
+    for (let i = 0; i < v.s.length - 1; i++) {
+      let coords;
+      if (v.a) {
+        const ca = Math.min(v.a[i], v.a[i + 1]), cb = Math.max(v.a[i], v.a[i + 1]);
+        coords = v.c.slice(ca, cb + 1).map(project);
+        if (v.a[i] > v.a[i + 1]) coords.reverse();
+      } else {
+        coords = [stationXY[v.s[i]], stationXY[v.s[i + 1]]];
+      }
+      addEdge(v.s[i], v.s[i + 1], coords);
+      addEdge(v.s[i + 1], v.s[i], coords.slice().reverse());
+    }
+  }
+  const dist = new Map([...from].map((id) => [id, 0]));
+  const prev = new Map();
+  const queue = new Set(from);
+  while (queue.size) {
+    let u = null;
+    for (const id of queue) if (u === null || dist.get(id) < dist.get(u)) u = id;
+    queue.delete(u);
+    if (to.has(u)) {
+      const stops = [u];
+      const parts = [];
+      while (prev.has(stops[0])) {
+        const { from: p, coords } = prev.get(stops[0]);
+        parts.unshift(coords);
+        stops.unshift(p);
+      }
+      return { line, stops, coords: parts.flat() };
+    }
+    for (const e of edges.get(u) || []) {
+      const d = dist.get(u) + e.len;
+      if (!dist.has(e.to) || d < dist.get(e.to)) {
+        dist.set(e.to, d);
+        prev.set(e.to, { from: u, coords: e.coords });
+        queue.add(e.to);
+      }
+    }
+  }
+  return null;
+}
+
 const legs = [];
 for (const trip of trips) {
   const leg = resolve(trip);
@@ -159,24 +215,71 @@ const tripPaths = legs.map((l) => el("path", { class: "i-trip", d: linePath(l.co
 const stopRings = el("path", { class: "i-stop-ring", d: dotsPath(visitedStops) }, routeLayer);
 const stopDots = el("path", { class: "i-stop-dot", d: dotsPath(visitedStops) }, routeLayer);
 
+// ── Vue : le zoom redessine la carte (viewBox + brouillard) au lieu d'agrandir une image ──
+let zoom = 1;
+let cx = W / 2; // centre de la vue, en unités du plateau
+let cy = H / 2;
+let dirty = true;
+const cosTilt = Math.cos(TILT * RAD);
+stage.style.transform = `translateY(-4%) rotateX(${TILT}deg)`;
+board.style.transform = `scale(${BASE_SCALE})`;
+
+function viewBox() {
+  const vw = W / zoom, vh = H / zoom;
+  return [cx - vw / 2, cy - vh / 2, vw, vh];
+}
+function applyView() {
+  cx = Math.max(0, Math.min(W, cx));
+  cy = Math.max(0, Math.min(H, cy));
+  dirty = true;
+}
+function renderSvg() {
+  const vb = viewBox().map((v) => v.toFixed(2)).join(" ");
+  ground.setAttribute("viewBox", vb);
+  routes.setAttribute("viewBox", vb);
+  // Les traits s'épaississent moins vite que le zoom
+  const k = Math.pow(zoom, -0.6);
+  net.style.strokeWidth = 0.9 * k;
+  netStops.style.strokeWidth = 2.4 * k;
+  const kt = Math.pow(zoom, -0.55);
+  casings.forEach((p) => (p.style.strokeWidth = 5.2 * kt));
+  tripPaths.forEach((p) => (p.style.strokeWidth = 3.4 * kt));
+  stopRings.style.strokeWidth = 5.6 * kt;
+  stopDots.style.strokeWidth = 3.4 * kt;
+}
+
 // ── Brouillard de guerre ──
-fogCanvas.width = Math.round(W * FOG_SCALE);
-fogCanvas.height = Math.round(H * FOG_SCALE);
 const fctx = fogCanvas.getContext("2d");
 const mask = document.createElement("canvas");
-mask.width = fogCanvas.width;
-mask.height = fogCanvas.height;
 const mctx = mask.getContext("2d");
 const silPath = new Path2D(silhouette);
 const legsPath = new Path2D(legs.map((l) => linePath(l.coords)).join(""));
 const stopsPath = new Path2D(dotsPath(visitedStops));
 
-// Masque : opaque sur toute la région, troué (bords doux) autour des tronçons et stations visités
+// Résolution du canvas calée sur sa taille affichée (× densité d'écran)
+function resizeFog() {
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const w = Math.round(board.clientWidth * BASE_SCALE * dpr);
+  if (!w || w === fogCanvas.width) return;
+  fogCanvas.width = mask.width = w;
+  fogCanvas.height = mask.height = Math.round((w * H) / W);
+  dirty = true;
+}
+new ResizeObserver(resizeFog).observe(board);
+resizeFog();
+
+const unitPx = () => (fogCanvas.width / W) * zoom; // px de canvas par unité de plateau
+
+// Masque : opaque sur toute la région, troué (bords doux) autour des tronçons et stations visités.
+// En zoomant, la zone dégagée se resserre autour des tracés.
 function drawMask(progress) {
-  mctx.setTransform(FOG_SCALE, 0, 0, FOG_SCALE, 0, 0);
+  const [vx, vy] = viewBox();
+  const s = unitPx();
+  mctx.setTransform(1, 0, 0, 1, 0, 0);
   mctx.globalCompositeOperation = "source-over";
   mctx.globalAlpha = 1;
-  mctx.clearRect(0, 0, W, H);
+  mctx.clearRect(0, 0, mask.width, mask.height);
+  mctx.setTransform(s, 0, 0, s, -vx * s, -vy * s);
   mctx.fillStyle = "#fff";
   mctx.fill(silPath);
   if (progress <= 0 || !legs.length) return;
@@ -185,9 +288,10 @@ function drawMask(progress) {
   mctx.lineJoin = "round";
   // Passes concentriques de plus en plus larges : bord dégradé sans dépendre de ctx.filter (Safari)
   mctx.globalAlpha = 0.2;
+  const tighten = Math.pow(zoom, -0.5);
   const steps = 14;
   for (let i = 0; i < steps; i++) {
-    const spread = (0.6 + i * 0.1) * progress;
+    const spread = (0.6 + i * 0.1) * progress * tighten;
     mctx.lineWidth = 2 * CORRIDOR * spread;
     mctx.stroke(legsPath);
     mctx.lineWidth = 2 * STOP_RADIUS * spread;
@@ -251,21 +355,28 @@ function buildFog() {
     base: dark ? "rgba(16, 16, 16, 0.74)" : "rgba(196, 196, 196, 0.74)",
     layers: [
       // grandes nappes sombres, lentes
-      { pattern: tile(noiseA, NOISE_SIZE, dark ? [0, 0, 0] : [150, 150, 150], (n) => 0.55 * smooth(0.35, 1, n)), scale: 3.2, vx: 0.005, vy: 0.0015 },
+      { pattern: tile(noiseA, NOISE_SIZE, dark ? [0, 0, 0] : [150, 150, 150], (n) => 0.55 * smooth(0.35, 1, n)), scale: 2.1, vx: 0.0035, vy: 0.001 },
       // volutes claires, plus rapides, en sens inverse
-      { pattern: tile(noiseB, NOISE_SIZE, dark ? [95, 95, 95] : [250, 250, 250], (n) => 0.75 * smooth(0.45, 0.9, n)), scale: 1.7, vx: -0.011, vy: 0.004 },
+      { pattern: tile(noiseB, NOISE_SIZE, dark ? [95, 95, 95] : [250, 250, 250], (n) => 0.75 * smooth(0.45, 0.9, n)), scale: 1.1, vx: -0.0075, vy: 0.0027 },
     ],
   };
 }
 
+// Les nuages sont accrochés à la carte quand on se déplace ; ils grossissent moins vite que le zoom
 function drawFog(t) {
+  const [vx, vy] = viewBox();
+  const s = unitPx();
+  const res = fogCanvas.width / 1000;
   fctx.setTransform(1, 0, 0, 1, 0, 0);
   fctx.globalCompositeOperation = "source-over";
   fctx.clearRect(0, 0, fogCanvas.width, fogCanvas.height);
   fctx.fillStyle = fog.base;
   fctx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
   for (const l of fog.layers) {
-    l.pattern.setTransform(new DOMMatrix().translateSelf(t * l.vx, t * l.vy).scaleSelf(l.scale));
+    const m = new DOMMatrix()
+      .translateSelf(-vx * s + t * l.vx * res, -vy * s + t * l.vy * res)
+      .scaleSelf(l.scale * res * Math.sqrt(zoom));
+    l.pattern.setTransform(m);
     fctx.fillStyle = l.pattern;
     fctx.fillRect(0, 0, fogCanvas.width, fogCanvas.height);
   }
@@ -273,34 +384,7 @@ function drawFog(t) {
   fctx.drawImage(mask, 0, 0);
 }
 
-// ── Vue : inclinaison, déplacement et zoom ──
-let zoom = 1;
-let panX = 0;
-let panY = 0;
-const cosTilt = Math.cos(TILT * RAD);
-stage.style.transform = `translateY(-4%) rotateX(${TILT}deg)`;
-
-function clampPan() {
-  const rect = wrap.getBoundingClientRect();
-  const limX = (rect.width * BASE_SCALE * zoom) / 2;
-  const limY = (rect.width * (H / W) * BASE_SCALE * zoom) / 2;
-  panX = Math.max(-limX, Math.min(limX, panX));
-  panY = Math.max(-limY, Math.min(limY, panY));
-}
-function applyView() {
-  clampPan();
-  board.style.transform = `translate(${panX.toFixed(1)}px, ${panY.toFixed(1)}px) scale(${(BASE_SCALE * zoom).toFixed(4)})`;
-  // Les traits s'épaississent moins vite que le zoom
-  const k = Math.pow(zoom, -0.6);
-  net.style.strokeWidth = 0.9 * k;
-  netStops.style.strokeWidth = 2.4 * k;
-  const kt = Math.pow(zoom, -0.55);
-  casings.forEach((p) => (p.style.strokeWidth = 5.2 * kt));
-  tripPaths.forEach((p) => (p.style.strokeWidth = 3.4 * kt));
-  stopRings.style.strokeWidth = 5.6 * kt;
-  stopDots.style.strokeWidth = 3.4 * kt;
-}
-
+// ── Zoom ──
 let zoomAnim = null;
 let zoomTarget = 1; // les clics rapprochés se cumulent même pendant l'animation
 function setZoom(target, animate = true) {
@@ -308,10 +392,9 @@ function setZoom(target, animate = true) {
   zoomTarget = target;
   if (zoomAnim) cancelAnimationFrame(zoomAnim);
   zoomAnim = null;
-  // On zoome autour du centre de l'écran : le décalage suit le facteur de zoom
-  const z0 = zoom, x0 = panX, y0 = panY;
+  const z0 = zoom;
   if (!animate || reduceMotion) {
-    zoom = target; panX = (x0 * target) / z0; panY = (y0 * target) / z0;
+    zoom = target;
     applyView();
     return;
   }
@@ -319,9 +402,7 @@ function setZoom(target, animate = true) {
   const step = (now) => {
     const t = Math.min(1, (now - start) / 350);
     const e = 1 - Math.pow(1 - t, 3);
-    zoom = z0 + (target - z0) * e;
-    panX = (x0 * zoom) / z0;
-    panY = (y0 * zoom) / z0;
+    zoom = z0 * Math.pow(target / z0, e);
     applyView();
     zoomAnim = t < 1 ? requestAnimationFrame(step) : null;
   };
@@ -349,7 +430,7 @@ const spread = () => {
 };
 function startDrag() {
   const [p] = [...pointers.values()];
-  drag = p ? { x: p.x, y: p.y, panX, panY } : null;
+  drag = p ? { x: p.x, y: p.y, cx, cy } : null;
 }
 wrap.addEventListener("pointerdown", (e) => {
   if (e.target.closest(".idf-zoom")) return;
@@ -367,8 +448,10 @@ wrap.addEventListener("pointermove", (e) => {
   if (pinch && pointers.size >= 2) {
     setZoom((pinch.zoom * spread()) / pinch.d, false);
   } else if (drag) {
-    panX = drag.panX + (e.clientX - drag.x);
-    panY = drag.panY + (e.clientY - drag.y) / cosTilt; // le plateau incliné écrase les déplacements verticaux
+    // px d'écran → unités du plateau ; le plateau incliné écrase les déplacements verticaux
+    const unitsPerPx = W / (wrap.getBoundingClientRect().width * BASE_SCALE * zoom);
+    cx = drag.cx - (e.clientX - drag.x) * unitsPerPx;
+    cy = drag.cy - ((e.clientY - drag.y) / cosTilt) * unitsPerPx;
     applyView();
   }
 });
@@ -384,38 +467,32 @@ function endPointer(e) {
 wrap.addEventListener("pointerup", endPointer);
 wrap.addEventListener("pointercancel", endPointer);
 
-// ── Animation : le brouillard dérive et s'ouvre à l'arrivée sur la page ──
+// ── Boucle de rendu : redessin immédiat quand la vue change, dérive du brouillard ~30 i/s ──
 let visible = true;
 let introStart = null;
-let lastFrame = 0;
+let lastFog = 0;
 new IntersectionObserver(([entry]) => (visible = entry.isIntersecting)).observe(wrap);
 
 function frame(now) {
-  if (visible && now - lastFrame > 33) {
-    lastFrame = now;
-    if (introStart === null) introStart = now;
-    const p = Math.min(1, (now - introStart) / INTRO_MS);
-    if (p < 1 || !introDone) {
-      drawMask(1 - Math.pow(1 - p, 3));
-      introDone = p >= 1;
+  if (introStart === null) introStart = now;
+  const intro = reduceMotion ? 1 : Math.min(1, (now - introStart) / INTRO_MS);
+  const introRunning = intro < 1 || dirty === "intro";
+  if (dirty || (visible && (introRunning || (!reduceMotion && now - lastFog > 33)))) {
+    if (dirty || introRunning) {
+      renderSvg();
+      drawMask(1 - Math.pow(1 - intro, 3));
     }
-    drawFog(now);
+    drawFog(reduceMotion ? 0 : now);
+    lastFog = now;
+    dirty = intro < 1 ? "intro" : false;
   }
   requestAnimationFrame(frame);
 }
-let introDone = false;
 
 buildFog();
-applyView();
-if (reduceMotion) {
-  drawMask(1);
-  drawFog(0);
-} else {
-  drawMask(0);
-  drawFog(0);
-  requestAnimationFrame(frame);
-}
+requestAnimationFrame(frame);
 darkQuery.addEventListener("change", () => {
   buildFog();
-  if (reduceMotion) drawFog(0);
+  dirty = true;
 });
+
