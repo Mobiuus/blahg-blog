@@ -1,4 +1,4 @@
-// Carte de l'Île-de-France de la page /map : réseau ferré (OpenStreetMap), tronçons déjà parcourus
+// Carte de l'Île-de-France de la page /maps/ratp : réseau ferré (OpenStreetMap), tronçons déjà parcourus
 // et brouillard de guerre sur tout le reste. Sol et tracés en SVG, brouillard en canvas,
 // le tout posé sur un plateau incliné en CSS 3D. Données : /data/idf-network.json
 // (généré par scripts/build-idf-network.mjs).

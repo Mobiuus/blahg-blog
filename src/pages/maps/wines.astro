@@ -1,0 +1,448 @@
+---
+import Layout from "../../components/Layout.astro";
+import { SITE_TITLE } from "../../config";
+
+// Sous-régions viticoles (mêmes clés que scripts/build-burgundy-wines.mjs)
+type RegionKey = "chablis" | "auxerrois" | "nuits" | "hautes-cotes" | "beaune" | "chalonnaise" | "maconnais";
+
+interface Region {
+  key: RegionKey;
+  label: string;
+  color: string;
+}
+
+interface Bottle {
+  name: string;
+  producer: string;
+  appellation: string;
+  level: string; // Régionale, Village…
+  region: RegionKey;
+  wine: "rouge" | "blanc" | null; // null : couleur à préciser
+  grape: string;
+  climat?: string; // lieu-dit
+  communes: string[]; // communes de l'appellation, colorées sur la carte
+  pin?: string; // commune où planter l'épingle (sinon : centre des communes ci-dessus)
+  note?: string;
+}
+
+const regions: Region[] = [
+  { key: "chablis",      label: "Chablis",          color: "#c4b347" },
+  { key: "auxerrois",    label: "Grand Auxerrois",  color: "#d98e6b" },
+  { key: "nuits",        label: "Côte de Nuits",    color: "#8e2c48" },
+  { key: "hautes-cotes", label: "Hautes-Côtes",     color: "#a77ba6" },
+  { key: "beaune",       label: "Côte de Beaune",   color: "#c4524b" },
+  { key: "chalonnaise",  label: "Côte Chalonnaise", color: "#6f8f4e" },
+  { key: "maconnais",    label: "Mâconnais",        color: "#e0aa2e" },
+];
+
+const HAUTES_COTES_DE_BEAUNE = [
+  "Nantoux", "Meloisey", "Mavilly-Mandelot", "Bouze-lès-Beaune", "Échevronne", "Nolay", "La Rochepot",
+  "Baubigny", "Cormot-Vauchignon", "Val-Mont", "Vic-des-Prés", "Aubigny-la-Ronce", "Molinot", "Santosse",
+];
+const CHABLIS = [
+  "Chablis", "Fleys", "La Chapelle-Vaupelteigne", "Maligny", "Ligny-le-Châtel", "Beine", "Préhy", "Courgis",
+  "Chichée", "Fontenay-près-Chablis", "Villy", "Lignorelles", "Poilly-sur-Serein", "Chemilly-sur-Serein",
+  "Collan", "Viviers", "Béru",
+];
+
+// Bouteilles goûtées, du nord au sud
+const bottles: Bottle[] = [
+  {
+    name: "Chablis",
+    producer: "Grand Régnard",
+    appellation: "Chablis",
+    level: "Village",
+    region: "chablis",
+    wine: "blanc",
+    grape: "Chardonnay",
+    communes: CHABLIS,
+    pin: "Chablis",
+  },
+  {
+    name: "Chorey-lès-Beaune « Les Poirier Malchaussé »",
+    producer: "Dominique Fernandez",
+    appellation: "Chorey-lès-Beaune",
+    level: "Village",
+    region: "beaune",
+    wine: "rouge",
+    grape: "Pinot noir",
+    climat: "Les Poirier Malchaussé",
+    communes: ["Chorey-lès-Beaune"],
+  },
+  {
+    name: "Bourgogne « Couvent des Jacobins »",
+    producer: "Louis Jadot",
+    appellation: "Bourgogne",
+    level: "Régionale",
+    region: "beaune",
+    wine: "rouge",
+    grape: "Pinot noir",
+    communes: [],
+    pin: "Beaune",
+    note: "Appellation régionale, assemblée dans toute la Bourgogne ; l'épingle marque le Couvent des Jacobins, siège de la maison à Beaune.",
+  },
+  {
+    name: "Élévation 382",
+    producer: "",
+    appellation: "Bourgogne Hautes-Côtes de Beaune",
+    level: "Régionale",
+    region: "hautes-cotes",
+    wine: null,
+    grape: "",
+    communes: HAUTES_COTES_DE_BEAUNE,
+    note: "Vignes d'altitude, sur les hauteurs à l'ouest de la Côte de Beaune.",
+  },
+  {
+    name: "Meursault « Clos du Cromin »",
+    producer: "Domaine Bohrmann",
+    appellation: "Meursault",
+    level: "Village",
+    region: "beaune",
+    wine: "blanc",
+    grape: "Chardonnay",
+    climat: "Clos du Cromin",
+    communes: ["Meursault"],
+  },
+  {
+    name: "Chassagne-Montrachet rouge",
+    producer: "Vincent Prunier",
+    appellation: "Chassagne-Montrachet",
+    level: "Village",
+    region: "beaune",
+    wine: "rouge",
+    grape: "Pinot noir",
+    communes: ["Chassagne-Montrachet"],
+  },
+  {
+    name: "Viré-Clessé « Quintaine »",
+    producer: "Domaine Michel",
+    appellation: "Viré-Clessé",
+    level: "Village",
+    region: "maconnais",
+    wine: "blanc",
+    grape: "Chardonnay",
+    climat: "Quintaine",
+    communes: ["Viré", "Clessé", "Montbellet", "Laizé"],
+    pin: "Clessé",
+  },
+  {
+    name: "Saint-Véran Vieilles Vignes",
+    producer: "Cave des Grands Crus Blancs",
+    appellation: "Saint-Véran",
+    level: "Village",
+    region: "maconnais",
+    wine: "blanc",
+    grape: "Chardonnay",
+    communes: ["Chânes", "Chasselas", "Davayé", "Leynes", "Prissé", "Saint-Vérand", "Solutré-Pouilly", "Vergisson"],
+  },
+];
+
+const regionByKey = Object.fromEntries(regions.map((r) => [r.key, r]));
+const wineLabel = { rouge: "Rouge", blanc: "Blanc" } as const;
+---
+
+<Layout title={`Wines | ${SITE_TITLE}`} description="Les vins de Bourgogne goûtés, sur la carte des vignobles">
+  <div class="wine-page">
+    <div class="wine-wrap" id="wine-wrap">
+      <svg id="wine-map" class="wine-map" role="img" aria-label="Carte des vignobles de Bourgogne"></svg>
+      <div class="wine-zoom">
+        <button type="button" id="wine-zoom-in" aria-label="Zoomer">+</button>
+        <button type="button" id="wine-zoom-out" aria-label="Dézoomer">−</button>
+      </div>
+    </div>
+
+    <ul class="wine-legend" role="list">
+      {regions.map((r) => {
+        const count = bottles.filter((b) => b.region === r.key).length;
+        return (
+          <li class={count ? "" : "empty"}>
+            <span class="swatch" style={`background: ${r.color}`}></span>
+            {r.label}
+            {count > 0 && <span class="count">{count}</span>}
+          </li>
+        );
+      })}
+    </ul>
+
+    <ol class="cellar" id="cellar">
+      {bottles.map((b, i) => (
+        <li>
+          <button type="button" class="bottle" data-bottle={i} style={`--region: ${regionByKey[b.region].color}`}>
+            <span class="bottle-num" data-wine={b.wine ?? "inconnu"}>{i + 1}</span>
+            <span class="bottle-body">
+              <span class="bottle-name">{b.name}</span>
+              {b.producer && <span class="bottle-producer">{b.producer}</span>}
+              <span class="bottle-meta">
+                <span class="pill">{regionByKey[b.region].label}</span>
+                <span class="pill">AOC {b.appellation} · {b.level}</span>
+                {b.wine ? <span class="pill">{wineLabel[b.wine]}{b.grape && ` · ${b.grape}`}</span>
+                        : <span class="pill muted">couleur à préciser</span>}
+              </span>
+              {b.note && <span class="bottle-note">{b.note}</span>}
+            </span>
+          </button>
+        </li>
+      ))}
+    </ol>
+  </div>
+</Layout>
+
+<script type="application/json" id="wine-data" set:html={JSON.stringify({ regions, bottles })}></script>
+<script is:inline type="module" src="/scripts/wine-map.js"></script>
+
+<style>
+  .wine-page {
+    padding: 0 0 3rem;
+  }
+
+  .wine-wrap {
+    position: relative;
+    width: 100%;
+    max-width: 620px;
+    margin: 0 auto 1rem;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+  .wine-wrap.dragging {
+    cursor: grabbing;
+  }
+  .wine-map {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  .wine-zoom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .wine-zoom button {
+    width: 30px;
+    height: 30px;
+    border: 1px solid var(--gray);
+    border-radius: 6px;
+    background: var(--background-color);
+    color: var(--text-color);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .wine-zoom button:hover {
+    border-color: var(--text-color);
+  }
+
+  /* ── Légende des sous-régions ── */
+  .wine-legend {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem 1rem;
+    list-style: none;
+    margin: 0 0 1.5rem;
+    padding: 0;
+    font-size: 0.8rem;
+  }
+  .wine-legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .wine-legend li.empty {
+    opacity: 0.55;
+  }
+  .swatch {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 3px;
+    border: 1px solid rgb(0 0 0 / 0.35);
+  }
+  .count {
+    font-size: 0.7rem;
+    border: 1px solid var(--gray);
+    border-radius: 999px;
+    padding: 0 0.4em;
+  }
+
+  /* ── Cave : une carte par bouteille ── */
+  .cellar {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .bottle {
+    display: flex;
+    gap: 0.8rem;
+    width: 100%;
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid var(--gray);
+    border-left: 6px solid var(--region);
+    border-radius: 8px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+  .bottle:hover,
+  .bottle.selected {
+    border-color: var(--text-color);
+    border-left-color: var(--region);
+  }
+  .bottle.selected {
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
+  }
+  .bottle-num {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 1.7rem;
+    height: 1.7rem;
+    border-radius: 50%;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 1.5px solid var(--text-color);
+  }
+  .bottle-num[data-wine="rouge"] {
+    background: #7b1e32;
+    color: #fff;
+  }
+  .bottle-num[data-wine="blanc"] {
+    background: #ecd98a;
+    color: #000;
+  }
+  .bottle-num[data-wine="inconnu"] {
+    background: #c9c9c9;
+    color: #000;
+  }
+  .bottle-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+  }
+  .bottle-name {
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .bottle-producer {
+    font-size: 0.85rem;
+  }
+  .bottle-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+    margin-top: 0.15rem;
+  }
+  .pill {
+    font-size: 0.7rem;
+    border: 1px solid var(--gray);
+    border-radius: 999px;
+    padding: 0.05em 0.55em;
+  }
+  .pill.muted {
+    border-style: dashed;
+    color: var(--gray);
+  }
+  .bottle-note {
+    font-size: 0.75rem;
+    color: var(--gray);
+    margin-top: 0.15rem;
+  }
+</style>
+
+<!-- Éléments de la carte générés en JS : styles globaux, préfixés par #wine-wrap -->
+<style is:global>
+  #wine-wrap {
+    --w-side: #d2d2d2;
+    --w-top: var(--background-color);
+  }
+  @media (prefers-color-scheme: dark) {
+    #wine-wrap {
+      --w-side: #3b3b3b;
+      --w-top: #2d2d2d;
+    }
+  }
+  #wine-wrap .w-shadow {
+    fill: #000;
+    opacity: 0.2;
+  }
+  #wine-wrap .w-side {
+    fill: var(--w-side);
+    stroke: var(--w-side);
+    stroke-width: 2;
+  }
+  #wine-wrap .w-edge {
+    fill: none;
+    stroke: var(--text-color);
+    stroke-width: 3;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+  #wine-wrap .w-top {
+    fill: var(--w-top);
+  }
+  #wine-wrap .w-depts {
+    fill: none;
+    stroke: var(--gray);
+    stroke-opacity: 0.6;
+    stroke-width: 0.8;
+    stroke-dasharray: 4 3;
+    stroke-linejoin: round;
+  }
+  #wine-wrap .w-commune {
+    stroke: var(--w-top);
+    stroke-width: 0.6;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    fill-opacity: 0.22;
+    transition: fill-opacity 200ms;
+  }
+  #wine-wrap .w-commune.tasted {
+    fill-opacity: 0.9;
+  }
+  #wine-wrap .w-commune.focus {
+    stroke: var(--text-color);
+    stroke-width: 1.6;
+  }
+  #wine-wrap .w-region-label {
+    font-size: 17px;
+    font-style: italic;
+    fill: var(--text-color);
+    paint-order: stroke;
+    stroke: var(--w-top);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    pointer-events: none;
+  }
+  #wine-wrap .w-dept-label {
+    font-size: 15px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    fill: var(--gray);
+    opacity: 0.8;
+    pointer-events: none;
+  }
+  #wine-wrap .w-pin {
+    cursor: pointer;
+  }
+  #wine-wrap .w-pin circle {
+    stroke: var(--text-color);
+    stroke-width: 1.5;
+  }
+  #wine-wrap .w-pin text {
+    font-size: 13px;
+    font-weight: 700;
+    text-anchor: middle;
+    dominant-baseline: central;
+    pointer-events: none;
+  }
+  #wine-wrap .w-pin.selected circle {
+    stroke-width: 3;
+  }
+</style>

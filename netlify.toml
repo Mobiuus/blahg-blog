@@ -4,3 +4,19 @@
 
 [build.environment]
   NODE_VERSION = "18"
+
+# Anciennes adresses des cartes, regroupées sous /maps
+[[redirects]]
+  from = "/map"
+  to = "/maps/ratp"
+  status = 301
+
+[[redirects]]
+  from = "/invest"
+  to = "/maps/invest"
+  status = 301
+
+[[redirects]]
+  from = "/maps"
+  to = "/maps/ratp"
+  status = 302

@@ -1,5 +1,5 @@
-// Mini-Terre du dossier « invest » dans le menu : contours des continents, rotation lente.
-// Même rendu que le globe de /invest (d3-geo, world-atlas 110m), en miniature.
+// Mini-Terre du dossier « maps » dans le menu : contours des continents, rotation lente.
+// Même rendu que le globe de /maps/invest (d3-geo, world-atlas 110m), en miniature.
 import { geoOrthographic, geoPath } from "https://cdn.jsdelivr.net/npm/d3-geo@3.1.1/+esm";
 import { feature } from "https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm";
 
@@ -20,8 +20,9 @@ const globes = [...svgs].map((svg) => {
   landPath.setAttribute("stroke-width", "0.8");
   landPath.setAttribute("stroke-linejoin", "round");
   svg.appendChild(landPath);
-  const link = svg.closest(".folder-link");
-  return { svg, projection, path, landPath, link };
+  // le dossier reste ouvert tant qu'on survole aussi son menu déroulant : on suit l'élément de liste
+  const item = svg.closest("li");
+  return { svg, projection, path, landPath, item };
 });
 
 function draw(g) {
@@ -32,7 +33,7 @@ function draw(g) {
 const touch = window.matchMedia("(hover: none)").matches;
 function tick() {
   for (const g of globes) {
-    const open = touch || g.link?.matches(":hover, :focus-visible");
+    const open = touch || g.item?.matches(":hover, :focus-within, .open");
     if (open) {
       const [l, p, r] = g.projection.rotate();
       g.projection.rotate([l + SPEED, p, r]);

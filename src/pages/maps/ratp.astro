@@ -1,6 +1,6 @@
 ---
-import Layout from "../components/Layout.astro";
-import { SITE_TITLE } from "../config";
+import Layout from "../../components/Layout.astro";
+import { SITE_TITLE } from "../../config";
 
 // Tronçons déjà parcourus : ligne + deux stations (dans n'importe quel sens).
 // Tous les arrêts desservis entre les deux sont considérés comme visités.
@@ -40,7 +40,7 @@ const trips: Trip[] = [
 ];
 ---
 
-<Layout title={`Map | ${SITE_TITLE}`} description="Le réseau francilien, exploré tronçon par tronçon">
+<Layout title={`RATP | ${SITE_TITLE}`} description="Le réseau francilien, exploré tronçon par tronçon">
   <div class="map-page">
     <div class="idf-wrap" id="idf-wrap">
       <div class="idf-stage" id="idf-stage">
