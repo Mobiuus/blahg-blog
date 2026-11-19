@@ -34,37 +34,22 @@ const first = paintings[0];
 
 <html lang="fr">
   <head>
-    <BaseHead title="Musée imaginaire" description="Mon musée imaginaire" />
+    <BaseHead title="Musée imaginaire" description="Mon musée imaginaire, en économiseur d'écran" />
   </head>
-  <body>
-    <a href="/" class="pill home-link">← home</a>
+  <body class="screensaver-page">
+    <a href="/" class="home-link">← home</a>
 
-    <main class="gallery">
-      <!-- Cadre de taille fixe : chaque tableau s'y adapte, la page ne bouge pas -->
-      <div class="stage">
-        <img id="painting-image" class="painting" src={first.image} alt={first.title} />
-      </div>
-
-      <div class="caption" aria-live="polite">
-        <p class="title" id="title">{first.title}</p>
-        <p class="meta" id="painter-and-date">{first.painter}, {first.date}</p>
-        <p class="meta" id="place-and-owned-by">{first.place}, {first.owned_by}</p>
-      </div>
-
-      <div class="thumbnails">
-        {paintings.map((p, i) => (
-          <button type="button" class:list={["thumb", { active: i === 0 }]} data-index={i} aria-label={p.title}>
-            <img src={p.image} alt="" loading="lazy" />
-          </button>
-        ))}
-      </div>
-
-      <nav class="controls" aria-label="Navigation entre les tableaux">
-        <button type="button" id="prev-button" class="pill">← prev</button>
-        <span id="painting-index" class="index">1 / {paintings.length}</span>
-        <button type="button" id="next-button" class="pill">next →</button>
-      </nav>
+    <!-- L'écran noir : le tableau y glisse en diagonale et rebondit sur les bords -->
+    <main class="screen" id="screen" aria-label="Musée imaginaire en économiseur d'écran">
+      <img id="painting" class="painting" src={first.image} alt={first.title} />
     </main>
+
+    <div class="caption" aria-live="polite">
+      <p class="title" id="title">{first.title}</p>
+      <p class="meta" id="meta">{first.painter}, {first.date} · {first.owned_by}</p>
+    </div>
+
+    <p class="corners" id="corners" hidden>coins : <span id="corner-count">0</span></p>
 
     <script type="application/json" id="paintings-data" set:html={JSON.stringify(paintings)}></script>
     <script>
@@ -78,188 +63,219 @@ const first = paintings[0];
       }
 
       const paintings: Painting[] = JSON.parse(document.getElementById("paintings-data")?.textContent ?? "[]");
-      const image = document.getElementById("painting-image") as HTMLImageElement;
+      const screen = document.getElementById("screen") as HTMLElement;
+      const img = document.getElementById("painting") as HTMLImageElement;
       const title = document.getElementById("title") as HTMLElement;
-      const painterAndDate = document.getElementById("painter-and-date") as HTMLElement;
-      const placeAndOwnedBy = document.getElementById("place-and-owned-by") as HTMLElement;
-      const index = document.getElementById("painting-index") as HTMLElement;
-      const thumbs = document.querySelectorAll<HTMLButtonElement>(".thumb");
-      let current = 0;
+      const meta = document.getElementById("meta") as HTMLElement;
+      const corners = document.getElementById("corners") as HTMLElement;
+      const cornerCount = document.getElementById("corner-count") as HTMLElement;
 
-      // Précharge les tableaux pour un changement instantané
-      paintings.forEach((p) => {
-        const img = new Image();
-        img.src = p.image;
+      // Précharge les tableaux et retient leurs proportions
+      const ratios: number[] = paintings.map(() => 4 / 3);
+      paintings.forEach((p, i) => {
+        const pre = new Image();
+        pre.onload = () => {
+          ratios[i] = pre.naturalWidth / pre.naturalHeight;
+          if (i === current) resize();
+        };
+        pre.src = p.image;
       });
 
-      function show(i: number) {
-        const p = paintings[i];
-        if (!p) return;
-        current = i;
-        image.src = p.image;
-        image.alt = p.title;
-        title.textContent = p.title;
-        painterAndDate.textContent = `${p.painter}, ${p.date}`;
-        placeAndOwnedBy.textContent = `${p.place}, ${p.owned_by}`;
-        index.textContent = `${i + 1} / ${paintings.length}`;
-        thumbs.forEach((t, j) => t.classList.toggle("active", j === i));
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const SPEED = 90; // px par seconde, lent et régulier
+
+      let current = 0;
+      let x = 0;
+      let y = 0;
+      let w = 0;
+      let h = 0;
+      let dx = 1;
+      let dy = -1;
+      let cornerHits = 0;
+
+      // Taille « timbre-poste » : une surface constante quelle que soit la forme du tableau
+      function resize() {
+        const area = Math.min(window.innerWidth, window.innerHeight) ** 2 * 0.09;
+        const r = ratios[current];
+        w = Math.sqrt(area * r);
+        h = w / r;
+        // Ne jamais dépasser l'écran sur les petits formats
+        const maxW = window.innerWidth * 0.6;
+        const maxH = window.innerHeight * 0.6;
+        const s = Math.min(1, maxW / w, maxH / h);
+        w *= s;
+        h *= s;
+        img.style.width = `${w}px`;
+        img.style.height = `${h}px`;
+        clamp();
       }
 
-      const next = () => show((current + 1) % paintings.length);
-      const prev = () => show((current - 1 + paintings.length) % paintings.length);
+      // Garde le tableau dans l'écran (utile quand la forme ou la fenêtre change)
+      function clamp() {
+        x = Math.min(Math.max(x, 0), Math.max(0, window.innerWidth - w));
+        y = Math.min(Math.max(y, 0), Math.max(0, window.innerHeight - h));
+      }
 
-      document.getElementById("next-button")?.addEventListener("click", next);
-      document.getElementById("prev-button")?.addEventListener("click", prev);
-      thumbs.forEach((t) => t.addEventListener("click", () => show(Number(t.dataset.index))));
-      // Flèches du clavier
-      document.addEventListener("keydown", (e) => {
-        if (e.key === "ArrowRight") next();
-        if (e.key === "ArrowLeft") prev();
-      });
+      function show(i: number) {
+        current = i;
+        const p = paintings[i];
+        img.src = p.image;
+        img.alt = p.title;
+        title.textContent = p.title;
+        meta.textContent = `${p.painter}, ${p.date} · ${p.owned_by}`;
+        resize();
+      }
+
+      const nextPainting = () => show((current + 1) % paintings.length);
+
+      function place() {
+        img.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      }
+
+      function celebrateCorner() {
+        cornerHits += 1;
+        cornerCount.textContent = String(cornerHits);
+        corners.hidden = false;
+        screen.classList.remove("corner");
+        void screen.offsetWidth; // relance l'animation
+        screen.classList.add("corner");
+      }
+
+      // Départ : en bas à gauche, cap vers le coin supérieur droit
+      resize();
+      x = window.innerWidth * 0.1;
+      y = window.innerHeight - h - window.innerHeight * 0.1;
+      clamp();
+      place();
+
+      if (reduceMotion) {
+        // Sans mouvement : tableau centré, qui change toutes les 6 secondes
+        const center = () => {
+          x = (window.innerWidth - w) / 2;
+          y = (window.innerHeight - h) / 2;
+          place();
+        };
+        center();
+        window.addEventListener("resize", () => { resize(); center(); });
+        setInterval(() => { nextPainting(); center(); }, 6000);
+      } else {
+        let last = performance.now();
+
+        function tick(now: number) {
+          // Plafonne le pas (onglet en arrière-plan) pour ne pas « téléporter » le tableau
+          const dt = Math.min((now - last) / 1000, 0.05);
+          last = now;
+
+          x += dx * SPEED * dt;
+          y += dy * SPEED * dt;
+
+          const maxX = window.innerWidth - w;
+          const maxY = window.innerHeight - h;
+          let hitX = false;
+          let hitY = false;
+
+          if (x <= 0) { x = 0; dx = 1; hitX = true; }
+          else if (x >= maxX) { x = maxX; dx = -1; hitX = true; }
+          if (y <= 0) { y = 0; dy = 1; hitY = true; }
+          else if (y >= maxY) { y = maxY; dy = -1; hitY = true; }
+
+          if (hitX || hitY) {
+            nextPainting();
+            if (hitX && hitY) celebrateCorner();
+          }
+
+          place();
+          requestAnimationFrame(tick);
+        }
+
+        window.addEventListener("resize", resize);
+        requestAnimationFrame((t) => { last = t; tick(t); });
+      }
     </script>
   </body>
 </html>
 
 <style>
-  /* La galerie peut être plus large que la colonne de texte du site,
-     et tient sur un seul écran (sans défilement) */
-  :global(html),
-  :global(body) {
-    max-width: 1000px;
-  }
-  :global(html) {
+  /* Écran noir plein cadre, comme une télé allumée sans programme */
+  :global(html:has(body.screensaver-page)),
+  :global(body.screensaver-page) {
+    max-width: none;
+    margin: 0;
     padding: 0;
-  }
-  :global(body) {
-    height: 100vh;
-    height: 100dvh;
-    box-sizing: border-box;
-  }
-
-  .gallery {
     height: 100%;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    padding: 2.75rem 0 0.5rem;
+    overflow: hidden;
+    background-color: #000;
+    color: #fff;
   }
 
-  /* Le tableau prend toute la hauteur restante ; le reste a une hauteur fixe */
-  .stage {
-    width: 100%;
-    flex: 1 1 auto;
-    min-height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .screen {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    overflow: hidden;
   }
+
   .painting {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: block;
+    object-fit: cover;
+    will-change: transform;
+    user-select: none;
+    -webkit-user-drag: none;
   }
 
-  /* Hauteur fixe (3 lignes) pour que la suite de la page ne bouge pas */
+  /* Le petit événement : un éclair discret quand le tableau touche un coin pile */
+  .screen.corner {
+    animation: corner-flash 1.2s ease-out;
+  }
+  @keyframes corner-flash {
+    0% { background: #2a2a2a; }
+    100% { background: #000; }
+  }
+
+  .home-link,
+  .caption,
+  .corners {
+    position: fixed;
+    z-index: 1;
+    font-size: 0.8rem;
+    color: #8a8a8a;
+    margin: 0;
+  }
+
+  .home-link {
+    top: 16px;
+    left: 16px;
+    text-decoration: none;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+  }
+  .home-link:hover,
+  .home-link:focus-visible {
+    opacity: 1;
+    color: #fff;
+    text-decoration: underline;
+  }
+
   .caption {
-    text-align: center;
-    min-height: 4.6em;
-    line-height: 1.5;
+    left: 16px;
+    bottom: 16px;
+    line-height: 1.4;
+    pointer-events: none;
   }
   .caption p {
     margin: 0;
   }
-  .title {
-    font-weight: 700;
-  }
-  .meta {
-    color: var(--gray);
-    font-size: 0.9em;
+  .caption .title {
+    color: #d0d0d0;
   }
 
-  .thumbnails {
-    display: flex;
-    gap: 0.6rem;
-  }
-  .thumb {
-    width: 56px;
-    height: 56px;
-    padding: 0;
-    border: 2px solid transparent;
-    border-radius: 6px;
-    background: none;
-    cursor: pointer;
-    overflow: hidden;
-    opacity: 0.55;
-    transition: opacity 0.15s, border-color 0.15s;
-  }
-  .thumb img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-  .thumb:hover,
-  .thumb:focus-visible {
-    opacity: 0.85;
-  }
-  .thumb.active {
-    opacity: 1;
-    border-color: var(--text-color);
-  }
-
-  .controls {
-    position: static;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    background: none;
-    -webkit-backdrop-filter: none;
-    backdrop-filter: none;
-  }
-  .index {
-    min-width: 4ch;
-    text-align: center;
+  .corners {
+    right: 16px;
+    bottom: 16px;
     font-variant-numeric: tabular-nums;
-    color: var(--gray);
-  }
-
-  /* Boutons en pastilles, même police que le reste du site */
-  .pill {
-    display: inline-block;
-    font: inherit;
-    font-size: 0.9rem;
-    color: var(--text-color);
-    background: none;
-    border: 1px solid var(--text-color);
-    border-radius: 999px;
-    padding: 0.35rem 1rem;
-    cursor: pointer;
-    text-decoration: none;
-    transition: background-color 0.15s, color 0.15s;
-  }
-  .pill:hover,
-  .pill:focus-visible {
-    background: var(--text-color);
-    color: var(--background-color);
-    text-decoration: none;
-  }
-
-  .home-link {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-  }
-
-  @media (max-width: 600px) {
-    .gallery {
-      padding-top: 3rem;
-    }
-    .controls {
-      gap: 0.75rem;
-    }
+    pointer-events: none;
   }
 </style>
