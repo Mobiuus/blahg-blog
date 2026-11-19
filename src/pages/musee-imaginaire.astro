@@ -3,32 +3,13 @@ import BaseHead from "../components/BaseHead.astro";
 import "../style/global.css";
 import "../style/fonts.css";
 
-const paintings = [
-  {
-    painter: "Claude Monet",
-    title: "La Gare Saint-Lazare",
-    date: "1877",
-    place: "Paris",
-    owned_by: "Musée d'Orsay",
-    image: "/assets/paintings/La_Gare_Saint-Lazare_-_Claude_Monet.jpg",
-  },
-  {
-    painter: "Joseph Mallord William Turner",
-    title: "Pluie, Vapeur et Vitesse",
-    date: "1844",
-    place: "Londres",
-    owned_by: "National Gallery",
-    image: "/assets/paintings/Turner_-_Rain,_Steam_and_Speed.jpg",
-  },
-  {
-    painter: "Claude Monet",
-    title: "La Pie",
-    date: "1868",
-    place: "Paris",
-    owned_by: "Musée d'Orsay",
-    image: "/assets/paintings/Claude_Monet_-_La_pie.jpg",
-  },
-];
+// La liste des tableaux : pour en ajouter un, compléter ce fichier
+// et déposer l'image dans public/assets/paintings/
+import paintings from "../data/musee-imaginaire.json";
+
+// « Peintre, date · Musée » en sautant les champs vides
+const metaLine = (p: (typeof paintings)[number]) =>
+  [[p.painter, p.date].filter(Boolean).join(", "), p.owned_by].filter(Boolean).join(" · ");
 const first = paintings[0];
 ---
 
@@ -46,7 +27,7 @@ const first = paintings[0];
 
     <div class="caption" aria-live="polite">
       <p class="title" id="title">{first.title}</p>
-      <p class="meta" id="meta">{first.painter}, {first.date} · {first.owned_by}</p>
+      <p class="meta" id="meta">{metaLine(first)}</p>
     </div>
 
     <p class="corners" id="corners" hidden>coins : <span id="corner-count">0</span></p>
@@ -70,16 +51,23 @@ const first = paintings[0];
       const corners = document.getElementById("corners") as HTMLElement;
       const cornerCount = document.getElementById("corner-count") as HTMLElement;
 
-      // Précharge les tableaux et retient leurs proportions
-      const ratios: number[] = paintings.map(() => 4 / 3);
-      paintings.forEach((p, i) => {
+      // Précharge seulement les prochains tableaux (pas les 30 d'un coup)
+      // et retient leurs proportions dès qu'ils sont chargés
+      const ratios: (number | undefined)[] = [];
+      const preloaded = new Set<number>();
+      function preload(i: number) {
+        if (preloaded.has(i)) return;
+        preloaded.add(i);
         const pre = new Image();
         pre.onload = () => {
           ratios[i] = pre.naturalWidth / pre.naturalHeight;
           if (i === current) resize();
         };
-        pre.src = p.image;
-      });
+        pre.src = paintings[i].image;
+      }
+      const preloadAhead = () => {
+        for (let k = 0; k <= 2; k++) preload((current + k) % paintings.length);
+      };
 
       const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const SPEED = 90; // px par seconde, lent et régulier
@@ -93,10 +81,11 @@ const first = paintings[0];
       let dy = -1;
       let cornerHits = 0;
 
-      // Taille « timbre-poste » : une surface constante quelle que soit la forme du tableau
+      // Surface constante quelle que soit la forme du tableau
+      // (côtés 1,5× plus grands que la version « timbre-poste » : 0,09 × 1,5² = 0,2025)
       function resize() {
-        const area = Math.min(window.innerWidth, window.innerHeight) ** 2 * 0.09;
-        const r = ratios[current];
+        const area = Math.min(window.innerWidth, window.innerHeight) ** 2 * 0.2025;
+        const r = ratios[current] ?? 4 / 3;
         w = Math.sqrt(area * r);
         h = w / r;
         // Ne jamais dépasser l'écran sur les petits formats
@@ -122,8 +111,9 @@ const first = paintings[0];
         img.src = p.image;
         img.alt = p.title;
         title.textContent = p.title;
-        meta.textContent = `${p.painter}, ${p.date} · ${p.owned_by}`;
+        meta.textContent = [[p.painter, p.date].filter(Boolean).join(", "), p.owned_by].filter(Boolean).join(" · ");
         resize();
+        preloadAhead();
       }
 
       const nextPainting = () => show((current + 1) % paintings.length);
@@ -142,6 +132,7 @@ const first = paintings[0];
       }
 
       // Départ : en bas à gauche, cap vers le coin supérieur droit
+      preloadAhead();
       resize();
       x = window.innerWidth * 0.1;
       y = window.innerHeight - h - window.innerHeight * 0.1;
