@@ -1,0 +1,258 @@
+/* ──────────────────────────────────────────────────────────────
+   Placements — styles partagés (accueil + fiches)
+   Reprend le langage visuel des fiches /notes : couleurs pastel,
+   texture papier, bordure intérieure, iA Writer Mono + Caveat.
+   ────────────────────────────────────────────────────────────── */
+
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&display=swap");
+
+.pl {
+  --pl-ink: #000;
+  --pl-ink-soft: rgba(0, 0, 0, 0.7);
+  --pl-line: rgba(0, 0, 0, 0.3);
+  --pl-line-soft: rgba(0, 0, 0, 0.18);
+  --pl-attenuation: #9eaafa;
+  --pl-adaptation: #f29874;
+  --pl-eau: #a6c2eb;
+  --pl-social: #e8adb1;
+  --pl-noise: url("data:image/svg+xml,%3Csvg viewBox='0 0 369 369' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  padding-bottom: 4rem;
+}
+
+/* Sortie de la colonne 70ch du body */
+.pl-wide {
+  width: min(1200px, 100vw - 2rem);
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.pl-hand {
+  font-family: "Caveat", cursive;
+}
+
+/* ── En-tête ── */
+.pl-kicker {
+  display: inline-block;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--gray);
+  margin-bottom: 0.4rem;
+}
+.pl-title {
+  text-align: left;
+  margin: 0 0 0.6rem;
+  line-height: 1.15;
+}
+.pl-lede {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+}
+.pl-lede-hand {
+  font-family: "Caveat", cursive;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  color: var(--gray);
+  margin: 0 0 2rem;
+}
+
+.pl-back {
+  display: inline-block;
+  font-size: 0.85rem;
+  margin-bottom: 1.5rem;
+  color: var(--gray);
+  text-decoration: none !important;
+}
+.pl-back:hover {
+  color: var(--text-color);
+}
+
+/* ── Titres de section ── */
+.pl-section {
+  margin: 3.5rem 0 0;
+  scroll-margin-top: 1rem;
+}
+.pl-h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  text-align: left;
+  font-size: 1.3rem;
+  margin: 0 0 1rem;
+}
+.pl-h2-num {
+  font-size: 0.8rem;
+  color: var(--gray);
+  font-weight: 400;
+}
+.pl-p {
+  line-height: 1.6;
+  margin: 0 0 1rem;
+}
+
+/* ── Fiche (carte papier) ── */
+.pl-card {
+  position: relative;
+  display: block;
+  padding: 8px;
+  color: var(--pl-ink);
+  text-decoration: none !important;
+}
+.pl-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  background: var(--pl-noise);
+}
+.pl-card-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--pl-line);
+  padding: 0.8rem;
+  color: var(--pl-ink);
+}
+.pl-card-inner h3,
+.pl-card-inner h4 {
+  color: var(--pl-ink) !important;
+  text-align: left;
+  margin: 0;
+  line-height: 1.3;
+}
+.pl-card-inner p {
+  margin: 0;
+}
+.pl-divider {
+  height: 1px;
+  background: var(--pl-line-soft);
+  margin: 0.4rem 0;
+}
+
+/* ombre de coin, comme les notes */
+.pl-shadow {
+  position: relative;
+}
+.pl-shadow::after {
+  z-index: -1;
+  position: absolute;
+  content: "";
+  width: 50%;
+  top: 80%;
+  bottom: 16px;
+  right: 0.5em;
+  box-shadow: 0 1em 0.5em rgba(0, 0, 0, 0.13);
+  transform: rotate(3deg);
+}
+.pl-shadow.left::after {
+  right: auto;
+  left: 0.5em;
+  transform: rotate(-3deg);
+}
+
+/* ── Pastilles ── */
+.pl-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 11px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 999px;
+  padding: 2px 8px;
+  color: var(--pl-ink);
+  background: rgba(255, 255, 255, 0.25);
+  white-space: nowrap;
+}
+.pl-pill.on-page {
+  border-color: var(--gray);
+  color: var(--text-color);
+  background: transparent;
+}
+.pl-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+  border: 1px solid rgba(0, 0, 0, 0.35);
+}
+
+/* ── Chips de filtre (comme /notes) ── */
+.pl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.pl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border: 1px solid var(--gray);
+  padding: 0.25rem 0.7rem;
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.85rem;
+  color: var(--text-color);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.pl-chip:hover {
+  border-color: var(--text-color);
+}
+.pl-chip[aria-pressed="true"] {
+  border-color: var(--text-color);
+  font-weight: 700;
+}
+.pl-chip-count {
+  font-size: 0.75rem;
+  color: var(--gray);
+  font-weight: 400;
+}
+
+/* ── Encadré ── */
+.pl-box {
+  border: 1px dashed var(--gray);
+  padding: 1rem 1.1rem;
+  line-height: 1.55;
+}
+.pl-box > :last-child {
+  margin-bottom: 0;
+}
+
+/* ── Badges taxonomie ── */
+.pl-taxo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  color: #000;
+  white-space: nowrap;
+}
+.pl-taxo.attenuation { background: var(--pl-attenuation); }
+.pl-taxo.adaptation  { background: var(--pl-adaptation); }
+.pl-taxo.eau         { background: var(--pl-eau); }
+.pl-taxo.social      { background: var(--pl-social); }
+
+/* ── Reveal au scroll ── */
+@media (prefers-reduced-motion: no-preference) {
+  .pl-reveal {
+    opacity: 0;
+    translate: 0 12px;
+    transition: opacity 0.5s ease, translate 0.5s ease;
+  }
+  .pl-reveal.is-visible {
+    opacity: 1;
+    translate: 0 0;
+  }
+}

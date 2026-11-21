@@ -1,0 +1,369 @@
+---
+import Layout from "../../components/Layout.astro";
+import { SITE_TITLE } from "../../config";
+import { placements, KIND_LABEL, GREEN_LABEL } from "../../data/placements";
+import "../../style/placements.css";
+
+// Légère inclinaison des fiches, déterministe (même rendu à chaque build)
+const tilt = (i: number) => ((i * 7) % 5) - 2; // -2 … +2 deg
+const shift = (i: number) => (i * 5) % 9;
+
+const counts = {
+  all: placements.length,
+  enveloppe: placements.filter((p) => p.kind === "enveloppe").length,
+  classe: placements.filter((p) => p.kind === "classe").length,
+};
+
+const objectives = [
+  { key: "attenuation", label: "Atténuation du changement climatique", hint: "Réduire les émissions : renouvelables, réseaux électriques, rénovation des bâtiments, transports bas-carbone.", freq: "Le plus fréquent", color: "var(--pl-attenuation)" },
+  { key: "adaptation", label: "Adaptation au changement climatique", hint: "Se protéger des effets déjà là : inondations, sécheresses, canicules.", freq: "Plus rare", color: "var(--pl-adaptation)" },
+  { key: "eau", label: "Ressources aquatiques et marines", hint: "Utilisation durable et protection de l'eau.", freq: "", color: "var(--pl-eau)" },
+  { key: "circulaire", label: "Économie circulaire", hint: "Réemploi, recyclage, durabilité des produits.", freq: "", color: "#F4E8C8" },
+  { key: "pollution", label: "Prévention de la pollution", hint: "Air, eau, sols.", freq: "", color: "#F4DAA0" },
+  { key: "biodiversite", label: "Biodiversité et écosystèmes", hint: "Protection et restauration des milieux.", freq: "", color: "#A2CBAF" },
+];
+---
+
+<Layout
+  title={`Placements | ${SITE_TITLE}`}
+  description="Fiches pédagogiques sur les placements et leur alternative durable."
+>
+  <div class="pl">
+    <header class="home-head">
+      <span class="pl-kicker">Finance durable · fiches pédagogiques</span>
+      <h1 class="pl-title">Où va mon épargne&nbsp;?</h1>
+      <p class="pl-lede">
+        Chaque fiche décrit un placement de façon factuelle — ce que c'est, comment ça marche,
+        ce que ça finance — puis indique s'il existe une <strong>alternative durable</strong>, au
+        sens de la taxonomie européenne.
+      </p>
+      <p class="pl-lede-hand">Un placement = une enveloppe ou une classe d'actifs. On commence par les livrets.</p>
+    </header>
+
+    <!-- Légende -->
+    <section class="legend pl-reveal" aria-label="Comment lire les fiches">
+      <div class="legend-item">
+        <span class="pl-pill on-page">Enveloppe fiscale</span>
+        <p>Le <em>contenant</em> : un cadre juridique et fiscal (plafond, blocage, impôt) dans lequel on loge de l'argent ou des supports.</p>
+      </div>
+      <div class="legend-item">
+        <span class="pl-pill on-page">Classe d'actifs</span>
+        <p>Le <em>contenu</em> : un type d'investissement (prêt à un projet, immobilier, entreprise non cotée…), quelle que soit l'enveloppe.</p>
+      </div>
+    </section>
+
+    <!-- Filtres -->
+    <div class="pl-wide controls">
+      <div class="pl-chips" role="group" aria-label="Filtrer les placements">
+        <button type="button" class="pl-chip" data-filter="all" aria-pressed="true">
+          <span class="pl-dot" style="background: var(--text-color);"></span>
+          Tous <span class="pl-chip-count">{counts.all}</span>
+        </button>
+        <button type="button" class="pl-chip" data-filter="enveloppe" aria-pressed="false">
+          Enveloppes fiscales <span class="pl-chip-count">{counts.enveloppe}</span>
+        </button>
+        <button type="button" class="pl-chip" data-filter="classe" aria-pressed="false">
+          Classes d'actifs <span class="pl-chip-count">{counts.classe}</span>
+        </button>
+      </div>
+      <p class="controls-hint">{placements.filter((p) => p.ready).length} fiche prête · les autres arrivent</p>
+    </div>
+
+    <!-- Grille des fiches -->
+    <div class="pl-wide">
+      <div class="grid">
+        {placements.map((p, i) => {
+          const Tag = p.ready ? "a" : "div";
+          return (
+            <div
+              class="cell"
+              data-kind={p.kind}
+              style={`transform: rotate(${tilt(i)}deg) translateY(${shift(i)}px);`}
+            >
+              <div class:list={["pl-shadow", tilt(i) < 0 && "left"]}>
+                <Tag
+                  href={p.ready ? `/placements/${p.slug}` : undefined}
+                  class:list={["pl-card", "fiche", !p.ready && "is-soon"]}
+                  style={`background-color: ${p.color};`}
+                  aria-disabled={p.ready ? undefined : "true"}
+                >
+                  <div class="pl-card-inner">
+                    <div class="fiche-top">
+                      <span class="pl-pill">{KIND_LABEL[p.kind]}</span>
+                      {!p.ready && <span class="soon">bientôt</span>}
+                    </div>
+                    <h3 class="fiche-title">{p.title}</h3>
+                    <p class="fiche-includes">{p.includes.join(" · ")}</p>
+                    <div class="pl-divider"></div>
+                    <p class="fiche-summary pl-hand">{p.summary}</p>
+                    <div class="pl-divider"></div>
+                    <div class="fiche-green">
+                      <span class:list={["green-mark", p.green.level]} aria-hidden="true"></span>
+                      <div>
+                        <p class="green-label">{GREEN_LABEL[p.green.level]}</p>
+                        <p class="green-text">{p.green.text}</p>
+                      </div>
+                    </div>
+                    {p.ready && <p class="fiche-cta">Lire la fiche →</p>}
+                  </div>
+                </Tag>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Taxonomie -->
+    <section class="pl-section pl-reveal" id="taxonomie">
+      <h2 class="pl-h2"><span class="pl-h2-num">repère</span> La taxonomie européenne en 30 secondes</h2>
+      <p class="pl-p">
+        La taxonomie (règlement UE 2020/852) est une <strong>liste d'activités économiques</strong>
+        considérées comme durables sur le plan environnemental. Une activité est « alignée » si elle
+        contribue substantiellement à au moins un des six objectifs ci-dessous, ne cause pas de
+        préjudice important aux autres (principe <em>DNSH</em>) et respecte des garanties sociales
+        minimales.
+      </p>
+      <p class="pl-p">
+        Dans la pratique, les placements « verts » relèvent presque toujours du premier objectif ;
+        l'adaptation reste rare.
+      </p>
+      <ol class="objectives">
+        {objectives.map((o, i) => (
+          <li class:list={["objective", i < 2 && "is-key"]}>
+            <span class="obj-num" style={`background: ${o.color};`}>{i + 1}</span>
+            <div>
+              <p class="obj-label">
+                {o.label}
+                {o.freq && <span class="obj-freq pl-hand">{o.freq}</span>}
+              </p>
+              <p class="obj-hint">{o.hint}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+      <p class="disclaimer">
+        Ces fiches sont informatives et ne constituent pas un conseil en investissement.
+      </p>
+    </section>
+  </div>
+</Layout>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>(".controls .pl-chip");
+  const cells = document.querySelectorAll<HTMLElement>(".grid .cell");
+  chips.forEach((chip) => {
+    chip.addEventListener("click", () => {
+      const f = chip.dataset.filter;
+      chips.forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
+      cells.forEach((cell) => {
+        cell.hidden = f !== "all" && cell.dataset.kind !== f;
+      });
+    });
+  });
+
+  const io = new IntersectionObserver(
+    (entries) =>
+      entries.forEach((e) => {
+        if (e.isIntersecting) {
+          e.target.classList.add("is-visible");
+          io.unobserve(e.target);
+        }
+      }),
+    { threshold: 0.15 }
+  );
+  document.querySelectorAll(".pl-reveal").forEach((el) => io.observe(el));
+</script>
+
+<style>
+  .home-head {
+    margin-top: 0.5rem;
+  }
+
+  .legend {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .legend-item p {
+    margin: 0.45rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--gray);
+  }
+  @media (max-width: 560px) {
+    .legend {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+  }
+  .controls-hint {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--gray);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem 1.25rem;
+    align-items: start;
+  }
+  @media (min-width: 560px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 900px) {
+    .grid {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem 1.5rem;
+    }
+  }
+  @media (min-width: 1120px) {
+    .grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+  .cell[hidden] {
+    display: none;
+  }
+
+  .fiche {
+    transition: filter 0.2s, translate 0.2s;
+  }
+  a.fiche:hover {
+    filter: brightness(0.95);
+    translate: 0 -3px;
+  }
+  .fiche.is-soon {
+    cursor: default;
+  }
+  .fiche.is-soon .pl-card-inner {
+    border-style: dashed;
+  }
+
+  .fiche-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .soon {
+    font-family: "Caveat", cursive;
+    font-size: 1.15rem;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.6);
+  }
+  .fiche-title {
+    font-size: 1.05rem;
+    margin-top: 0.35rem !important;
+  }
+  .fiche-includes {
+    font-size: 11px;
+    color: rgba(0, 0, 0, 0.65);
+  }
+  .fiche-summary {
+    font-size: 1.2rem;
+    line-height: 1.15;
+    color: rgba(0, 0, 0, 0.85);
+  }
+
+  .fiche-green {
+    display: flex;
+    gap: 0.55rem;
+    align-items: flex-start;
+  }
+  .green-mark {
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    margin-top: 2px;
+    border-radius: 50%;
+    border: 1.5px solid #000;
+  }
+  .green-mark.oui {
+    background: #000;
+  }
+  .green-mark.partielle {
+    background: linear-gradient(90deg, #000 50%, transparent 50%);
+  }
+  .green-mark.variable {
+    background: repeating-linear-gradient(45deg, #000 0 2px, transparent 2px 5px);
+  }
+  .green-label {
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .green-text {
+    font-size: 11px;
+    line-height: 1.45;
+    color: rgba(0, 0, 0, 0.7);
+  }
+  .fiche-cta {
+    margin-top: 0.3rem !important;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-align: right;
+  }
+
+  .objectives {
+    list-style: none;
+    padding: 0;
+    margin: 1.25rem 0 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+  .objective {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    opacity: 0.6;
+  }
+  .objective.is-key {
+    opacity: 1;
+  }
+  .obj-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #000;
+    border: 1px solid rgba(0, 0, 0, 0.35);
+  }
+  .obj-label {
+    margin: 0;
+    font-weight: 700;
+    font-size: 0.92rem;
+  }
+  .obj-freq {
+    font-weight: 400;
+    font-size: 1.2rem;
+    margin-left: 0.5rem;
+    color: var(--gray);
+  }
+  .obj-hint {
+    margin: 0.15rem 0 0;
+    font-size: 0.82rem;
+    color: var(--gray);
+    line-height: 1.45;
+  }
+  .disclaimer {
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    color: var(--gray);
+  }
+</style>
