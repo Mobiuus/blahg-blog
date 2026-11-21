@@ -92,15 +92,15 @@ export const placements: Placement[] = [
     slug: "epargne-salariale",
     title: "Épargne salariale",
     kind: "enveloppe",
-    includes: ["PEE", "PER collectif"],
+    includes: ["PEE", "PER collectif", "Intéressement", "Participation"],
     summary:
       "Épargne alimentée par l'intéressement, la participation et l'abondement de l'employeur.",
     green: {
       level: "oui",
-      text: "Un fonds solidaire doit toujours figurer dans l'offre.",
+      text: "Un fonds solidaire et un fonds labellisé doivent toujours figurer dans l'offre.",
     },
     color: colors[9],
-    ready: false,
+    ready: true,
   },
   {
     slug: "cto",

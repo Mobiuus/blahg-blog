@@ -8,6 +8,8 @@ import "../../style/placements.css";
 const tilt = (i: number) => ((i * 7) % 5) - 2; // -2 … +2 deg
 const shift = (i: number) => (i * 5) % 9;
 
+const readyCount = placements.filter((p) => p.ready).length;
+
 const counts = {
   all: placements.length,
   enveloppe: placements.filter((p) => p.kind === "enveloppe").length,
@@ -66,7 +68,7 @@ const objectives = [
           Classes d'actifs <span class="pl-chip-count">{counts.classe}</span>
         </button>
       </div>
-      <p class="controls-hint">{placements.filter((p) => p.ready).length} fiche prête · les autres arrivent</p>
+      <p class="controls-hint">{readyCount} fiche{readyCount > 1 ? "s" : ""} prête{readyCount > 1 ? "s" : ""} · les autres arrivent</p>
     </div>
 
     <!-- Grille des fiches -->

@@ -170,6 +170,9 @@
   background: rgba(255, 255, 255, 0.25);
   white-space: nowrap;
 }
+.pl-card-inner > .pl-pill {
+  align-self: flex-start;
+}
 .pl-pill.on-page {
   border-color: var(--gray);
   color: var(--text-color);
