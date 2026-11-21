@@ -82,7 +82,7 @@ const objectives = [
             >
               <div class:list={["pl-shadow", tilt(i) < 0 && "left"]}>
                 <Tag
-                  href={p.ready ? `/placements/${p.slug}` : undefined}
+                  href={p.ready ? `/epargne/${p.slug}` : undefined}
                   class:list={["pl-card", "fiche", !p.ready && "is-soon"]}
                   style={`background-color: ${p.color};`}
                   aria-disabled={p.ready ? undefined : "true"}

@@ -1,4 +1,4 @@
-// Catalogue des placements présentés sur /placements.
+// Catalogue des placements présentés sur /epargne.
 // Les couleurs reprennent la palette des fiches /notes.
 import { colors } from "@/components/notes/utils/colors";
 
