@@ -72,8 +72,8 @@ const rows: Row[] = [
   },
   {
     label: "Où va l'argent",
-    a: "≈ 60 % à la Caisse des Dépôts ; le reste finance des PME",
-    ldds: "≈ 60 % à la Caisse des Dépôts ; le reste finance des PME, la transition énergétique et l'ESS",
+    a: "59,5 % à la Caisse des Dépôts ; le reste finance des PME",
+    ldds: "59,5 % à la Caisse des Dépôts ; le reste finance des PME, la transition énergétique et l'ESS",
   },
   {
     label: "Volet solidaire",
@@ -111,27 +111,27 @@ const flow: Record<string, FlowNode> = {
     title: "Fonds d'épargne",
     amount: "≈ 60 €",
     color: colors[2],
-    body: "Environ 60 % des dépôts du Livret A et du LDDS sont centralisés au Fonds d'épargne de la Caisse des Dépôts, avec une partie du LEP. Son rôle : transformer une épargne disponible à tout moment en prêts de très long terme. À ce stade, Livret A et LDDS sont mélangés.",
+    body: "59,5 % des dépôts du Livret A et du LDDS sont centralisés au Fonds d'épargne de la Caisse des Dépôts, avec une partie du LEP : 406,5 Md€ fin 2025. Son rôle : transformer une épargne disponible à tout moment en prêts de très long terme. À ce stade, Livret A et LDDS sont mélangés.",
   },
   reste: {
     id: "reste",
     title: "Reste à la banque",
     amount: "≈ 40 €",
     color: colors[4],
-    body: "Environ 40 % restent au bilan de votre banque. La loi l'oblige à les employer au financement des PME et des travaux d'économies d'énergie dans les bâtiments anciens ; pour le LDDS, aussi la transition énergétique et l'économie sociale et solidaire.",
+    body: "Les 40,5 % restants restent au bilan de votre banque. La loi l'oblige à les employer au financement des PME et des travaux d'économies d'énergie dans les bâtiments anciens ; pour le LDDS, aussi la transition énergétique et l'économie sociale et solidaire.",
   },
   prets: {
     id: "prets",
     title: "Prêts de long terme",
     color: colors[0],
-    body: "Prêts jusqu'à 80 ans, accordés par la Banque des Territoires. Ils représentent environ la moitié du bilan du Fonds d'épargne (la limite est de 66 %). Priorité fixée par la loi : le logement social, qui pèse à lui seul 45 % du bilan. Viennent ensuite la politique de la ville, les investissements des collectivités (hôpitaux, écoles, eau) et de grandes infrastructures (réseau électrique, nucléaire).",
+    body: "Prêts jusqu'à 80 ans, accordés par la Banque des Territoires. Fin 2025, ils représentent 244,9 Md€, soit 54 % du bilan du Fonds d'épargne (la limite est de 66 %). Priorité fixée par la loi : le logement social, qui pèse à lui seul 45 % du bilan. Viennent ensuite la politique de la ville, les investissements des collectivités (hôpitaux, écoles, eau) et de grandes infrastructures (réseau électrique, nucléaire).",
     link: { href: "#projets", label: "Voir des exemples" },
   },
   portefeuille: {
     id: "portefeuille",
     title: "Placements financiers",
     color: colors[3],
-    body: "Le reste est placé en actifs financiers (obligations, actions) pour garantir la liquidité, c'est-à-dire pouvoir rembourser les épargnants à tout moment, et contribuer à leur rémunération. Ces placements peuvent inclure des actions de grandes entreprises cotées : le groupe Caisse des Dépôts est par exemple actionnaire de TotalEnergies.",
+    body: "Le reste, 197 Md€ fin 2025, est placé en actifs financiers pour garantir la liquidité, c'est-à-dire pouvoir rembourser les épargnants à tout moment, et payer leurs intérêts. Ce sont surtout des obligations (environ 173 Md€), et 23,3 Md€ d'actions et de fonds, principalement de grandes entreprises françaises et européennes. Les entreprises du pétrole et du gaz y pèsent 2,65 %.",
     link: { href: "#limites", label: "En savoir plus" },
   },
   pme: {
@@ -617,10 +617,14 @@ const toc = [
       <div class="limit-main pl-reveal">
         <p class="limit-k pl-hand">Ce que l'on sait, ce que l'on ne sait pas</p>
         <p class="pl-p">
-          On sait qu'environ la moitié du bilan du Fonds d'épargne est prêtée à des projets
-          d'intérêt général, en premier lieu le logement social. Le reste est placé sur les marchés
-          financiers (obligations, actions) pour que l'épargne reste disponible à tout moment.
+          Le rapport annuel 2025 du Fonds d'épargne permet de dire où va l'argent, en grandes masses :
         </p>
+        <ul class="facts">
+          <li><strong>54 %</strong> de son bilan est prêté (244,9 Md€), en premier lieu au logement social, qui représente à lui seul 45 % du bilan.</li>
+          <li><strong>197 Md€</strong> sont placés sur les marchés pour que l'épargne reste disponible : surtout des obligations, et 23,3 Md€ d'actions et de fonds.</li>
+          <li>Les entreprises du <strong>pétrole et du gaz</strong> représentent 2,65 % de ces portefeuilles (1,21 % si l'on ne compte que la part de leur activité liée aux énergies fossiles).</li>
+          <li>Sont exclues : les entreprises trop exposées au charbon, et les producteurs dont plus de 10 % du chiffre d'affaires vient du pétrole et du gaz « non conventionnels » (schiste, sables bitumineux, Arctique).</li>
+        </ul>
         <p class="pl-p">
           Le groupe Caisse des Dépôts est actionnaire de TotalEnergies. Son directeur général l'a
           confirmé devant l'Assemblée nationale le 7 juillet 2026 :
@@ -634,9 +638,12 @@ const toc = [
           <cite>Olivier Sichel, directeur général de la Caisse des Dépôts</cite>
         </blockquote>
         <p class="pl-p">
-          On ne sait pas, en revanche, quelle part de cette participation relève du Fonds
-          d'épargne, c'est-à-dire de l'argent des livrets, plutôt que des autres activités du
-          groupe : le détail de ses placements n'est pas publié ligne à ligne.
+          On ne sait pas, en revanche, si ces actions TotalEnergies figurent dans le Fonds
+          d'épargne, c'est-à-dire si elles sont achetées avec l'argent des livrets. Son rapport
+          annuel ne détaille pas ses lignes. Et la Caisse des Dépôts rappelle que ses déclarations
+          réglementaires regroupent plusieurs portefeuilles : elle a par exemple précisé que ses
+          actions de Kinder Morgan, une entreprise américaine de transport de gaz, ne relevaient pas
+          du Fonds d'épargne.
         </p>
 
         <ol class="timeline">
@@ -694,6 +701,9 @@ const toc = [
         <li>Banque des Territoires — communiqué « Plan Eau : AquaPrêts portés à 6 Md€ » (21 juillet 2026)</li>
         <li>Banque des Territoires — communiqué sur RTE (30 avril 2026)</li>
         <li>Banque des Territoires — communiqué sur le Nouveau Nucléaire Français (12 mars 2026)</li>
+        <li>Caisse des Dépôts — Rapport annuel du Fonds d'épargne 2025 (bilan, actifs financiers, politique d'exclusion)</li>
+        <li>Cour des comptes — « Les relations financières entre l'État et la Caisse des dépôts et consignations », observations définitives S2026-1020 (2026)</li>
+        <li>Caisse des Dépôts — mise au point publique sur les portefeuilles concernés par ses déclarations réglementaires (novembre 2026)</li>
         <li>Assemblée nationale — audition d'Olivier Sichel, directeur général de la Caisse des Dépôts, par les commissions des affaires économiques et des finances (compte rendu n° 113, 7 juillet 2026)</li>
         <li>Reclaim Finance — « La Caisse des Dépôts coupe une partie des financements à l'expansion fossile » (21 septembre 2026)</li>
       </ul>
@@ -1266,6 +1276,16 @@ const toc = [
   }
   .aqua.year {
     border-left-color: #9eaafa;
+  }
+  .facts {
+    margin: 0 0 1rem;
+    padding-left: 1.1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .facts li {
+    list-style: disc;
+    margin-bottom: 0.35rem;
   }
   .quote {
     margin: 0 0 1rem;
