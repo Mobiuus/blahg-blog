@@ -124,14 +124,14 @@ const flow: Record<string, FlowNode> = {
     id: "prets",
     title: "Prêts de long terme",
     color: colors[0],
-    body: "Prêts jusqu'à 80 ans, accordés par la Banque des Territoires. Priorité fixée par la loi : le logement social. Viennent ensuite la politique de la ville, les investissements des collectivités (hôpitaux, écoles, eau) et de grandes infrastructures (réseau électrique, nucléaire).",
+    body: "Prêts jusqu'à 80 ans, accordés par la Banque des Territoires. Ils représentent environ la moitié du bilan du Fonds d'épargne (la limite est de 66 %). Priorité fixée par la loi : le logement social, qui pèse à lui seul 45 % du bilan. Viennent ensuite la politique de la ville, les investissements des collectivités (hôpitaux, écoles, eau) et de grandes infrastructures (réseau électrique, nucléaire).",
     link: { href: "#projets", label: "Voir des exemples" },
   },
   portefeuille: {
     id: "portefeuille",
     title: "Placements financiers",
     color: colors[3],
-    body: "Une partie est placée en actifs financiers (obligations, actions) pour garantir la liquidité, c'est-à-dire pouvoir rembourser les épargnants à tout moment, et contribuer à leur rémunération. Ces placements peuvent inclure des actions de grandes entreprises cotées, comme TotalEnergies, dont le groupe Caisse des Dépôts est actionnaire.",
+    body: "Le reste est placé en actifs financiers (obligations, actions) pour garantir la liquidité, c'est-à-dire pouvoir rembourser les épargnants à tout moment, et contribuer à leur rémunération. Ces placements peuvent inclure des actions de grandes entreprises cotées : le groupe Caisse des Dépôts est par exemple actionnaire de TotalEnergies.",
     link: { href: "#limites", label: "En savoir plus" },
   },
   pme: {
@@ -246,12 +246,12 @@ const projects: Project[] = [
     title: "Nouveau nucléaire : 6 réacteurs EPR2",
     place: "Penly (76) et autres sites",
     pitch: "Prêt bonifié et garanti par l'État pour participer, aux côtés d'EDF, à la construction de 6 réacteurs EPR2.",
-    loan: "Montant non communiqué",
-    year: "Annoncé en mars 2026",
+    loan: "4 à 5 Md€ par an",
+    year: "Pendant une douzaine d'années · annoncé en mars 2026",
     details: [
-      "Contrat signé une fois la procédure auprès de la Commission européenne terminée",
-      "Garantie de l'État à accorder en loi de finances",
-      "Selon la Caisse des Dépôts, sans réduire les prêts au logement social",
+      "Calendrier des versements à définir avec EDF",
+      "Sous réserve de l'accord de la Commission européenne et de la garantie de l'État, à voter en loi de finances",
+      "Selon la Caisse des Dépôts, ces prêts ne réduiront pas ceux destinés au logement social",
     ],
   },
   {
@@ -523,8 +523,18 @@ const toc = [
       <h2 class="pl-h2"><span class="pl-h2-num">04</span> Ce que ça finance</h2>
       <p class="pl-p">
         Quelques prêts accordés par la Banque des Territoires grâce au Fonds d'épargne, pour des
-        projets d'intérêt général.
+        projets d'intérêt général. Ces prêts sont accordés à un taux égal à celui du Livret A
+        majoré de 0,6 point.
       </p>
+
+      <div class="aqua year pl-reveal">
+        <p class="aqua-k pl-hand">L'année 2025, un record</p>
+        <div class="aqua-figs">
+          <div><p class="aqua-v">41,7 Md€</p><p class="aqua-l">de nouveaux prêts sur fonds d'épargne (+46 % sur un an)</p></div>
+          <div><p class="aqua-v">22,9 Md€</p><p class="aqua-l">pour les bailleurs sociaux</p></div>
+          <div><p class="aqua-v">123 000</p><p class="aqua-l">logements abordables construits ou acquis, et 235 000 logements sociaux réhabilités</p></div>
+        </div>
+      </div>
 
       <div class="filters">
         <div class="filter-line">
@@ -607,11 +617,26 @@ const toc = [
       <div class="limit-main pl-reveal">
         <p class="limit-k pl-hand">Ce que l'on sait, ce que l'on ne sait pas</p>
         <p class="pl-p">
-          On sait qu'une partie de l'épargne centralisée est prêtée à des projets d'intérêt
-          général. Le reste est placé sur les marchés financiers (obligations, actions) pour que
-          l'épargne reste disponible à tout moment. Ces placements peuvent inclure des actions de
-          grandes entreprises : le groupe Caisse des Dépôts est par exemple actionnaire de
-          TotalEnergies. Le détail des placements du Fonds d'épargne n'est pas publié ligne à ligne.
+          On sait qu'environ la moitié du bilan du Fonds d'épargne est prêtée à des projets
+          d'intérêt général, en premier lieu le logement social. Le reste est placé sur les marchés
+          financiers (obligations, actions) pour que l'épargne reste disponible à tout moment.
+        </p>
+        <p class="pl-p">
+          Le groupe Caisse des Dépôts est actionnaire de TotalEnergies. Son directeur général l'a
+          confirmé devant l'Assemblée nationale le 7 juillet 2026 :
+        </p>
+        <blockquote class="quote">
+          « Nous restons actionnaires de TotalEnergies […]. Nous considérons que nous jouons un rôle
+          très important dans le dialogue actionnarial avec TotalEnergies […]. Nous ne sommes pas
+          actionnaires d'autres compagnies pétrolières. […] Nous restons un actionnaire exigeant de
+          TotalEnergies, ce qui se traduit souvent par des votes négatifs en assemblée générale sur
+          certains sujets. »
+          <cite>Olivier Sichel, directeur général de la Caisse des Dépôts</cite>
+        </blockquote>
+        <p class="pl-p">
+          On ne sait pas, en revanche, quelle part de cette participation relève du Fonds
+          d'épargne, c'est-à-dire de l'argent des livrets, plutôt que des autres activités du
+          groupe : le détail de ses placements n'est pas publié ligne à ligne.
         </p>
 
         <ol class="timeline">
@@ -669,6 +694,7 @@ const toc = [
         <li>Banque des Territoires — communiqué « Plan Eau : AquaPrêts portés à 6 Md€ » (21 juillet 2026)</li>
         <li>Banque des Territoires — communiqué sur RTE (30 avril 2026)</li>
         <li>Banque des Territoires — communiqué sur le Nouveau Nucléaire Français (12 mars 2026)</li>
+        <li>Assemblée nationale — audition d'Olivier Sichel, directeur général de la Caisse des Dépôts, par les commissions des affaires économiques et des finances (compte rendu n° 113, 7 juillet 2026)</li>
         <li>Reclaim Finance — « La Caisse des Dépôts coupe une partie des financements à l'expansion fossile » (21 septembre 2026)</li>
       </ul>
       <p class="disclaimer">Fiche informative, pas un conseil en investissement. Mise à jour : novembre 2026.</p>
@@ -1237,6 +1263,24 @@ const toc = [
     border-left: 6px solid #6c95cf;
     padding: 0.4rem 0 0.4rem 1rem;
     margin-bottom: 2rem;
+  }
+  .aqua.year {
+    border-left-color: #9eaafa;
+  }
+  .quote {
+    margin: 0 0 1rem;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--text-color);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .quote cite {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    font-style: normal;
+    color: var(--gray);
   }
   .aqua[hidden] {
     display: none;
