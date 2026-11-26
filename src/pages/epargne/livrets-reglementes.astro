@@ -308,9 +308,6 @@ const projects: Project[] = [
   },
 ];
 
-const themeCounts = Object.fromEntries(
-  (Object.keys(THEMES) as Theme[]).map((t) => [t, projects.filter((p) => p.theme === t).length])
-);
 const toc = [
   { href: "#caracteristiques", label: "Caractéristiques" },
   { href: "#circuit", label: "Fonctionnement" },
@@ -527,41 +524,6 @@ const toc = [
         majoré de 0,6 point.
       </p>
 
-      <div class="aqua year pl-reveal">
-        <p class="aqua-k pl-hand">L'année 2025, un record</p>
-        <div class="aqua-figs">
-          <div><p class="aqua-v">41,7 Md€</p><p class="aqua-l">de nouveaux prêts sur fonds d'épargne (+46 % sur un an)</p></div>
-          <div><p class="aqua-v">22,9 Md€</p><p class="aqua-l">pour les bailleurs sociaux</p></div>
-          <div><p class="aqua-v">123 000</p><p class="aqua-l">logements abordables construits ou acquis, et 235 000 logements sociaux réhabilités</p></div>
-        </div>
-      </div>
-
-      <div class="filters">
-        <div class="filter-line">
-          <span class="filter-lbl">Thème</span>
-          <div class="pl-chips" role="group" aria-label="Filtrer par thème" data-group="theme">
-            <button type="button" class="pl-chip" data-value="all" aria-pressed="true">Tous <span class="pl-chip-count">{projects.length}</span></button>
-            {(Object.keys(THEMES) as Theme[]).map((t) => (
-              <button type="button" class="pl-chip" data-value={t} aria-pressed="false">
-                <span class="pl-dot" style={`background: ${THEMES[t].color};`}></span>
-                {THEMES[t].label} <span class="pl-chip-count">{themeCounts[t]}</span>
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <!-- Focus AquaPrêts -->
-      <div class="aqua pl-reveal" id="aqua">
-        <p class="aqua-k pl-hand">Zoom : le plan Eau</p>
-        <div class="aqua-figs">
-          <div><p class="aqua-v">4,4 Md€</p><p class="aqua-l">d'AquaPrêts déployés depuis 2023</p></div>
-          <div><p class="aqua-v">≈ 1 300</p><p class="aqua-l">projets financés</p></div>
-          <div><p class="aqua-v">6 Md€</p><p class="aqua-l">enveloppe portée d'ici 2028 (au lieu de 4)</p></div>
-        </div>
-        <p class="aqua-t">Fuites des réseaux, protection des captages, assainissement, prévention des inondations : des projets pour adapter les territoires aux sécheresses et aux inondations.</p>
-      </div>
-
       <div class="pl-wide">
         <div class="projects" id="projects">
           {projects.map((p, i) => {
@@ -605,7 +567,6 @@ const toc = [
             );
           })}
         </div>
-        <p class="empty" id="projects-empty" hidden>Aucun projet ne correspond à ce filtre.</p>
       </div>
 
     </section>
@@ -637,15 +598,6 @@ const toc = [
           certains sujets. »
           <cite>Olivier Sichel, directeur général de la Caisse des Dépôts</cite>
         </blockquote>
-        <p class="pl-p">
-          On ne sait pas, en revanche, si ces actions TotalEnergies figurent dans le Fonds
-          d'épargne, c'est-à-dire si elles sont achetées avec l'argent des livrets. Son rapport
-          annuel ne détaille pas ses lignes. Et la Caisse des Dépôts rappelle que ses déclarations
-          réglementaires regroupent plusieurs portefeuilles : elle a par exemple précisé que ses
-          actions de Kinder Morgan, une entreprise américaine de transport de gaz, ne relevaient pas
-          du Fonds d'épargne.
-        </p>
-
         <ol class="timeline">
           <li>
             <span class="tl-date">Fin 2025</span>
@@ -679,16 +631,6 @@ const toc = [
         </p>
       </div>
 
-      <div class="limits-grid">
-        <div class="pl-box pl-reveal">
-          <p class="limit-t">Aucun choix ni suivi pour l'épargnant</p>
-          <p>Vous ne pouvez pas choisir ce que finance votre livret, ni savoir quel projet il soutient. Le Fonds d'épargne publie des chiffres globaux, pas le détail de ses placements financiers.</p>
-        </div>
-        <div class="pl-box pl-reveal">
-          <p class="limit-t">Un rendement parfois inférieur à l'inflation</p>
-          <p>Le taux suit une formule fixée par l'État. En 2022, il est resté très en dessous de l'inflation (1 % puis 2 %, pour une inflation de 5,2 %) : l'épargne a perdu du pouvoir d'achat.</p>
-        </div>
-      </div>
     </section>
 
     <!-- Sources -->
@@ -703,7 +645,6 @@ const toc = [
         <li>Banque des Territoires — communiqué sur le Nouveau Nucléaire Français (12 mars 2026)</li>
         <li>Caisse des Dépôts — Rapport annuel du Fonds d'épargne 2025 (bilan, actifs financiers, politique d'exclusion)</li>
         <li>Cour des comptes — « Les relations financières entre l'État et la Caisse des dépôts et consignations », observations définitives S2026-1020 (2026)</li>
-        <li>Caisse des Dépôts — mise au point publique sur les portefeuilles concernés par ses déclarations réglementaires (novembre 2026)</li>
         <li>Assemblée nationale — audition d'Olivier Sichel, directeur général de la Caisse des Dépôts, par les commissions des affaires économiques et des finances (compte rendu n° 113, 7 juillet 2026)</li>
         <li>Reclaim Finance — « La Caisse des Dépôts coupe une partie des financements à l'expansion fossile » (21 septembre 2026)</li>
       </ul>
@@ -768,33 +709,6 @@ const toc = [
       panel.classList.add("pop");
     })
   );
-
-  /* ── Filtres projets ── */
-  const state: Record<string, string> = { theme: "all" };
-  const cards = document.querySelectorAll<HTMLElement>("#projects .project");
-  const empty = document.getElementById("projects-empty")!;
-  const aqua = document.getElementById("aqua")!;
-  const applyFilters = () => {
-    let shown = 0;
-    cards.forEach((c) => {
-      const ok =
-        state.theme === "all" || c.dataset.theme === state.theme;
-      c.hidden = !ok;
-      if (ok) shown++;
-    });
-    empty.hidden = shown > 0;
-    aqua.hidden = !(state.theme === "all" || state.theme === "eau");
-  };
-  document.querySelectorAll<HTMLElement>(".filters [data-group]").forEach((group) => {
-    const chips = group.querySelectorAll<HTMLButtonElement>(".pl-chip");
-    chips.forEach((chip) =>
-      chip.addEventListener("click", () => {
-        chips.forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
-        state[group.dataset.group!] = chip.dataset.value || "all";
-        applyFilters();
-      })
-    );
-  });
 
   /* ── Apparition au scroll ── */
   const io = new IntersectionObserver(
@@ -1246,92 +1160,6 @@ const toc = [
     }
   }
 
-  /* ── Filtres ── */
-  .filters {
-    display: grid;
-    gap: 0.6rem;
-    margin: 1.25rem 0 1.5rem;
-  }
-  .filter-line {
-    display: grid;
-    grid-template-columns: 4.5rem 1fr;
-    align-items: start;
-    gap: 0.5rem;
-  }
-  .filter-lbl {
-    font-size: 0.78rem;
-    font-weight: 700;
-    padding-top: 0.35rem;
-  }
-  @media (max-width: 560px) {
-    .filter-line {
-      grid-template-columns: 1fr;
-    }
-  }
-  /* ── AquaPrêts ── */
-  .aqua {
-    border-left: 6px solid #6c95cf;
-    padding: 0.4rem 0 0.4rem 1rem;
-    margin-bottom: 2rem;
-  }
-  .aqua.year {
-    border-left-color: #9eaafa;
-  }
-  .facts {
-    margin: 0 0 1rem;
-    padding-left: 1.1rem;
-    font-size: 0.9rem;
-    line-height: 1.6;
-  }
-  .facts li {
-    list-style: disc;
-    margin-bottom: 0.35rem;
-  }
-  .quote {
-    margin: 0 0 1rem;
-    padding: 0.75rem 1rem;
-    border-left: 3px solid var(--text-color);
-    font-size: 0.88rem;
-    line-height: 1.6;
-    font-style: italic;
-  }
-  .quote cite {
-    display: block;
-    margin-top: 0.4rem;
-    font-size: 0.75rem;
-    font-style: normal;
-    color: var(--gray);
-  }
-  .aqua[hidden] {
-    display: none;
-  }
-  .aqua-k {
-    font-size: 1.45rem;
-    margin: 0 0 0.4rem;
-  }
-  .aqua-figs {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
-  }
-  .aqua-figs p {
-    margin: 0;
-  }
-  .aqua-v {
-    font-weight: 700;
-    font-size: 1.15rem;
-  }
-  .aqua-l {
-    font-size: 0.72rem;
-    color: var(--gray);
-    line-height: 1.35;
-  }
-  .aqua-t {
-    font-size: 0.85rem;
-    line-height: 1.5;
-    margin: 0.75rem 0 0;
-  }
-
   /* ── Projets ── */
   .projects {
     display: grid;
@@ -1420,12 +1248,32 @@ const toc = [
   .proj-more li {
     margin-bottom: 0.2rem;
   }
-  .empty {
-    font-size: 0.85rem;
-    color: var(--gray);
-    text-align: center;
-  }
   /* ── Limites ── */
+  .facts {
+    margin: 0 0 1rem;
+    padding-left: 1.1rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+  .facts li {
+    list-style: disc;
+    margin-bottom: 0.35rem;
+  }
+  .quote {
+    margin: 0 0 1rem;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--text-color);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .quote cite {
+    display: block;
+    margin-top: 0.4rem;
+    font-size: 0.75rem;
+    font-style: normal;
+    color: var(--gray);
+  }
   .limit-main {
     margin-bottom: 1.5rem;
   }
@@ -1484,26 +1332,6 @@ const toc = [
     color: var(--gray);
     line-height: 1.5;
   }
-  .limits-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 0.75rem;
-  }
-  .limits-grid .pl-box {
-    font-size: 0.82rem;
-  }
-  .limits-grid p {
-    margin: 0 0 0.4rem;
-  }
-  .limit-t {
-    font-weight: 700;
-  }
-  @media (max-width: 680px) {
-    .limits-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
   /* ── Sources ── */
   .sources {
     margin-top: 3.5rem;
