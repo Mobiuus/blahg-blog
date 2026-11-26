@@ -3,7 +3,6 @@
 import { colors } from "@/components/notes/utils/colors";
 
 export type PlacementKind = "enveloppe" | "classe";
-export type GreenLevel = "partielle" | "oui" | "variable";
 
 export interface Placement {
   slug: string;
@@ -13,8 +12,6 @@ export interface Placement {
   includes: string[];
   /** une phrase factuelle et simple */
   summary: string;
-  /** piste « alternative durable », courte */
-  green: { level: GreenLevel; text: string };
   color: string;
   /** fiche rédigée ou non */
   ready: boolean;
@@ -25,12 +22,6 @@ export const KIND_LABEL: Record<PlacementKind, string> = {
   classe: "Classe d'actifs",
 };
 
-export const GREEN_LABEL: Record<GreenLevel, string> = {
-  oui: "Alternative durable : oui",
-  partielle: "Alternative durable : partielle",
-  variable: "Alternative durable : selon l'offre",
-};
-
 export const placements: Placement[] = [
   {
     slug: "livrets-reglementes",
@@ -39,10 +30,6 @@ export const placements: Placement[] = [
     includes: ["Livret A", "LDDS", "LEP"],
     summary:
       "Épargne sans risque, disponible à tout moment, défiscalisée. Le taux et les plafonds sont fixés par l'État.",
-    green: {
-      level: "partielle",
-      text: "Finance déjà l'intérêt général, mais sans garantie d'alignement sur la taxonomie.",
-    },
     color: colors[2],
     ready: true,
   },
@@ -53,10 +40,6 @@ export const placements: Placement[] = [
     includes: ["Fonds en euros", "Unités de compte"],
     summary:
       "Contrat qui loge des supports variés ; fiscalité allégée après 8 ans et cadre successoral avantageux.",
-    green: {
-      level: "oui",
-      text: "Unités de compte labellisées (Greenfin, ISR) ou à part verte.",
-    },
     color: colors[0],
     ready: false,
   },
@@ -67,10 +50,6 @@ export const placements: Placement[] = [
     includes: ["Actions européennes", "Fonds éligibles"],
     summary:
       "Compte pour détenir des actions européennes ; plus-values exonérées d'impôt après 5 ans (hors prélèvements sociaux).",
-    green: {
-      level: "oui",
-      text: "Fonds actions thématiques climat éligibles au PEA.",
-    },
     color: colors[4],
     ready: false,
   },
@@ -81,10 +60,6 @@ export const placements: Placement[] = [
     includes: ["PER individuel", "PER collectif"],
     summary:
       "Épargne bloquée jusqu'à la retraite (sauf cas de déblocage) ; versements déductibles du revenu imposable.",
-    green: {
-      level: "oui",
-      text: "Obligation de proposer des supports labellisés ISR, Greenfin et solidaires.",
-    },
     color: colors[6],
     ready: false,
   },
@@ -95,10 +70,6 @@ export const placements: Placement[] = [
     includes: ["PEE", "PER collectif", "Intéressement", "Participation"],
     summary:
       "Épargne alimentée par l'intéressement, la participation et l'abondement de l'employeur.",
-    green: {
-      level: "oui",
-      text: "Un fonds solidaire et un fonds labellisé doivent toujours figurer dans l'offre.",
-    },
     color: colors[9],
     ready: true,
   },
@@ -109,10 +80,6 @@ export const placements: Placement[] = [
     includes: ["Actions", "Obligations", "Fonds"],
     summary:
       "Aucun plafond ni restriction géographique, mais aucun avantage fiscal : gains soumis au prélèvement forfaitaire.",
-    green: {
-      level: "oui",
-      text: "Obligations vertes (green bonds) et fonds thématiques.",
-    },
     color: colors[5],
     ready: false,
   },
@@ -123,10 +90,6 @@ export const placements: Placement[] = [
     includes: ["Prêt", "Obligations", "Actions"],
     summary:
       "Prêter ou investir directement dans un projet via une plateforme agréée ; risque de perte en capital.",
-    green: {
-      level: "oui",
-      text: "Projets d'énergies renouvelables, souvent sous label « croissance verte ».",
-    },
     color: colors[1],
     ready: false,
   },
@@ -137,10 +100,6 @@ export const placements: Placement[] = [
     includes: ["SCPI", "OPCI", "SCI"],
     summary:
       "Parts de sociétés qui possèdent et louent des immeubles ; revenus réguliers, capital non garanti.",
-    green: {
-      level: "variable",
-      text: "Label ISR immobilier ; rénovation énergétique du parc.",
-    },
     color: colors[7],
     ready: false,
   },
@@ -151,10 +110,6 @@ export const placements: Placement[] = [
     includes: ["FCPR", "FCPI", "FIP"],
     summary:
       "Fonds qui entrent au capital d'entreprises non cotées ; argent bloqué 5 à 10 ans, risque élevé.",
-    green: {
-      level: "oui",
-      text: "Fonds à impact ciblant la transition (article 9 SFDR).",
-    },
     color: colors[3],
     ready: false,
   },
@@ -165,10 +120,6 @@ export const placements: Placement[] = [
     includes: ["Compte courant", "Livrets fiscalisés", "Comptes à terme"],
     summary:
       "L'argent laissé en banque sert à ses crédits et investissements : le choix de la banque compte.",
-    green: {
-      level: "variable",
-      text: "Banques qui publient la liste des projets qu'elles financent.",
-    },
     color: colors[8],
     ready: false,
   },

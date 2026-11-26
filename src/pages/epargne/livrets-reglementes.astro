@@ -131,8 +131,8 @@ const flow: Record<string, FlowNode> = {
     id: "portefeuille",
     title: "Placements financiers",
     color: colors[3],
-    body: "Une partie est placée en actifs financiers (obligations, actions) pour garantir la liquidité, c'est-à-dire pouvoir rembourser les épargnants à tout moment, et contribuer à leur rémunération. C'est ici que se trouvent les investissements dans des entreprises du pétrole et du gaz.",
-    link: { href: "#limites", label: "Voir les limites" },
+    body: "Une partie est placée en actifs financiers (obligations, actions) pour garantir la liquidité, c'est-à-dire pouvoir rembourser les épargnants à tout moment, et contribuer à leur rémunération. Ces placements peuvent inclure des actions de grandes entreprises cotées, comme TotalEnergies, dont le groupe Caisse des Dépôts est actionnaire.",
+    link: { href: "#limites", label: "En savoir plus" },
   },
   pme: {
     id: "pme",
@@ -144,7 +144,6 @@ const flow: Record<string, FlowNode> = {
 
 /* ── 3. Projets financés ─────────────────────────────────────── */
 type Theme = "sante" | "logement" | "education" | "energie" | "eau";
-type Taxo = "attenuation" | "adaptation" | "eau" | "social";
 
 const THEMES: Record<Theme, { label: string; color: string }> = {
   sante: { label: "Santé", color: colors[5] },
@@ -154,17 +153,9 @@ const THEMES: Record<Theme, { label: string; color: string }> = {
   eau: { label: "Eau", color: colors[8] },
 };
 
-const TAXO: Record<Taxo, { label: string; short: string }> = {
-  attenuation: { label: "Atténuation", short: "Contribue à réduire les émissions" },
-  adaptation: { label: "Adaptation", short: "Aide à faire face aux effets du réchauffement" },
-  eau: { label: "Ressources en eau", short: "Objectif « eau » de la taxonomie" },
-  social: { label: "Social", short: "Hors taxonomie : utilité sociale" },
-};
-
 interface Project {
   id: string;
   theme: Theme;
-  taxo: Taxo;
   title: string;
   place: string;
   pitch: string;
@@ -175,14 +166,12 @@ interface Project {
   totalLabel?: string;
   year?: string;
   details?: string[];
-  taxoNote?: string;
 }
 
 const projects: Project[] = [
   {
     id: "caen",
     theme: "sante",
-    taxo: "social",
     title: "Réhabilitation du CHU de Caen",
     place: "Caen · Normandie",
     pitch: "Un bâtiment de médecine et de chirurgie moderne et des plateaux médico-techniques performants, reconstruits sur l'empreinte du site actuel de la Côte de Nacre.",
@@ -194,7 +183,6 @@ const projects: Project[] = [
   {
     id: "tours",
     theme: "sante",
-    taxo: "social",
     title: "Nouvel hôpital de Tours",
     place: "Tours · Indre-et-Loire (37)",
     pitch: "Un hôpital moderne, conçu pour être durable et économe en énergie.",
@@ -203,7 +191,6 @@ const projects: Project[] = [
   {
     id: "neulliac",
     theme: "sante",
-    taxo: "social",
     title: "Maison de santé pluridisciplinaire",
     place: "Neulliac · Morbihan (56)",
     pitch: "Une nouvelle structure pour améliorer l'accès aux soins dans les territoires ruraux.",
@@ -212,7 +199,6 @@ const projects: Project[] = [
   {
     id: "doulchard",
     theme: "logement",
-    taxo: "social",
     title: "Logements intergénérationnels",
     place: "Saint-Doulchard · Cher (18)",
     pitch: "Une offre locative pour les seniors, 23 logements individuels et 16 collectifs, pour que seniors et familles vivent côte à côte.",
@@ -224,7 +210,6 @@ const projects: Project[] = [
   {
     id: "graulhet",
     theme: "education",
-    taxo: "attenuation",
     title: "Rénovation du collège Pasteur",
     place: "Graulhet · Tarn (81)",
     pitch: "Rénovation énergétique et extension d'un collège de 1973 devenu très énergivore, menée sans interrompre les cours.",
@@ -240,12 +225,10 @@ const projects: Project[] = [
       "Matériaux locaux : brique en terre crue de Graulhet, bois du Massif central",
       "Prêt Transformation écologique du programme Edurenov ; le reste vient de subventions (Fonds vert, FEDER) et du Département",
     ],
-    taxoNote: "La rénovation de bâtiments existants est une activité de la taxonomie (atténuation) ; une baisse de 30 % de la consommation d'énergie primaire est l'un des seuils possibles.",
   },
   {
     id: "rte",
     theme: "energie",
-    taxo: "attenuation",
     title: "Réseau de transport d'électricité (RTE)",
     place: "France entière",
     pitch: "Développer et moderniser le réseau haute tension pour raccorder la production bas-carbone, accompagner l'électrification et adapter le réseau au changement climatique.",
@@ -256,12 +239,10 @@ const projects: Project[] = [
       "Objectif : plus de 50 % d'électricité dans le mix énergétique d'ici 2050",
       "Infrastructures conçues pour durer plus de 80 ans",
     ],
-    taxoNote: "Le transport d'électricité est une activité de la taxonomie (atténuation).",
   },
   {
     id: "epr2",
     theme: "energie",
-    taxo: "attenuation",
     title: "Nouveau nucléaire : 6 réacteurs EPR2",
     place: "Penly (76) et autres sites",
     pitch: "Prêt bonifié et garanti par l'État pour participer, aux côtés d'EDF, à la construction de 6 réacteurs EPR2.",
@@ -272,33 +253,27 @@ const projects: Project[] = [
       "Garantie de l'État à accorder en loi de finances",
       "Selon la Caisse des Dépôts, sans réduire les prêts au logement social",
     ],
-    taxoNote: "Le nucléaire est entré dans la taxonomie en 2022 par un acte délégué complémentaire, comme activité « transitoire » soumise à conditions. Cette inclusion reste contestée.",
   },
   {
     id: "smiage",
     theme: "eau",
-    taxo: "adaptation",
     title: "Prévention des inondations dans la Vésubie",
     place: "Saint-Martin-Vésubie · Alpes-Maritimes (06)",
     pitch: "Aménagement de la confluence de la Loubonnière et protection de la route RM2565, par le syndicat SMIAGE.",
     loan: "10 M€",
     year: "2026",
-    taxoNote: "Protéger un territoire contre les crues relève de l'adaptation.",
   },
   {
     id: "argeles",
     theme: "eau",
-    taxo: "adaptation",
     title: "Réutilisation des eaux usées traitées",
     place: "Argelès-sur-Mer · Pyrénées-Orientales (66)",
     pitch: "La station d'épuration valorisera près de 1,3 million de m³ d'eaux usées traitées par an pour l'agriculture locale, dans un département exposé aux sécheresses.",
     loan: "2,5 M€ sur 40 ans",
-    taxoNote: "Réduire la dépendance à une ressource qui se raréfie relève de l'adaptation.",
   },
   {
     id: "fouras",
     theme: "eau",
-    taxo: "eau",
     title: "Nouvelle usine d'assainissement",
     place: "Fouras · Charente-Maritime (17)",
     pitch: "Construction d'une usine de traitement des eaux usées par le syndicat Eau17.",
@@ -308,7 +283,6 @@ const projects: Project[] = [
   {
     id: "pyreneau",
     theme: "eau",
-    taxo: "eau",
     title: "Interconnexion des réseaux d'eau potable",
     place: "Arthez-d'Asson → Baudreix · Pyrénées-Atlantiques (64)",
     pitch: "Une liaison entre réseaux pour sécuriser l'approvisionnement en eau potable, portée par le syndicat Pyren'Eau.",
@@ -318,7 +292,6 @@ const projects: Project[] = [
   {
     id: "bagnole",
     theme: "eau",
-    taxo: "eau",
     title: "Protection d'un captage d'eau potable",
     place: "Bagnoles de l'Orne Normandie · Orne (61)",
     pitch: "Achat de terres agricoles autour du captage de Saint-Ursin pour protéger la ressource, et renouvellement des réseaux.",
@@ -328,7 +301,6 @@ const projects: Project[] = [
   {
     id: "corbere",
     theme: "eau",
-    taxo: "eau",
     title: "Modernisation d'un canal d'irrigation",
     place: "Corbère · Pyrénées-Orientales (66)",
     pitch: "Travaux sur les réseaux de l'ASA du canal de Corbère pour améliorer les ouvrages et limiter les pertes en eau.",
@@ -339,17 +311,12 @@ const projects: Project[] = [
 const themeCounts = Object.fromEntries(
   (Object.keys(THEMES) as Theme[]).map((t) => [t, projects.filter((p) => p.theme === t).length])
 );
-const taxoCounts = Object.fromEntries(
-  (Object.keys(TAXO) as Taxo[]).map((t) => [t, projects.filter((p) => p.taxo === t).length])
-);
-
 const toc = [
   { href: "#caracteristiques", label: "Caractéristiques" },
   { href: "#circuit", label: "Fonctionnement" },
   { href: "#difference", label: "La différence" },
   { href: "#projets", label: "Ce que ça finance" },
   { href: "#limites", label: "Limites" },
-  { href: "#alternative", label: "Alternative durable" },
 ];
 ---
 
@@ -555,8 +522,8 @@ const toc = [
     <section class="pl-section" id="projets">
       <h2 class="pl-h2"><span class="pl-h2-num">04</span> Ce que ça finance</h2>
       <p class="pl-p">
-        Quelques prêts accordés par la Banque des Territoires grâce au Fonds d'épargne. Chaque
-        projet indique l'objectif de la taxonomie européenne auquel il peut se rattacher.
+        Quelques prêts accordés par la Banque des Territoires grâce au Fonds d'épargne, pour des
+        projets d'intérêt général.
       </p>
 
       <div class="filters">
@@ -572,18 +539,6 @@ const toc = [
             ))}
           </div>
         </div>
-        <div class="filter-line">
-          <span class="filter-lbl">Objectif</span>
-          <div class="pl-chips" role="group" aria-label="Filtrer par objectif de la taxonomie" data-group="taxo">
-            <button type="button" class="pl-chip" data-value="all" aria-pressed="true">Tous</button>
-            {(Object.keys(TAXO) as Taxo[]).map((t) => (
-              <button type="button" class="pl-chip" data-value={t} aria-pressed="false">
-                <span class={`pl-dot taxo-dot ${t}`}></span>
-                {TAXO[t].label} <span class="pl-chip-count">{taxoCounts[t]}</span>
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
 
       <!-- Focus AquaPrêts -->
@@ -594,7 +549,7 @@ const toc = [
           <div><p class="aqua-v">≈ 1 300</p><p class="aqua-l">projets financés</p></div>
           <div><p class="aqua-v">6 Md€</p><p class="aqua-l">enveloppe portée d'ici 2028 (au lieu de 4)</p></div>
         </div>
-        <p class="aqua-t">Fuites des réseaux, protection des captages, assainissement, prévention des inondations : l'eau est l'un des rares domaines où l'épargne des livrets finance directement de l'<strong>adaptation</strong>.</p>
+        <p class="aqua-t">Fuites des réseaux, protection des captages, assainissement, prévention des inondations : des projets pour adapter les territoires aux sécheresses et aux inondations.</p>
       </div>
 
       <div class="pl-wide">
@@ -606,7 +561,6 @@ const toc = [
               <article
                 class="project"
                 data-theme={p.theme}
-                data-taxo={p.taxo}
                 style={`--rot: ${rot * 0.6}deg;`}
               >
                 <div class:list={["pl-shadow", rot < 0 && "left"]}>
@@ -614,7 +568,6 @@ const toc = [
                     <div class="pl-card-inner">
                       <div class="proj-top">
                         <span class="pl-pill">{THEMES[p.theme].label}</span>
-                        <span class={`pl-taxo ${p.taxo}`} title={TAXO[p.taxo].short}>{TAXO[p.taxo].label}</span>
                       </div>
                       <h3 class="proj-title">{p.title}</h3>
                       <p class="proj-place">{p.place}</p>
@@ -629,13 +582,10 @@ const toc = [
                         </div>
                       )}
                       {p.year && <p class="proj-year">{p.year}</p>}
-                      {(p.details || p.taxoNote) && (
+                      {p.details && (
                         <details class="proj-more">
                           <summary>En savoir plus</summary>
-                          {p.details && (
-                            <ul>{p.details.map((d) => <li>{d}</li>)}</ul>
-                          )}
-                          {p.taxoNote && <p class="proj-taxonote"><strong>Taxonomie :</strong> {p.taxoNote}</p>}
+                          <ul>{p.details.map((d) => <li>{d}</li>)}</ul>
                         </details>
                       )}
                     </div>
@@ -645,16 +595,9 @@ const toc = [
             );
           })}
         </div>
-        <p class="empty" id="projects-empty" hidden>Aucun projet ne correspond à ces deux filtres.</p>
+        <p class="empty" id="projects-empty" hidden>Aucun projet ne correspond à ce filtre.</p>
       </div>
 
-      <p class="taxo-caveat">
-        Classement indicatif : il désigne l'objectif auquel l'activité peut contribuer. Être
-        réellement « aligné » sur la taxonomie suppose de vérifier des critères techniques précis,
-        l'absence de préjudice aux autres objectifs et des garanties sociales minimales, ce que ces
-        communiqués ne permettent pas. Les projets « Social » relèvent de l'intérêt général mais ne
-        sont pas couverts par la taxonomie, qui ne porte que sur l'environnement.
-      </p>
     </section>
 
     <!-- ─────────────── 5. Limites ─────────────── -->
@@ -662,18 +605,19 @@ const toc = [
       <h2 class="pl-h2"><span class="pl-h2-num">05</span> Les limites</h2>
 
       <div class="limit-main pl-reveal">
-        <p class="limit-k pl-hand">Le Livret A finance aussi des énergies fossiles</p>
+        <p class="limit-k pl-hand">Ce que l'on sait, ce que l'on ne sait pas</p>
         <p class="pl-p">
-          La partie du Fonds d'épargne placée sur les marchés financiers inclut des entreprises du
-          pétrole et du gaz. Fin 2025, la Caisse des Dépôts détenait
-          <strong>9,8 Md€</strong> dans des entreprises actives dans les énergies fossiles ; elle est
-          le dixième actionnaire de TotalEnergies.
+          On sait qu'une partie de l'épargne centralisée est prêtée à des projets d'intérêt
+          général. Le reste est placé sur les marchés financiers (obligations, actions) pour que
+          l'épargne reste disponible à tout moment. Ces placements peuvent inclure des actions de
+          grandes entreprises : le groupe Caisse des Dépôts est par exemple actionnaire de
+          TotalEnergies. Le détail des placements du Fonds d'épargne n'est pas publié ligne à ligne.
         </p>
 
         <ol class="timeline">
           <li>
             <span class="tl-date">Fin 2025</span>
-            <span class="tl-body">9,8 Md€ investis dans des entreprises des énergies fossiles.</span>
+            <span class="tl-body">Selon Reclaim Finance, le groupe Caisse des Dépôts détient 9,8 Md€ dans des entreprises actives dans les énergies fossiles.</span>
           </li>
           <li class="is-step">
             <span class="tl-date">21 sept. 2026</span>
@@ -709,57 +653,9 @@ const toc = [
           <p>Vous ne pouvez pas choisir ce que finance votre livret, ni savoir quel projet il soutient. Le Fonds d'épargne publie des chiffres globaux, pas le détail de ses placements financiers.</p>
         </div>
         <div class="pl-box pl-reveal">
-          <p class="limit-t">Aucun engagement d'alignement sur la taxonomie</p>
-          <p>Une partie des prêts finance la transition (rénovation, réseau électrique, eau), mais aucune part minimale d'activités alignées sur la taxonomie n'est garantie.</p>
-        </div>
-        <div class="pl-box pl-reveal">
           <p class="limit-t">Un rendement parfois inférieur à l'inflation</p>
           <p>Le taux suit une formule fixée par l'État. En 2022, il est resté très en dessous de l'inflation (1 % puis 2 %, pour une inflation de 5,2 %) : l'épargne a perdu du pouvoir d'achat.</p>
         </div>
-      </div>
-    </section>
-
-    <!-- ─────────────── 6. Alternative durable ─────────────── -->
-    <section class="pl-section pl-reveal" id="alternative">
-      <h2 class="pl-h2"><span class="pl-h2-num">06</span> Existe-t-il une alternative durable&nbsp;?</h2>
-
-      <div class="verdict">
-        <div class="gauge" role="img" aria-label="Verdict : partielle">
-          <span class="g-step on"></span><span class="g-step on"></span><span class="g-step"></span>
-        </div>
-        <div>
-          <p class="verdict-v">Partielle</p>
-          <p class="verdict-t">
-            Ces livrets financent déjà beaucoup d'intérêt général et, de plus en plus, des projets
-            d'atténuation et parfois d'adaptation. Mais rien ne garantit que votre épargne finance
-            des actifs verts au sens de la taxonomie, et une partie reste exposée au gaz fossile.
-          </p>
-        </div>
-      </div>
-
-      <p class="pl-p alt-intro">
-        Un livret sert d'abord d'<strong>épargne de précaution</strong> : de l'argent sûr et
-        disponible tout de suite. Il n'existe pas d'équivalent « vert » aussi sûr et sans impôt.
-        Quelques pistes :
-      </p>
-
-      <div class="alts">
-        <div class="alt">
-          <p class="alt-t">Le LEP, si vous y avez droit</p>
-          <p>Sous conditions de revenus, il rapporte 2,5 %. Même circuit que le Livret A : mieux rémunéré, pas plus vert.</p>
-        </div>
-        <div class="alt">
-          <p class="alt-t">Les livrets solidaires labellisés</p>
-          <p>Des livrets bancaires portant le label Finansol financent l'économie sociale et solidaire. Ils sont en revanche soumis à l'impôt.</p>
-        </div>
-        <div class="alt">
-          <p class="alt-t">Une banque transparente</p>
-          <p>Certaines banques éthiques publient la liste des projets qu'elles financent avec les dépôts de leurs clients.</p>
-        </div>
-        <a class="alt is-link" href="/epargne">
-          <p class="alt-t">Pour des actifs verts au sens de la taxonomie →</p>
-          <p>L'épargne qui dépasse le besoin de précaution peut aller vers d'autres enveloppes : financement participatif dans les renouvelables, unités de compte labellisées…</p>
-        </a>
       </div>
     </section>
 
@@ -838,7 +734,7 @@ const toc = [
   );
 
   /* ── Filtres projets ── */
-  const state: Record<string, string> = { theme: "all", taxo: "all" };
+  const state: Record<string, string> = { theme: "all" };
   const cards = document.querySelectorAll<HTMLElement>("#projects .project");
   const empty = document.getElementById("projects-empty")!;
   const aqua = document.getElementById("aqua")!;
@@ -846,8 +742,7 @@ const toc = [
     let shown = 0;
     cards.forEach((c) => {
       const ok =
-        (state.theme === "all" || c.dataset.theme === state.theme) &&
-        (state.taxo === "all" || c.dataset.taxo === state.taxo);
+        state.theme === "all" || c.dataset.theme === state.theme;
       c.hidden = !ok;
       if (ok) shown++;
     });
@@ -1337,11 +1232,6 @@ const toc = [
       grid-template-columns: 1fr;
     }
   }
-  .taxo-dot.attenuation { background: var(--pl-attenuation); }
-  .taxo-dot.adaptation  { background: var(--pl-adaptation); }
-  .taxo-dot.eau         { background: var(--pl-eau); }
-  .taxo-dot.social      { background: var(--pl-social); }
-
   /* ── AquaPrêts ── */
   .aqua {
     border-left: 6px solid #6c95cf;
@@ -1466,21 +1356,11 @@ const toc = [
   .proj-more li {
     margin-bottom: 0.2rem;
   }
-  .proj-taxonote {
-    margin-top: 0.4rem !important;
-  }
   .empty {
     font-size: 0.85rem;
     color: var(--gray);
     text-align: center;
   }
-  .taxo-caveat {
-    margin-top: 2rem;
-    font-size: 0.75rem;
-    line-height: 1.5;
-    color: var(--gray);
-  }
-
   /* ── Limites ── */
   .limit-main {
     margin-bottom: 1.5rem;
@@ -1542,7 +1422,7 @@ const toc = [
   }
   .limits-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
   .limits-grid .pl-box {
@@ -1556,82 +1436,6 @@ const toc = [
   }
   @media (max-width: 680px) {
     .limits-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  /* ── Alternative ── */
-  .verdict {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    padding: 1rem 1.1rem;
-    background: var(--pl-attenuation);
-    color: #000;
-    position: relative;
-  }
-  .verdict::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0.5;
-    mix-blend-mode: soft-light;
-    pointer-events: none;
-    background: var(--pl-noise);
-  }
-  .gauge {
-    display: flex;
-    gap: 3px;
-    padding-top: 0.45rem;
-  }
-  .g-step {
-    width: 16px;
-    height: 16px;
-    border: 1.5px solid #000;
-    border-radius: 50%;
-  }
-  .g-step.on {
-    background: #000;
-  }
-  .verdict p {
-    margin: 0;
-  }
-  .verdict-v {
-    font-family: "Caveat", cursive;
-    font-size: 1.8rem;
-    line-height: 1.1;
-  }
-  .verdict-t {
-    font-size: 0.85rem;
-    line-height: 1.55;
-  }
-  .alt-intro {
-    margin-top: 1.25rem;
-  }
-  .alts {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-  }
-  .alt {
-    border: 1px solid var(--gray);
-    padding: 0.85rem 1rem;
-    font-size: 0.82rem;
-    line-height: 1.5;
-    color: var(--text-color);
-    text-decoration: none !important;
-  }
-  .alt p {
-    margin: 0 0 0.3rem;
-  }
-  .alt-t {
-    font-weight: 700;
-  }
-  .alt.is-link:hover {
-    border-color: var(--text-color);
-  }
-  @media (max-width: 560px) {
-    .alts {
       grid-template-columns: 1fr;
     }
   }

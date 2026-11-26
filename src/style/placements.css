@@ -230,23 +230,6 @@
   margin-bottom: 0;
 }
 
-/* ── Badges taxonomie ── */
-.pl-taxo {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.4);
-  color: #000;
-  white-space: nowrap;
-}
-.pl-taxo.attenuation { background: var(--pl-attenuation); }
-.pl-taxo.adaptation  { background: var(--pl-adaptation); }
-.pl-taxo.eau         { background: var(--pl-eau); }
-.pl-taxo.social      { background: var(--pl-social); }
-
 /* ── Reveal au scroll ── */
 @media (prefers-reduced-motion: no-preference) {
   .pl-reveal {

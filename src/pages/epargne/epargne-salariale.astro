@@ -348,7 +348,6 @@ const toc = [
       </div>
 
       <div class="pl-box sfdr pl-reveal">
-        <p class="pl-p"><strong>Et la taxonomie européenne&nbsp;?</strong> Greenfin est le label le plus proche : il impose d'investir dans des « éco-activités » proches de la taxonomie, surtout l'<strong>atténuation</strong> (renouvelables, efficacité énergétique). Les fonds d'<strong>adaptation</strong> restent très rares.</p>
         <p class="pl-p">Chaque fonds affiche aussi une classification européenne (SFDR) : <strong>article 6</strong> (pas d'objectif durable), <strong>article 8</strong> (promeut des critères ESG), <strong>article 9</strong> (objectif d'investissement durable, le plus exigeant).</p>
       </div>
     </section>
@@ -381,7 +380,7 @@ const toc = [
           </div>
           <div>
             <p class="sl-t"><span class="pl-dot" style={`background: ${colors[1]};`}></span> Poche solidaire</p>
-            <p>Logement très social, insertion par l'emploi, agriculture biologique, énergie citoyenne… Elle relève de l'utilité sociale plus que de la taxonomie climat.</p>
+            <p>Logement très social, insertion par l'emploi, agriculture biologique, énergie citoyenne…</p>
           </div>
         </div>
       </div>
@@ -484,24 +483,6 @@ const toc = [
             <p>Seul·e ou à plusieurs, avec des modèles de lettre prêts à l'emploi (Epsor, Reclaim Finance).</p>
           </li>
         </ol>
-      </div>
-    </section>
-
-    <!-- ─────────────── Verdict ─────────────── -->
-    <section class="pl-section pl-reveal" id="alternative">
-      <h2 class="pl-h2"><span class="pl-h2-num">→</span> Existe-t-il une alternative durable&nbsp;?</h2>
-      <div class="verdict">
-        <div class="gauge" role="img" aria-label="Verdict : oui">
-          <span class="g-step on"></span><span class="g-step on"></span><span class="g-step on"></span>
-        </div>
-        <div>
-          <p class="verdict-v">Oui, dans chaque plan</p>
-          <p class="verdict-t">
-            Tout plan doit proposer un fonds solidaire et un fonds labellisé. Un fonds Greenfin est ce
-            qui se rapproche le plus d'actifs verts au sens de la taxonomie, surtout pour l'atténuation.
-            Il faut le choisir activement, et c'est collectivement qu'on peut améliorer l'offre.
-          </p>
-        </div>
       </div>
     </section>
 
@@ -1168,52 +1149,6 @@ const toc = [
   }
   .managers + .fine {
     margin-top: 0.35rem;
-  }
-
-  /* ── Verdict ── */
-  .verdict {
-    display: flex;
-    gap: 1rem;
-    align-items: flex-start;
-    padding: 1rem 1.1rem;
-    background: #a2cbaf;
-    color: #000;
-    position: relative;
-  }
-  .verdict::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    opacity: 0.5;
-    mix-blend-mode: soft-light;
-    pointer-events: none;
-    background: var(--pl-noise);
-  }
-  .gauge {
-    display: flex;
-    gap: 3px;
-    padding-top: 0.45rem;
-  }
-  .g-step {
-    width: 16px;
-    height: 16px;
-    border: 1.5px solid #000;
-    border-radius: 50%;
-  }
-  .g-step.on {
-    background: #000;
-  }
-  .verdict p {
-    margin: 0;
-  }
-  .verdict-v {
-    font-family: "Caveat", cursive;
-    font-size: 1.8rem;
-    line-height: 1.1;
-  }
-  .verdict-t {
-    font-size: 0.85rem;
-    line-height: 1.55;
   }
 
   /* ── Sources ── */
