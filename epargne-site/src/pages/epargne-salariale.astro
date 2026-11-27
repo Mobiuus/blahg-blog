@@ -1,0 +1,751 @@
+---
+import Layout from "../components/Layout.astro";
+import { sources, rows, labels, C_PEE, C_PER } from "../data/salariale";
+
+const toc = [
+  { href: "#fonctionnement", label: "Fonctionnement" },
+  { href: "#plans", label: "PEE ou PER collectif" },
+  { href: "#minimum", label: "Le minimum durable" },
+  { href: "#solidaire", label: "Les fonds solidaires" },
+  { href: "#limites", label: "Limites" },
+  { href: "#agir", label: "Agir" },
+];
+
+---
+
+<Layout
+  title="Épargne salariale · Où va mon épargne ?"
+  description="Épargne salariale : intéressement, participation, abondement, PEE et PER collectif, fonds labellisés et solidaires."
+>
+  <!-- ─────────── Héros ─────────── -->
+  <div class="hero-wrap">
+    <section class="hero">
+      <div class="container-site hero-grid">
+        <div>
+          <p class="eyebrow">Épargne salariale · enveloppe fiscale</p>
+          <h1>Épargne<span class="soft">salariale</span></h1>
+        </div>
+        <div class="hero-panel glass reveal">
+          <p class="lead">
+            Un avantage proposé par l'employeur : des primes collectives et un coup de pouce financier,
+            placés dans des fonds choisis par l'entreprise. Ces fonds investissent sur les marchés :
+            c'est là que se joue leur impact sur le climat.
+          </p>
+          <nav class="toc" aria-label="Sommaire" style="margin-top:0">
+            {toc.map((t, i) => (
+              <a href={t.href}><span>{String(i + 1).padStart(2, "0")}</span>{t.label}</a>
+            ))}
+          </nav>
+        </div>
+      </div>
+      <div class="container-site">
+        <div class="stats reveal">
+          <div class="stat"><p class="stat-v">250,8 Md€</p><p class="stat-l">d'encours d'épargne salariale et retraite d'entreprise</p></div>
+          <div class="stat"><p class="stat-v">2/3</p><p class="stat-l">gérés par 3 acteurs : Amundi, Natixis IM, BNP Paribas AM</p></div>
+          <div class="stat"><p class="stat-v">84 %</p><p class="stat-l">des fonds investis dans des entreprises qui développent de nouveaux projets fossiles (2024)</p></div>
+          <div class="stat"><p class="stat-v">18,4 Md€</p><p class="stat-l">d'épargne solidaire passent par l'épargne salariale</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─────────── 01 Fonctionnement ─────────── -->
+  <section class="band" id="fonctionnement">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">01 · Fonctionnement</p>
+        <h2 class="h-section">D'où vient l'argent,<br />où va-t-il&nbsp;?</h2>
+        <p class="lead">Six sources peuvent alimenter deux types de plans. Choisissez une source.</p>
+      </div>
+
+      <div class="src-grid" role="group" aria-label="Sources de l'épargne salariale">
+        {sources.map((s, i) => (
+          <button type="button" class="src" data-src={s.id} data-plans={s.plans.join(" ")} aria-pressed={i === 0 ? "true" : "false"}>
+            <span class="num">{String(i + 1).padStart(2, "0")}</span>
+            <span class="src-t">{s.title}</span>
+            <span class="src-who">{s.who}</span>
+          </button>
+        ))}
+      </div>
+
+      <div class="to-plans" aria-hidden="true">
+        <span class="to-arrow" data-for="pee"></span>
+        <span class="to-arrow" data-for="per"></span>
+      </div>
+
+      <div class="plans">
+        <div class="plan" data-plan="pee" style={`--c:${C_PEE}`}>
+          <p class="plan-t">PEE</p>
+          <p class="plan-s">Plan d'épargne entreprise</p>
+          <span class="badge teal">Bloqué 5 ans</span>
+        </div>
+        <div class="plan" data-plan="per" style={`--c:${C_PER}`}>
+          <p class="plan-t">PER collectif</p>
+          <p class="plan-s">ex-PERCO</p>
+          <span class="badge red">Bloqué jusqu'à la retraite</span>
+        </div>
+      </div>
+
+      <div class="card src-panel" id="src-panel" aria-live="polite">
+        <span class="num" id="src-hand">{sources[0].hand}</span>
+        <h3 id="src-title">{sources[0].title}</h3>
+        <p class="card-body" id="src-body">{sources[0].body}</p>
+        <p class="src-note" id="src-note">{sources[0].note}</p>
+      </div>
+
+      <p class="lead fcpe">
+        Sur le plan, l'argent est investi dans des <strong>FCPE</strong> (fonds communs de placement
+        d'entreprise) : des fonds d'actions, d'obligations ou monétaires, choisis par l'entreprise et
+        gérés par une société de gestion. C'est le salarié qui répartit son épargne entre ces fonds.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── 02 PEE vs PER ─────────── -->
+  <section class="band band-light" id="plans">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">02 · Les plans</p>
+        <h2 class="h-section">PEE ou<br />PER collectif&nbsp;?</h2>
+        <p class="lead">
+          Le PERCO a été remplacé par le PER collectif : il n'est plus proposé depuis le 1er octobre
+          2020, mais les PERCO existants continuent de fonctionner.
+        </p>
+      </div>
+      <div class="card cmp reveal">
+        <div class="cmp-row cmp-head" aria-hidden="true">
+          <span></span>
+          <span><span class="dot" style={`background:${C_PEE}`}></span>PEE</span>
+          <span><span class="dot" style={`background:${C_PER}`}></span>PER collectif</span>
+        </div>
+        {rows.map((r) => (
+          <div class="cmp-row">
+            <span class="cmp-label">{r.label}</span>
+            {r.same ? (
+              <span class="cmp-val col-merged">{r.pee}</span>
+            ) : (
+              <>
+                <span class="cmp-val col-a" data-lbl="PEE" style={`--c:${C_PEE}`}>{r.pee}</span>
+                <span class="cmp-val col-b" data-lbl="PER collectif" style={`--c:${C_PER}`}>{r.per}</span>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+      <p class="fine after-card">
+        L'argent placé reste soumis aux prélèvements sociaux. Le plafond annuel de la Sécurité sociale
+        est fixé chaque année par l'État.
+      </p>
+    </div>
+  </section>
+
+  <!-- ─────────── 03 Minimum durable ─────────── -->
+  <section class="band" id="minimum">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">03 · Le minimum durable</p>
+        <h2 class="h-section">Dans tous<br />les plans</h2>
+        <p class="lead">
+          Quelle que soit l'entreprise, la loi garantit qu'au moins deux fonds « responsables » sont
+          accessibles dans le plan. Encore faut-il les choisir : par défaut, l'argent va dans le fonds
+          prévu par le plan, qui n'est pas forcément l'un d'eux.
+        </p>
+      </div>
+
+      <div class="card law reveal">
+        <ol class="timeline">
+          <li>
+            <span class="tl-date">1er janv. 2010</span>
+            <span><strong>Loi de modernisation de l'économie</strong> : au moins un <strong>fonds solidaire</strong> doit être proposé aux salariés.</span>
+          </li>
+          <li>
+            <span class="tl-date">1er juil. 2024</span>
+            <span><strong>Loi « partage de la valeur »</strong> : au moins un <strong>fonds labellisé</strong> (ISR, Greenfin, Finansol…) doit aussi être proposé.</span>
+          </li>
+          <li class="is-next">
+            <span class="tl-date">À venir</span>
+            <span>Réforme européenne du règlement SFDR, qui classe les fonds selon leur ambition durable (articles 6, 8 et 9 aujourd'hui), annoncée pour début 2027.</span>
+          </li>
+        </ol>
+      </div>
+
+      <p class="lead labels-intro">Les labels à repérer, et ce qu'ils disent des énergies fossiles :</p>
+      <div class="grid-4">
+        {labels.map((l, i) => (
+          <article class="card label reveal">
+            <div class="label-top">
+              <span class="num">{String(i + 1).padStart(2, "0")}</span>
+              <span class="badge">Label</span>
+            </div>
+            <h3 class="label-name">{l.name}</h3>
+            <p class="card-body">{l.what}</p>
+            <div class="label-fossil">
+              <span class:list={["fossil-mark", l.fossil]} aria-hidden="true"></span>
+              <div>
+                <p class="fossil-k">Énergies fossiles</p>
+                <p class="fossil-t">{l.fossilText}</p>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <div class="card sfdr reveal">
+        <p class="card-body">
+          Chaque fonds affiche aussi une classification européenne (SFDR) : <strong>article 6</strong>
+          (pas d'objectif durable), <strong>article 8</strong> (promeut des critères ESG),
+          <strong>article 9</strong> (objectif d'investissement durable, le plus exigeant).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 04 Solidaire ─────────── -->
+  <section class="band band-teal" id="solidaire">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">04 · Les fonds solidaires</p>
+        <h2 class="h-section">Le fonds<br />solidaire « 85-15 »</h2>
+        <p class="lead">
+          Un fonds solidaire combine deux poches. La plus grande est investie comme un fonds
+          classique ; la plus petite, la <strong>poche solidaire</strong>, finance des entreprises
+          agréées « solidaires d'utilité sociale » (ESUS), souvent non cotées. Longtemps appelés
+          « 90-10 », ces fonds consacrent aujourd'hui <strong>5 à 15 %</strong> de leur actif à la
+          poche solidaire.
+        </p>
+      </div>
+
+      <div class="card solid reveal">
+        <label for="solid-range" class="solid-q">Part de la poche solidaire : <output id="solid-out">10 %</output></label>
+        <input type="range" id="solid-range" min="5" max="15" step="1" value="10" />
+        <div class="solid-bar" aria-hidden="true">
+          <div class="solid-classic" id="solid-classic"></div>
+          <div class="solid-poche" id="solid-poche"></div>
+        </div>
+        <div class="solid-values" aria-live="polite">
+          <p><span class="solid-v" id="solid-classic-v">90 €</span> poche classique</p>
+          <p class="right"><span class="solid-v red" id="solid-poche-v">10 €</span> poche solidaire</p>
+        </div>
+        <div class="grid-2 solid-legend">
+          <div>
+            <p class="sl-t"><span class="dot" style="background:var(--color-teal-700)"></span>Poche classique</p>
+            <p class="card-body">Actions et obligations d'entreprises cotées. Elle n'est verte que si le fonds est aussi labellisé (ISR, Greenfin) : sinon elle peut être investie dans n'importe quel secteur, y compris les énergies fossiles.</p>
+          </div>
+          <div>
+            <p class="sl-t"><span class="dot" style="background:var(--color-red-500)"></span>Poche solidaire</p>
+            <p class="card-body">Logement très social, insertion par l'emploi, agriculture biologique, énergie citoyenne…</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3 solid-figs">
+        <div class="fig glass reveal">
+          <p class="fig-v">34 Md€</p>
+          <p class="fig-l">d'épargne solidaire en France, soit 0,52 % de l'épargne financière des ménages</p>
+        </div>
+        <div class="fig glass reveal">
+          <p class="fig-v">18,4 Md€</p>
+          <p class="fig-l">viennent de l'épargne salariale, un peu plus de la moitié (54 %) de l'épargne solidaire</p>
+        </div>
+        <div class="fig glass reveal">
+          <p class="fig-v">≈ 8 %</p>
+          <p class="fig-l">de l'épargne salariale est placée en fonds solidaires</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 05 Limites ─────────── -->
+  <section class="band band-dark" id="limites">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">05 · Les limites</p>
+        <h2 class="h-section">84 % des fonds<br />financent l'expansion fossile</h2>
+        <p class="lead">
+          Selon Reclaim Finance, 84 % des fonds d'épargne salariale étudiés étaient investis dans des
+          entreprises qui développent de nouveaux projets d'énergies fossiles. Ces données datent de
+          2024.
+        </p>
+      </div>
+      <div class="grid-3">
+        <div class="fig glass reveal">
+          <p class="fig-k">Un marché très concentré</p>
+          <p class="fig-l">Deux tiers de l'épargne salariale sont gérés par trois acteurs : Amundi, Natixis IM et BNP Paribas AM. Leurs politiques climat pèsent donc sur la majorité des salariés.</p>
+        </div>
+        <div class="fig glass reveal">
+          <p class="fig-k">Le choix par défaut n'est pas durable</p>
+          <p class="fig-l">Sans choix du salarié, l'épargne va dans le fonds prévu par le plan. Le fonds solidaire et le fonds labellisé sont proposés, pas imposés.</p>
+        </div>
+        <div class="fig glass reveal">
+          <p class="fig-k">Un label ne suffit pas toujours</p>
+          <p class="fig-l">Les labels n'ont pas tous les mêmes exigences sur les fossiles. Reclaim Finance alerte aussi sur des fonds présentés comme « verts » qui restent exposés à ces énergies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 06 Agir ─────────── -->
+  <section class="band" id="agir">
+    <div class="container-site">
+      <div class="section-head row">
+        <div class="section-head">
+          <p class="eyebrow">06 · Agir</p>
+          <h2 class="h-section">Les leviers<br />d'action</h2>
+        </div>
+        <div class="chips" role="tablist" aria-label="Échelle d'action">
+          <button type="button" class="chip" role="tab" id="tab-indiv" aria-controls="lever-indiv" aria-selected="true">Seul·e</button>
+          <button type="button" class="chip" role="tab" id="tab-coll" aria-controls="lever-coll" aria-selected="false">Ensemble, dans l'entreprise</button>
+        </div>
+      </div>
+
+      <div class="lever" id="lever-indiv" role="tabpanel" aria-labelledby="tab-indiv">
+        <ol class="grid-4 steps">
+          <li class="card">
+            <span class="num">01</span>
+            <h3 class="h-card">Repérer les fonds labellisés</h3>
+            <p class="card-body">Greenfin et ISR sont les deux labels qui excluent les entreprises développant de nouveaux projets fossiles ; Greenfin va plus loin en excluant toute la chaîne fossile.</p>
+          </li>
+          <li class="card">
+            <span class="num">02</span>
+            <h3 class="h-card">Choisir le fonds solidaire</h3>
+            <p class="card-body">Il est obligatoirement proposé. Vérifier aussi si sa poche classique est labellisée.</p>
+          </li>
+          <li class="card">
+            <span class="num">03</span>
+            <h3 class="h-card">Réorienter l'épargne placée</h3>
+            <p class="card-body">On peut déplacer son épargne d'un fonds à l'autre dans le plan (un « arbitrage »), sans la débloquer.</p>
+          </li>
+          <li class="card">
+            <span class="num">04</span>
+            <h3 class="h-card">Vérifier fonds et gestionnaire</h3>
+            <p class="card-body">Comparer l'impact de ses fonds avec l'outil d'Epsor, et les pratiques de son gestionnaire sur change-de-banque.org (Reclaim Finance).</p>
+            <a class="link-arrow" href="https://impact.epsor.fr/" rel="noopener">Outil Epsor <span class="arrow" aria-hidden="true">→</span></a>
+          </li>
+        </ol>
+      </div>
+
+      <div class="lever" id="lever-coll" role="tabpanel" aria-labelledby="tab-coll" hidden>
+        <ol class="grid-4 steps">
+          <li class="card">
+            <span class="num">01</span>
+            <h3 class="h-card">Référencer des fonds plus durables</h3>
+            <p class="card-body">La liste des fonds proposés est négociée entre la direction et les représentants des salariés. Le CSE et les délégués syndicaux peuvent demander l'ajout de fonds Greenfin.</p>
+          </li>
+          <li class="card">
+            <span class="num">02</span>
+            <h3 class="h-card">Choisir un gestionnaire engagé</h3>
+            <p class="card-body">Lors du choix ou du renouvellement du gestionnaire d'épargne salariale, privilégier ceux qui se distinguent par leurs engagements pour le climat.</p>
+            <div class="managers">
+              <span class="badge teal">Gay-Lussac Gestion</span>
+              <span class="badge teal">Ofi Invest AM</span>
+              <span class="badge teal">Mirova</span>
+            </div>
+            <p class="fine">Sélection de Reclaim Finance (change-de-banque.org).</p>
+          </li>
+          <li class="card">
+            <span class="num">03</span>
+            <h3 class="h-card">Mobiliser le conseil de surveillance</h3>
+            <p class="card-body">Chaque FCPE a un conseil de surveillance où siègent des représentants des salariés. Il peut pousser le gestionnaire à renforcer sa politique climat et à voter en conséquence aux assemblées générales des entreprises.</p>
+          </li>
+          <li class="card">
+            <span class="num">04</span>
+            <h3 class="h-card">Interpeller la direction</h3>
+            <p class="card-body">Seul·e ou à plusieurs, avec des modèles de lettre prêts à l'emploi (Epsor, Reclaim Finance).</p>
+            <a class="link-arrow" href="https://change-de-banque.org/mon-epargne/epargne-salariale/" rel="noopener">change-de-banque.org <span class="arrow" aria-hidden="true">→</span></a>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Sources ─────────── -->
+  <section class="band band-tight band-light sources">
+    <div class="container-site">
+      <p class="eyebrow">Sources et outils</p>
+      <ul class="small muted">
+        <li><a href="https://www.afg.asso.fr/fr/publication/epargne-salariale-et-retraite-cp-juin-2026/" rel="noopener">AFG</a> — épargne salariale et retraite, communiqué de juin 2026</li>
+        <li><a href="https://reclaimfinance.org/site/wp-content/uploads/2024/04/042024-Rapport-Epargne-Salariale-Produit-Inflammable.pdf" rel="noopener">Reclaim Finance</a> — « Épargne salariale, produit inflammable » (avril 2024)</li>
+        <li><a href="https://reclaimfinance.org/site/2025/03/24/fonds-depargne-salariale-verts-vigilance-rouge/" rel="noopener">Reclaim Finance</a> — « Fonds d'épargne salariale verts : vigilance rouge » (2025)</li>
+        <li><a href="https://change-de-banque.org/mon-epargne/epargne-salariale/" rel="noopener">change-de-banque.org</a> — pratiques des gestionnaires d'épargne salariale</li>
+        <li><a href="https://impact.epsor.fr/" rel="noopener">Epsor</a> — analyse d'impact des fonds d'épargne salariale</li>
+        <li><a href="https://www.amf-france.org/fr/espace-epargnants/comprendre-les-produits-financiers/supports-dinvestissement/epargne-salariale-pee-etc" rel="noopener">AMF</a> — épargne salariale : ce qu'il faut savoir</li>
+        <li>Épargne Salariale France — définitions des dispositifs</li>
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<script type="application/json" id="src-data" set:html={JSON.stringify(Object.fromEntries(sources.map((s) => [s.id, s])))}></script>
+
+<script>
+  /* Sources → plans */
+  const srcData = JSON.parse(document.getElementById("src-data")!.textContent || "{}");
+  const srcButtons = document.querySelectorAll<HTMLButtonElement>(".src");
+  const planEls = document.querySelectorAll<HTMLElement>(".plan");
+  const arrows = document.querySelectorAll<HTMLElement>(".to-arrow");
+  const panel = document.getElementById("src-panel")!;
+  srcButtons.forEach((btn) =>
+    btn.addEventListener("click", () => {
+      const d = srcData[btn.dataset.src || ""];
+      if (!d) return;
+      srcButtons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      const plans = (btn.dataset.plans || "").split(" ");
+      planEls.forEach((p) => p.classList.toggle("is-off", !plans.includes(p.dataset.plan || "")));
+      arrows.forEach((a) => a.classList.toggle("is-off", !plans.includes(a.dataset.for || "")));
+      document.getElementById("src-hand")!.textContent = d.hand;
+      document.getElementById("src-title")!.textContent = d.title;
+      document.getElementById("src-body")!.textContent = d.body;
+      const note = document.getElementById("src-note")!;
+      note.textContent = d.note || "";
+      note.hidden = !d.note;
+      panel.classList.remove("pop");
+      void panel.offsetWidth;
+      panel.classList.add("pop");
+    })
+  );
+
+  /* Fonds solidaire */
+  const range = document.getElementById("solid-range") as HTMLInputElement | null;
+  const updateSolid = () => {
+    if (!range) return;
+    const v = Number(range.value);
+    document.getElementById("solid-out")!.textContent = `${v} %`;
+    document.getElementById("solid-poche")!.style.flexBasis = `${v}%`;
+    document.getElementById("solid-classic")!.style.flexBasis = `${100 - v}%`;
+    document.getElementById("solid-poche-v")!.textContent = `${v} €`;
+    document.getElementById("solid-classic-v")!.textContent = `${100 - v} €`;
+  };
+  range?.addEventListener("input", updateSolid);
+  updateSolid();
+
+  /* Leviers */
+  const tabs = document.querySelectorAll<HTMLButtonElement>('[role="tab"]');
+  tabs.forEach((t) =>
+    t.addEventListener("click", () => {
+      tabs.forEach((o) => {
+        const on = o === t;
+        o.setAttribute("aria-selected", String(on));
+        document.getElementById(o.getAttribute("aria-controls")!)!.hidden = !on;
+      });
+    })
+  );
+</script>
+
+<style>
+  /* Sources → plans */
+  .src-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .src {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 18px 16px;
+    min-height: 8rem;
+    border-radius: 22px;
+    border: 1px solid transparent;
+    background: #fff;
+    box-shadow: var(--shadow-card);
+    color: var(--color-ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition: transform var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast),
+      background-color var(--duration-fast);
+  }
+  .src:hover {
+    transform: translateY(-2px);
+  }
+  .src[aria-pressed="true"] {
+    background: var(--color-teal-700);
+    color: #fff;
+    box-shadow: 0 4px 0 var(--color-teal-900);
+  }
+  .src[aria-pressed="true"] .num {
+    color: var(--color-teal-300);
+  }
+  .src-t {
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+  .src-who {
+    margin-top: auto;
+    font-size: 0.75rem;
+    font-weight: 600;
+    opacity: 0.7;
+  }
+  @media (max-width: 1080px) {
+    .src-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  @media (max-width: 560px) {
+    .src-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .src {
+      min-height: 6.5rem;
+    }
+  }
+
+  .to-plans {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    height: 2.4rem;
+  }
+  .to-arrow {
+    position: relative;
+    justify-self: center;
+    border-left: 2px solid var(--color-teal-700);
+    transition: opacity var(--duration-fast);
+  }
+  .to-arrow::after {
+    content: "";
+    position: absolute;
+    bottom: -1px;
+    left: -6px;
+    border: 5px solid transparent;
+    border-top: 7px solid var(--color-teal-700);
+    border-bottom: 0;
+  }
+  .to-arrow.is-off {
+    opacity: 0.12;
+  }
+  .plans {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .plan {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    padding: 24px 18px;
+    border-radius: var(--radius-card);
+    background: #fff;
+    border-top: 6px solid var(--c);
+    box-shadow: var(--shadow-card);
+    text-align: center;
+    transition: opacity var(--duration-fast), filter var(--duration-fast);
+  }
+  .plan .badge {
+    align-self: center;
+    white-space: normal;
+    text-align: center;
+  }
+  @media (max-width: 560px) {
+    .plans,
+    .to-plans {
+      gap: 10px;
+    }
+    .plan {
+      padding: 18px 10px;
+    }
+    .plan .badge {
+      letter-spacing: 0.06em;
+      padding: 5px 9px;
+    }
+    .plan .badge::before {
+      display: none;
+    }
+  }
+  .plan-t {
+    font: 800 var(--text-subheading) / 1.1 var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  .plan-s {
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+  }
+  .plan.is-off {
+    opacity: 0.35;
+    filter: grayscale(0.8);
+  }
+  .src-panel {
+    margin-top: 24px;
+    min-height: 11rem;
+  }
+  .src-panel h3 {
+    font-size: var(--text-subheading);
+  }
+  .src-note {
+    padding-top: 12px;
+    border-top: var(--rule-light);
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--color-teal-700);
+  }
+  .fcpe {
+    margin-top: 32px;
+  }
+
+  .after-card {
+    margin-top: 14px;
+  }
+
+  /* Minimum durable */
+  .law {
+    color: var(--color-teal-700);
+  }
+  .law .timeline li > span:not(.tl-date) {
+    color: var(--color-ink);
+  }
+  .labels-intro {
+    margin: clamp(36px, 5vw, 56px) 0 20px;
+  }
+  .label-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .label-name {
+    font-size: 1.6rem;
+    letter-spacing: -0.02em;
+    color: var(--color-teal-700);
+  }
+  .label-fossil {
+    margin-top: auto;
+    padding-top: 14px;
+    border-top: var(--rule-light);
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .fossil-mark {
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    margin-top: 2px;
+    border-radius: 50%;
+    border: 2px solid var(--color-red-500);
+  }
+  .fossil-mark.oui {
+    background: var(--color-red-500);
+  }
+  .fossil-mark.partiel {
+    background: linear-gradient(90deg, var(--color-red-500) 50%, transparent 50%);
+  }
+  .fossil-k {
+    font-size: var(--text-ui);
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-red-600);
+  }
+  .fossil-t {
+    margin-top: 4px;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+    line-height: 1.5;
+  }
+  .sfdr {
+    margin-top: 18px;
+    background: var(--color-teal-100);
+    box-shadow: none;
+  }
+
+  /* Fonds solidaire */
+  .solid-q {
+    font-weight: 600;
+  }
+  .solid-q output {
+    color: var(--color-red-600);
+    font-weight: 800;
+  }
+  .solid-bar {
+    display: flex;
+    height: 3.25rem;
+    border-radius: 16px;
+    overflow: hidden;
+  }
+  .solid-bar > div {
+    transition: flex-basis 0.25s var(--ease-out);
+  }
+  .solid-classic {
+    background: var(--color-teal-700);
+    flex: 0 0 90%;
+  }
+  .solid-poche {
+    background: var(--color-red-500);
+    flex: 0 0 10%;
+  }
+  .solid-values {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+  .solid-values .right {
+    text-align: right;
+  }
+  .solid-v {
+    font: 800 1.5rem/1 var(--font-display);
+    color: var(--color-teal-700);
+    margin-right: 6px;
+  }
+  .solid-v.red {
+    color: var(--color-red-600);
+  }
+  .solid-legend {
+    padding-top: 18px;
+    border-top: var(--rule-light);
+  }
+  .sl-t {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+  .solid-figs {
+    margin-top: 18px;
+  }
+
+  /* Encadrés sur fond sombre */
+  .fig {
+    border-radius: var(--radius-card);
+    padding: 26px 24px;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .fig-v {
+    font: 800 clamp(2rem, 1.5rem + 1.6vw, 2.75rem) / 1 var(--font-display);
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .fig-k {
+    font: 800 1.2rem/1.25 var(--font-display);
+    color: #fff;
+  }
+  .fig-l {
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--color-teal-100);
+  }
+
+  /* Leviers */
+  .lever[hidden] {
+    display: none;
+  }
+  .steps {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .managers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .managers .badge::before {
+    display: none;
+  }
+</style>

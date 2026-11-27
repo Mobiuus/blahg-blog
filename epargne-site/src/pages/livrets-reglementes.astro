@@ -1,0 +1,750 @@
+---
+import Layout from "../components/Layout.astro";
+import { rows, flow, projects, THEMES, C_LIVRET_A, C_LDDS } from "../data/livrets";
+
+const toc = [
+  { href: "#caracteristiques", label: "Caractéristiques" },
+  { href: "#circuit", label: "Fonctionnement" },
+  { href: "#difference", label: "La différence" },
+  { href: "#projets", label: "Ce que ça finance" },
+  { href: "#limites", label: "Limites" },
+];
+---
+
+<Layout
+  title="Livret A & LDDS · Où va mon épargne ?"
+  description="Livret A et LDDS : caractéristiques, fonctionnement, ce qu'ils financent et leurs limites."
+>
+  <!-- ─────────── Héros ─────────── -->
+  <div class="hero-wrap">
+    <section class="hero">
+      <div class="container-site hero-grid">
+        <div>
+          <p class="eyebrow">Livrets réglementés · enveloppe fiscale</p>
+          <h1>Livret A<span class="soft">&amp; LDDS</span></h1>
+        </div>
+        <div class="hero-panel glass reveal">
+          <p class="lead">
+            Les deux livrets préférés des Français : sans risque, disponibles à tout moment et sans
+            impôt. Une grande partie de l'argent est confiée à la Caisse des Dépôts, qui la prête pour
+            des projets d'intérêt général.
+          </p>
+          <nav class="toc" aria-label="Sommaire" style="margin-top:0">
+            {toc.map((t, i) => (
+              <a href={t.href}><span>{String(i + 1).padStart(2, "0")}</span>{t.label}</a>
+            ))}
+          </nav>
+        </div>
+      </div>
+      <div class="container-site">
+        <div class="stats reveal">
+          <div class="stat"><p class="stat-v">1,7 %</p><p class="stat-l">taux net, identique pour les deux livrets</p></div>
+          <div class="stat"><p class="stat-v">22 950 €</p><p class="stat-l">plafond du Livret A</p></div>
+          <div class="stat"><p class="stat-v">12 000 €</p><p class="stat-l">plafond du LDDS</p></div>
+          <div class="stat"><p class="stat-v">0 €</p><p class="stat-l">d'impôt sur les intérêts</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ─────────── 01 Caractéristiques ─────────── -->
+  <section class="band" id="caracteristiques">
+    <div class="container-site">
+      <div class="section-head row">
+        <div class="section-head">
+          <p class="eyebrow">01 · Caractéristiques</p>
+          <h2 class="h-section">Deux livrets,<br />presque jumeaux</h2>
+        </div>
+        <div class="cmp-controls">
+          <div class="chips" role="group" aria-label="Choisir le livret affiché">
+            <button type="button" class="chip" data-view="both" aria-pressed="true">Comparer</button>
+            <button type="button" class="chip" data-view="a" aria-pressed="false"><span class="dot" style={`background:${C_LIVRET_A}`}></span>Livret A</button>
+            <button type="button" class="chip" data-view="b" aria-pressed="false"><span class="dot" style={`background:${C_LDDS}`}></span>LDDS</button>
+          </div>
+          <label class="diff-toggle"><input type="checkbox" id="only-diff" /> Seulement les différences</label>
+        </div>
+      </div>
+
+      <div class="card cmp reveal" id="cmp" data-view="both">
+        <div class="cmp-row cmp-head" aria-hidden="true">
+          <span></span>
+          <span class="col-a"><span class="dot" style={`background:${C_LIVRET_A}`}></span>Livret A</span>
+          <span class="col-b"><span class="dot" style={`background:${C_LDDS}`}></span>LDDS</span>
+        </div>
+        {rows.map((r) => (
+          <div class:list={["cmp-row", r.same && "is-same"]}>
+            <span class="cmp-label">
+              {r.label}
+              {r.same && <span class="badge teal same-tag">Pareil</span>}
+            </span>
+            {r.same ? (
+              <span class="cmp-val col-merged">{r.a}</span>
+            ) : (
+              <>
+                <span class="cmp-val col-a" data-lbl="Livret A" style={`--c:${C_LIVRET_A}`}>{r.a}</span>
+                <span class="cmp-val col-b" data-lbl="LDDS" style={`--c:${C_LDDS}`}>{r.ldds}</span>
+              </>
+            )}
+            {r.note && <span class="cmp-note">{r.note}</span>}
+          </div>
+        ))}
+      </div>
+
+      <div class="card calc reveal">
+        <label for="calc-amount" class="calc-q">
+          Combien rapporte une épargne de <output id="calc-out">5 000 €</output> sur un an&nbsp;?
+        </label>
+        <input type="range" id="calc-amount" min="0" max="34950" step="50" value="5000" />
+        <div class="calc-scale" aria-hidden="true">
+          <span>0 €</span>
+          <span class="mark" style={`left:${(22950 / 34950) * 100}%`}>Livret A plein</span>
+          <span>34 950 €</span>
+        </div>
+        <p class="calc-result">
+          ≈ <strong id="calc-year">85 €</strong> d'intérêts par an, soit <strong id="calc-month">7 €</strong> par mois, à 1,7 % et sans impôt.
+        </p>
+        <p class="fine">Estimation simple : taux supposé constant sur l'année, sans tenir compte des quinzaines. Au-delà de 22 950 €, le surplus va sur le LDDS.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 02 Circuit ─────────── -->
+  <section class="band band-teal" id="circuit">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">02 · Fonctionnement</p>
+        <h2 class="h-section">Le circuit<br />de votre argent</h2>
+        <p class="lead">Suivez 100 € déposés sur un livret. Cliquez sur chaque étape.</p>
+      </div>
+
+      <div class="flow" id="flow">
+        <div class="flow-row one">
+          <button type="button" class="node" data-node="vous" aria-pressed="true">
+            <span class="node-t">{flow.vous.title}</span><span class="node-a">{flow.vous.amount}</span>
+          </button>
+        </div>
+        <div class="arrow-v" aria-hidden="true"></div>
+        <div class="flow-row one">
+          <button type="button" class="node" data-node="banque" aria-pressed="false">
+            <span class="node-t">{flow.banque.title}</span>
+          </button>
+        </div>
+        <svg class="split" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V5 M32.7 5 H83.6 M32.7 5 V10 M83.6 5 V10" /></svg>
+        <div class="flow-row two">
+          <button type="button" class="node" data-node="fonds" aria-pressed="false">
+            <span class="node-t">{flow.fonds.title}</span><span class="node-s">Caisse des Dépôts</span><span class="node-a">{flow.fonds.amount}</span>
+          </button>
+          <button type="button" class="node" data-node="reste" aria-pressed="false">
+            <span class="node-t">{flow.reste.title}</span><span class="node-a">{flow.reste.amount}</span>
+          </button>
+        </div>
+        <div class="flow-row two">
+          <div class="sub">
+            <svg class="split small" viewBox="0 0 100 10" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0 V5 M24.3 5 H75.7 M24.3 5 V10 M75.7 5 V10" /></svg>
+            <div class="sub-nodes">
+              <button type="button" class="node" data-node="prets" aria-pressed="false">
+                <span class="node-t">{flow.prets.title}</span><span class="node-s">jusqu'à 80 ans</span>
+              </button>
+              <button type="button" class="node" data-node="portefeuille" aria-pressed="false">
+                <span class="node-t">{flow.portefeuille.title}</span><span class="node-s">obligations, actions</span>
+              </button>
+            </div>
+          </div>
+          <div class="sub">
+            <div class="arrow-v short" aria-hidden="true"></div>
+            <div class="sub-nodes">
+              <button type="button" class="node" data-node="pme" aria-pressed="false">
+                <span class="node-t">{flow.pme.title}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="card flow-panel" id="flow-panel" aria-live="polite">
+          <span class="num" id="flow-num">ÉTAPE</span>
+          <h3 id="flow-title">{flow.vous.title}</h3>
+          <p class="card-body" id="flow-body">{flow.vous.body}</p>
+          <a id="flow-link" class="link-arrow" href="#" hidden></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 03 Différence ─────────── -->
+  <section class="band" id="difference">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">03 · La différence</p>
+        <h2 class="h-section">Livret A ou LDDS,<br />quelle différence&nbsp;?</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card twin reveal" style={`--c:${C_LIVRET_A}`}>
+          <span class="badge red">Livret A</span>
+          <p class="twin-t">Le livret de tout le monde, enfants compris, avec le plafond le plus haut.</p>
+        </div>
+        <div class="card twin reveal" style={`--c:${C_LDDS}`}>
+          <span class="badge teal">LDDS</span>
+          <p class="twin-t">Réservé aux majeurs, plafond plus bas, avec un volet « don solidaire ».</p>
+        </div>
+      </div>
+      <div class="card same reveal">
+        <p class="same-t">Même taux, même fiscalité, même destination.</p>
+        <p class="card-body">
+          La part centralisée des deux livrets alimente le même Fonds d'épargne, où elle est
+          mélangée : un euro du LDDS n'y est pas orienté vers des projets plus verts qu'un euro du
+          Livret A.
+        </p>
+        <p class="card-body">
+          Le « durable et solidaire » du LDDS joue à la marge : sur la part restée à la banque, qui
+          doit aussi financer la transition énergétique et l'économie sociale et solidaire, et via la
+          proposition annuelle de don.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 04 Projets ─────────── -->
+  <section class="band band-light" id="projets">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">04 · Ce que ça finance</p>
+        <h2 class="h-section">Des prêts pour<br />l'intérêt général</h2>
+        <p class="lead">
+          Quelques prêts accordés par la Banque des Territoires grâce au Fonds d'épargne, pour des
+          projets d'intérêt général. Ces prêts sont accordés à un taux égal à celui du Livret A
+          majoré de 0,6 point.
+        </p>
+      </div>
+      <div class="grid-3 projects">
+        {projects.map((p) => {
+          const share = p.loanM && p.totalM ? Math.round((p.loanM / p.totalM) * 100) : null;
+          return (
+            <article class="card project reveal">
+              <span class:list={["badge", p.theme === "energie" ? "red" : "teal"]}>{THEMES[p.theme].label}</span>
+              <div>
+                <h3 class="proj-title">{p.title}</h3>
+                <p class="proj-place">{p.place}</p>
+              </div>
+              <p class="card-body">{p.pitch}</p>
+              <div class="proj-foot">
+                <p class="proj-loan-l">Prêt</p>
+                <p class="proj-loan">{p.loan}</p>
+                {share !== null && (
+                  <div class="share" role="img" aria-label={`Le prêt couvre ${share} % du projet`}>
+                    <div class="share-bar"><span style={`width:${share}%`}></span></div>
+                    <p class="fine">{share} % d'un projet de {p.totalLabel}</p>
+                  </div>
+                )}
+                {p.year && <p class="fine">{p.year}</p>}
+                {p.details && (
+                  <details class="proj-more">
+                    <summary>En savoir plus</summary>
+                    <ul>{p.details.map((d) => <li>{d}</li>)}</ul>
+                  </details>
+                )}
+              </div>
+            </article>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── 05 Limites ─────────── -->
+  <section class="band band-dark" id="limites">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">05 · Les limites</p>
+        <h2 class="h-section">Ce que l'on sait,<br />ce que l'on ne sait pas</h2>
+        <p class="lead">Le rapport annuel 2025 du Fonds d'épargne permet de dire où va l'argent, en grandes masses.</p>
+      </div>
+
+      <div class="grid-4 facts">
+        <div class="fact glass reveal">
+          <p class="fact-v">54 %</p>
+          <p class="fact-l">de son bilan est prêté (244,9 Md€), en premier lieu au logement social, qui représente à lui seul 45 % du bilan.</p>
+        </div>
+        <div class="fact glass reveal">
+          <p class="fact-v">197 Md€</p>
+          <p class="fact-l">sont placés sur les marchés pour que l'épargne reste disponible : surtout des obligations, et 23,3 Md€ d'actions et de fonds.</p>
+        </div>
+        <div class="fact glass reveal">
+          <p class="fact-v">2,65 %</p>
+          <p class="fact-l">de ces portefeuilles sont investis dans des entreprises du pétrole et du gaz (1,21 % si l'on ne compte que la part de leur activité liée aux énergies fossiles).</p>
+        </div>
+        <div class="fact glass reveal">
+          <p class="fact-v">Exclus</p>
+          <p class="fact-l">les entreprises trop exposées au charbon, et les producteurs dont plus de 10 % du chiffre d'affaires vient du pétrole et du gaz « non conventionnels » (schiste, sables bitumineux, Arctique).</p>
+        </div>
+      </div>
+
+      <div class="limits-split">
+        <div>
+          <p class="lead totale">
+            Le groupe Caisse des Dépôts est actionnaire de TotalEnergies. Son directeur général l'a
+            confirmé devant l'Assemblée nationale le 7 juillet 2026 :
+          </p>
+          <blockquote class="quote glass reveal">
+            « Nous restons actionnaires de TotalEnergies […]. Nous considérons que nous jouons un rôle
+            très important dans le dialogue actionnarial avec TotalEnergies […]. Nous ne sommes pas
+            actionnaires d'autres compagnies pétrolières. […] Nous restons un actionnaire exigeant de
+            TotalEnergies, ce qui se traduit souvent par des votes négatifs en assemblée générale sur
+            certains sujets. »
+            <cite>Olivier Sichel, directeur général de la Caisse des Dépôts</cite>
+          </blockquote>
+        </div>
+        <div>
+          <ol class="timeline reveal">
+            <li>
+              <span class="tl-date">Fin 2025</span>
+              <span>Selon Reclaim Finance, le groupe Caisse des Dépôts détient 9,8 Md€ dans des entreprises actives dans les énergies fossiles.</span>
+            </li>
+            <li>
+              <span class="tl-date">21 sept. 2026</span>
+              <span>
+                La Caisse des Dépôts met à jour sa politique climat :
+                <span class="tl-list">
+                  <span>✓ fin des achats de nouvelles obligations des entreprises productrices de pétrole (TotalEnergies par exemple)&nbsp;;</span>
+                  <span>✓ plafonnement de son exposition aux entreprises qui développent de nouveaux projets pétroliers.</span>
+                </span>
+              </span>
+            </li>
+            <li class="is-red">
+              <span class="tl-date">Ce qui manque</span>
+              <span class="tl-list" style="margin-top:0">
+                <span>✗ le gaz fossile n'est pas visé en tant que tel&nbsp;;</span>
+                <span>✗ rien n'empêche de financer de nouveaux terminaux de gaz naturel liquéfié (GNL) ou de nouvelles centrales à gaz, par exemple ENGIE ou l'américain Venture Global&nbsp;;</span>
+                <span>✗ pas d'avancée sur la transparence des investissements ni sur les votes en assemblée générale de ces entreprises.</span>
+              </span>
+            </li>
+          </ol>
+          <p class="fine source-line">
+            Analyse de l'ONG Reclaim Finance (21 sept. 2026). Elle rappelle que d'autres investisseurs,
+            comme l'Ircantec, la Maif ou Suravenir, ont déjà cessé d'investir dans les acteurs de
+            l'expansion du GNL.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─────────── Sources ─────────── -->
+  <section class="band band-tight sources">
+    <div class="container-site">
+      <p class="eyebrow">Sources</p>
+      <ul class="small muted">
+        <li><a href="https://www.service-public.gouv.fr/particuliers/actualites/A15818" rel="noopener">Service-public.fr</a> — taux de l'épargne réglementée au 1er août 2026</li>
+        <li>Banque des Territoires — fiches projets (CHU de Caen, Saint-Doulchard, Neulliac, Tours)</li>
+        <li><a href="https://www.banquedesterritoires.fr/realisation/renovation-college-graulhet-tarn" rel="noopener">Banque des Territoires</a> — rénovation du collège de Graulhet (5 août 2026)</li>
+        <li>Banque des Territoires — communiqué « Plan Eau : AquaPrêts portés à 6 Md€ » (21 juillet 2026)</li>
+        <li>Banque des Territoires — communiqué sur RTE (30 avril 2026)</li>
+        <li>Banque des Territoires — communiqué sur le Nouveau Nucléaire Français (12 mars 2026)</li>
+        <li>Caisse des Dépôts — Rapport annuel du Fonds d'épargne 2025 (bilan, actifs financiers, politique d'exclusion)</li>
+        <li>Cour des comptes — « Les relations financières entre l'État et la Caisse des dépôts et consignations », observations définitives S2026-1020 (2026)</li>
+        <li>Assemblée nationale — audition d'Olivier Sichel, directeur général de la Caisse des Dépôts, par les commissions des affaires économiques et des finances (compte rendu n° 113, 7 juillet 2026)</li>
+        <li>Reclaim Finance — « La Caisse des Dépôts coupe une partie des financements à l'expansion fossile » (21 septembre 2026)</li>
+      </ul>
+    </div>
+  </section>
+</Layout>
+
+<script type="application/json" id="flow-data" set:html={JSON.stringify(flow)}></script>
+
+<script>
+  /* Comparatif */
+  const cmp = document.getElementById("cmp");
+  const viewChips = document.querySelectorAll<HTMLButtonElement>("[data-view]");
+  viewChips.forEach((chip) =>
+    chip.addEventListener("click", () => {
+      viewChips.forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
+      if (cmp) cmp.dataset.view = chip.dataset.view || "both";
+    })
+  );
+  const onlyDiff = document.getElementById("only-diff") as HTMLInputElement | null;
+  onlyDiff?.addEventListener("change", () => cmp?.classList.toggle("only-diff", onlyDiff.checked));
+
+  /* Calcul */
+  const range = document.getElementById("calc-amount") as HTMLInputElement | null;
+  const fmt = new Intl.NumberFormat("fr-FR", { maximumFractionDigits: 0 });
+  const updateCalc = () => {
+    if (!range) return;
+    const v = Number(range.value);
+    const year = v * 0.017;
+    document.getElementById("calc-out")!.textContent = `${fmt.format(v)} €`;
+    document.getElementById("calc-year")!.textContent = `${fmt.format(year)} €`;
+    document.getElementById("calc-month")!.textContent = `${fmt.format(year / 12)} €`;
+  };
+  range?.addEventListener("input", updateCalc);
+  updateCalc();
+
+  /* Circuit */
+  const flowData = JSON.parse(document.getElementById("flow-data")!.textContent || "{}");
+  const order = ["vous", "banque", "fonds", "reste", "prets", "portefeuille", "pme"];
+  const nodes = document.querySelectorAll<HTMLButtonElement>("#flow .node");
+  const panel = document.getElementById("flow-panel")!;
+  const fNum = document.getElementById("flow-num")!;
+  const fTitle = document.getElementById("flow-title")!;
+  const fBody = document.getElementById("flow-body")!;
+  const fLink = document.getElementById("flow-link") as HTMLAnchorElement;
+  const show = (id: string) => {
+    const d = flowData[id];
+    if (!d) return;
+    nodes.forEach((m) => m.setAttribute("aria-pressed", String(m.dataset.node === id)));
+    fNum.textContent = `Étape ${String(order.indexOf(id) + 1).padStart(2, "0")}`;
+    fTitle.textContent = d.amount ? `${d.title} · ${d.amount}` : d.title;
+    fBody.textContent = d.body;
+    if (d.link) {
+      fLink.href = d.link.href;
+      fLink.innerHTML = `${d.link.label} <span class="arrow" aria-hidden="true">→</span>`;
+      fLink.hidden = false;
+    } else {
+      fLink.hidden = true;
+    }
+    panel.classList.remove("pop");
+    void panel.offsetWidth;
+    panel.classList.add("pop");
+  };
+  nodes.forEach((n) => n.addEventListener("click", () => show(n.dataset.node || "")));
+  show("vous");
+</script>
+
+<style>
+  /* Comparatif */
+  .cmp-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 12px;
+  }
+  .diff-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .diff-toggle input {
+    accent-color: var(--color-teal-700);
+    width: 16px;
+    height: 16px;
+  }
+  .cmp.only-diff .is-same {
+    display: none;
+  }
+  .cmp[data-view="a"] .col-b,
+  .cmp[data-view="b"] .col-a {
+    display: none;
+  }
+  .cmp[data-view="a"] .cmp-row,
+  .cmp[data-view="b"] .cmp-row {
+    grid-template-columns: 11rem 1fr;
+  }
+  .cmp[data-view="a"] .col-merged,
+  .cmp[data-view="b"] .col-merged,
+  .cmp[data-view="a"] .cmp-note,
+  .cmp[data-view="b"] .cmp-note {
+    grid-column: 2 / 3;
+  }
+  @media (max-width: 860px) {
+    .cmp-controls {
+      align-items: flex-start;
+    }
+  }
+  @media (max-width: 640px) {
+    .cmp[data-view="a"] .cmp-row,
+    .cmp[data-view="b"] .cmp-row {
+      grid-template-columns: 1fr;
+    }
+    .cmp[data-view="a"] .col-merged,
+    .cmp[data-view="b"] .col-merged,
+    .cmp[data-view="a"] .cmp-note,
+    .cmp[data-view="b"] .cmp-note {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* Calcul */
+  .calc {
+    margin-top: 18px;
+  }
+  .calc-q {
+    font-weight: 600;
+  }
+  .calc-q output {
+    color: var(--color-teal-700);
+    font-weight: 800;
+  }
+  .calc-scale {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-ink-soft);
+    height: 2.4rem;
+    margin-top: -6px;
+  }
+  .calc-scale .mark {
+    position: absolute;
+    top: 1.1rem;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+  .calc-scale .mark::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -1.2rem;
+    height: 1.1rem;
+    border-left: 1px solid currentColor;
+  }
+  .calc-result {
+    font-size: 1.125rem;
+  }
+  .calc-result strong {
+    color: var(--color-teal-700);
+    font-weight: 800;
+  }
+
+  /* Circuit */
+  .flow-row {
+    display: grid;
+    gap: 14px;
+  }
+  .flow-row.one {
+    grid-template-columns: minmax(0, 17rem);
+    justify-content: center;
+  }
+  .flow-row.two {
+    grid-template-columns: 2fr 1fr;
+  }
+  .sub-nodes {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: 14px;
+  }
+  .node {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 5rem;
+    padding: 14px 12px;
+    border-radius: 20px;
+    border: 1px solid #ffffff2e;
+    background: #ffffff17;
+    backdrop-filter: var(--glass-blur);
+    color: #fff;
+    font: inherit;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color var(--duration-fast), transform var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast);
+  }
+  .node:hover {
+    transform: translateY(-2px);
+    background: #ffffff26;
+  }
+  .node[aria-pressed="true"] {
+    background: #fff;
+    color: var(--color-ink);
+    box-shadow: 0 4px 0 var(--color-red-500);
+  }
+  .node-t {
+    font-weight: 800;
+    font-size: 0.95rem;
+    line-height: 1.2;
+  }
+  .node-s {
+    font-size: 0.75rem;
+    opacity: 0.75;
+  }
+  .node-a {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: var(--color-teal-300);
+  }
+  .node[aria-pressed="true"] .node-a {
+    color: var(--color-red-600);
+  }
+  .arrow-v {
+    width: 0;
+    height: 1.8rem;
+    margin: 0 auto;
+    border-left: 1.5px solid #ffffff8c;
+  }
+  .arrow-v.short {
+    height: 1.6rem;
+  }
+  .split {
+    display: block;
+    width: 100%;
+    height: 1.8rem;
+    overflow: visible;
+  }
+  .split.small {
+    height: 1.6rem;
+  }
+  .split path {
+    fill: none;
+    stroke: #ffffff8c;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+  }
+  .flow-row.two + .flow-row.two {
+    margin-top: 0;
+  }
+  .flow-panel {
+    margin-top: 28px;
+    min-height: 11rem;
+  }
+  .flow-panel h3 {
+    font-size: var(--text-subheading);
+  }
+  @media (max-width: 640px) {
+    .node {
+      min-height: 4.2rem;
+      padding: 10px 6px;
+      border-radius: 16px;
+    }
+    .node-t {
+      font-size: 0.78rem;
+    }
+    .node-s {
+      display: none;
+    }
+    .flow-row,
+    .sub-nodes {
+      gap: 8px;
+    }
+  }
+
+  /* Différence */
+  .twin {
+    border-top: 6px solid var(--c);
+  }
+  .twin-t {
+    font: 800 var(--text-subheading) / 1.2 var(--font-display);
+    letter-spacing: -0.02em;
+  }
+  .same {
+    margin-top: 18px;
+    background: var(--color-teal-100);
+    box-shadow: none;
+  }
+  .same-t {
+    font: 800 1.25rem/1.25 var(--font-display);
+    color: var(--color-teal-700);
+  }
+
+  /* Projets */
+  .project {
+    gap: 16px;
+  }
+  .proj-title {
+    font-size: 1.35rem;
+    letter-spacing: -0.02em;
+  }
+  .proj-place {
+    margin-top: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--color-ink-soft);
+  }
+  .proj-foot {
+    margin-top: auto;
+    padding-top: 16px;
+    border-top: var(--rule-light);
+    display: grid;
+    gap: 8px;
+  }
+  .proj-loan-l {
+    font-size: var(--text-ui);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+  }
+  .proj-loan {
+    font: 800 1.6rem/1.1 var(--font-display);
+    letter-spacing: -0.02em;
+    color: var(--color-teal-700);
+  }
+  .share-bar {
+    height: 8px;
+    border-radius: 999px;
+    background: var(--color-teal-100);
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
+  .share-bar span {
+    display: block;
+    height: 100%;
+    background: var(--color-red-500);
+    border-radius: 999px;
+  }
+  .proj-more summary {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: var(--color-red-600);
+  }
+  .proj-more ul {
+    margin: 10px 0 0;
+    padding-left: 1.1rem;
+    font-size: 0.875rem;
+    color: var(--color-ink-soft);
+    display: grid;
+    gap: 4px;
+  }
+
+  /* Limites */
+  .facts {
+    margin-bottom: clamp(40px, 5vw, 64px);
+  }
+  .fact {
+    border-radius: var(--radius-card);
+    padding: 26px 24px;
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .fact-v {
+    font: 800 clamp(2rem, 1.5rem + 1.6vw, 2.75rem) / 1 var(--font-display);
+    letter-spacing: -0.03em;
+    color: #fff;
+  }
+  .fact-l {
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: var(--color-teal-100);
+  }
+  .limits-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(32px, 5vw, 72px);
+    align-items: start;
+  }
+  .totale {
+    margin-bottom: 22px;
+  }
+  .limits-split .timeline {
+    color: var(--color-teal-300);
+  }
+  .limits-split .timeline li > span:not(.tl-date) {
+    color: var(--color-paper);
+  }
+  .limits-split .tl-date {
+    color: #fff;
+  }
+  .source-line {
+    margin-top: 22px;
+  }
+  @media (max-width: 900px) {
+    .limits-split {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

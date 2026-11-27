@@ -1,0 +1,164 @@
+---
+import Layout from "../components/Layout.astro";
+import { placements, KIND_LABEL } from "../data/placements";
+
+const readyCount = placements.filter((p) => p.ready).length;
+const counts = {
+  all: placements.length,
+  enveloppe: placements.filter((p) => p.kind === "enveloppe").length,
+  classe: placements.filter((p) => p.kind === "classe").length,
+};
+const ready = placements.filter((p) => p.ready);
+---
+
+<Layout
+  title="Où va mon épargne ? · fiches pédagogiques"
+  description="Fiches pédagogiques pour comprendre les placements et ce qu'ils financent."
+>
+  <div class="hero-wrap">
+    <section class="hero">
+      <div class="container-site hero-grid">
+        <div>
+          <p class="eyebrow">Finance durable · fiches pédagogiques</p>
+          <h1>Où va mon<br /><span class="soft inline">épargne&nbsp;?</span></h1>
+        </div>
+        <div class="hero-panel glass reveal">
+          <p class="lead">
+            Chaque fiche décrit un placement de façon factuelle : ce que c'est, comment ça marche, et
+            ce que ça finance.
+          </p>
+          <div class="hero-actions">
+            {ready.map((p, i) => (
+              <a href={`/${p.slug}`} class:list={["btn", i === 0 && "btn-red"]}>
+                {p.title} <span class="arrow" aria-hidden="true">→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div class="container-site">
+        <div class="stats reveal">
+          <div class="stat"><p class="stat-v">{counts.all}</p><p class="stat-l">placements passés en revue</p></div>
+          <div class="stat"><p class="stat-v">{counts.enveloppe}</p><p class="stat-l">enveloppes fiscales</p></div>
+          <div class="stat"><p class="stat-v">{counts.classe}</p><p class="stat-l">classes d'actifs</p></div>
+          <div class="stat"><p class="stat-v">{readyCount}</p><p class="stat-l">fiches déjà rédigées</p></div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <section class="band">
+    <div class="container-site">
+      <div class="section-head row">
+        <div class="section-head">
+          <p class="eyebrow">Les fiches</p>
+          <h2 class="h-section">Choisis ton placement</h2>
+        </div>
+        <div class="chips" role="group" aria-label="Filtrer les placements">
+          <button type="button" class="chip" data-filter="all" aria-pressed="true">Tous <span class="chip-count">{counts.all}</span></button>
+          <button type="button" class="chip" data-filter="enveloppe" aria-pressed="false">Enveloppes fiscales <span class="chip-count">{counts.enveloppe}</span></button>
+          <button type="button" class="chip" data-filter="classe" aria-pressed="false">Classes d'actifs <span class="chip-count">{counts.classe}</span></button>
+        </div>
+      </div>
+
+      <div class="grid-4 fiches">
+        {placements.map((p, i) => (
+          <article class:list={["card", "fiche", "reveal", !p.ready && "is-soon"]} data-kind={p.kind}>
+            <div class="fiche-top">
+              <span class="num">{String(i + 1).padStart(2, "0")}</span>
+              {p.ready ? <span class="badge red">Disponible</span> : <span class="badge">Bientôt</span>}
+            </div>
+            <p class="fiche-kind">{KIND_LABEL[p.kind]}</p>
+            <h3 class="h-card">{p.title}</h3>
+            <p class="fiche-includes">{p.includes.join(" · ")}</p>
+            <p class="card-body">{p.summary}</p>
+            {p.ready && (
+              <a href={`/${p.slug}`} class="link-arrow fiche-link">
+                Lire la fiche <span class="arrow" aria-hidden="true">→</span>
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="band band-teal">
+    <div class="container-site">
+      <div class="section-head">
+        <p class="eyebrow">Comment lire les fiches</p>
+        <h2 class="h-section">Contenant<br />ou contenu&nbsp;?</h2>
+      </div>
+      <div class="grid-2">
+        <div class="card reveal">
+          <span class="num">01</span>
+          <h3 class="h-card">Enveloppe fiscale</h3>
+          <p class="card-body">
+            Le <strong>contenant</strong> : un cadre juridique et fiscal (plafond, blocage, impôt) dans
+            lequel on loge de l'argent ou des supports. Exemples : Livret A, assurance-vie, PEA, PER.
+          </p>
+        </div>
+        <div class="card reveal">
+          <span class="num">02</span>
+          <h3 class="h-card">Classe d'actifs</h3>
+          <p class="card-body">
+            Le <strong>contenu</strong> : un type d'investissement (prêt à un projet, immobilier,
+            entreprise non cotée…), quelle que soit l'enveloppe qui l'accueille.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  const chips = document.querySelectorAll<HTMLButtonElement>("[data-filter]");
+  const cards = document.querySelectorAll<HTMLElement>(".fiche");
+  chips.forEach((chip) =>
+    chip.addEventListener("click", () => {
+      const f = chip.dataset.filter;
+      chips.forEach((c) => c.setAttribute("aria-pressed", String(c === chip)));
+      cards.forEach((card) => {
+        card.hidden = f !== "all" && card.dataset.kind !== f;
+      });
+    })
+  );
+</script>
+
+<style>
+  .fiche[hidden] {
+    display: none;
+  }
+  .fiche-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  .fiche-kind {
+    font-size: var(--text-ui);
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-ink-soft);
+    margin-bottom: -6px;
+  }
+  .fiche-includes {
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: var(--color-teal-700);
+    opacity: 0.85;
+  }
+  .fiche-link {
+    margin-top: auto;
+    padding-top: 6px;
+  }
+  .fiche.is-soon {
+    background: #ffffffb3;
+    box-shadow: none;
+    border: 1px dashed #0b1f2126;
+  }
+  .fiche.is-soon .h-card {
+    color: var(--color-ink-soft);
+  }
+</style>
